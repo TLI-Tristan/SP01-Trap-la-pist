@@ -18,7 +18,7 @@ void mainLoop( void );
 // You should not be modifying this unless you know what you are doing
 int main( void )
 {
-    init();      // initialize your variables
+    init();      // initialize your variables, loading b4 the game
     mainLoop();  // main loop
     shutdown();  // do clean up, if any. free memory.
     
@@ -34,13 +34,13 @@ int main( void )
 //--------------------------------------------------------------
 void mainLoop( void )
 {
-    g_Timer.startTimer();    // Start timer to calculate how long it takes to render this frame
+    g_Timer.startTimer();    // Start timer to calculate how long it takes to render this frame, IF FPS IS LESS THAN 45, DEDUCT MARKS, LIMIT IS 90
     while (!g_bQuitGame)      // run this loop until user wants to quit 
     {        
         getInput();                         // get keyboard input
-        update(g_Timer.getElapsedTime());   // update the game
+		//updateAI();
+		update(g_Timer.getElapsedTime());   // update the game
         render();                           // render the graphics output to screen
         g_Timer.waitUntil(gc_uFrameTime);   // Frame rate limiter. Limits each frame to a specified time in ms.      
-    }   
-	//test
+    }    
 }
