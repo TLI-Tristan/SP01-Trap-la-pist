@@ -17,7 +17,7 @@ EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 // Console object
-Console g_Console(80, 25, "SP1 Framework");
+Console g_Console(80, 25, "SP1 Framework"); //width then height of the cmd, AFFECTS FRAMERATE SO BE CAREFUL
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
@@ -68,7 +68,7 @@ void shutdown( void )
 // Input    : Void
 // Output   : void
 //--------------------------------------------------------------
-void getInput( void )
+void getInput( void ) //EDIT MOVE CHARACTER IF ADDED ANYTHING
 {    
     g_abKeyPressed[K_UP]     = isKeyPressed(VK_UP);
     g_abKeyPressed[K_DOWN]   = isKeyPressed(VK_DOWN);
@@ -141,7 +141,7 @@ void gameplay()            // gameplay logic
                         // sound can be played here too.
 }
 
-void moveCharacter()
+void moveCharacter() //EDIT HERE IF ANY ADDED KEY PRESSES
 {
     bool bSomethingHappened = false;
     if (g_dBounceTime > g_dElapsedTime)
@@ -222,17 +222,17 @@ void renderMap()
 {
     // Set up sample colours, and output shadings
     const WORD colors[] = {
-        0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
+        0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F, //FIRST DIGIT IS TEXT, SECOND IS BACKGROUND COLOR
         0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6
     };
 
     COORD c;
     for (int i = 0; i < 12; ++i)
     {
-        c.X = 5 * i;
+        c.X = 5 * i; //COORDINATES OF WHERE THE BOX SHOWS UP IN THE CMD(X IS USUALLY TWICE OF Y OR MORE)
         c.Y = i + 1;
         colour(colors[i]);
-        g_Console.writeToBuffer(c, " °±²Û", colors[i]);
+        g_Console.writeToBuffer(c, " Â°Â±Â²Ã›", colors[i]);
     }
 }
 
