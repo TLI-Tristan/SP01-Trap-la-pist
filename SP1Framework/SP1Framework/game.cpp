@@ -10,10 +10,11 @@
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
+int choice;
 
 // Game specific variables here
 SGameChar   g_sChar;
-EGAMESTATES g_eGameState = S_SPLASHSCREEN;
+EGAMESTATES g_eGameState = S_GAMEMENU;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 // Console object
@@ -33,13 +34,14 @@ void init( void )
     g_dBounceTime = 0.0;
 
     // sets the initial state for the game
-    g_eGameState = S_SPLASHSCREEN;
+    g_eGameState = S_GAMEMENU;
 
     g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
     g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
     g_sChar.m_bActive = true;
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
+	choice = 1;
 }
 
 //--------------------------------------------------------------
@@ -76,6 +78,7 @@ void getInput( void )
     g_abKeyPressed[K_RIGHT]  = isKeyPressed(VK_RIGHT);
     g_abKeyPressed[K_SPACE]  = isKeyPressed(VK_SPACE);
     g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
+	g_abKeyPressed[K_ENTER] = isKeyPressed(VK_RETURN);
 }
 
 //--------------------------------------------------------------
@@ -100,7 +103,7 @@ void update(double dt)
 
     switch (g_eGameState)
     {
-        case S_SPLASHSCREEN : splashScreenWait(); // game logic for the splash screen
+        case S_GAMEMENU : gameMenu(); // game logic for the splash screen
             break;
         case S_GAME: gameplay(); // gameplay logic when we are in the game
             break;
@@ -119,19 +122,56 @@ void render()
     clearScreen();      // clears the current screen and draw from scratch 
     switch (g_eGameState)
     {
-        case S_SPLASHSCREEN: renderSplashScreen();
+        case S_GAMEMENU: renderGameMenu();
             break;
         case S_GAME: renderGame();
             break;
+			
     }
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
     renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
 }
 
-void splashScreenWait()    // waits for time to pass in splash screen
+void gameMenu()    // waits for user choice
 {
-    if (g_dElapsedTime > 3.0) // wait for 3 seconds to switch to game mode, else do nothing
-        g_eGameState = S_GAME;
+	bool bSelection = false;
+	/*if (g_abKeyPressed[K_DOWN])
+	{
+		choice = 2;
+	}
+	if (g_abKeyPressed[K_UP])
+	{
+		choice = 1 ;
+	}*/
+
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
+
+	if (g_abKeyPressed[K_DOWN] && choice != 3)
+	{
+		choice += 1;
+		bSelection = true;
+	}
+	if (g_abKeyPressed[K_UP] && choice != 1)
+	{
+		choice -= 1;
+		bSelection = true;
+	}
+
+	if (bSelection)
+	{
+		// set the bounce time to some time in the future to prevent accidental triggers
+		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
+	}
+	if (g_abKeyPressed[K_ENTER]) { // Press enter to start game
+		switch (choice) {
+		case 1: g_eGameState = S_GAME;
+			break;
+		case 3: g_bQuitGame = true;
+			break;
+		}
+	}
+
 }
 
 void gameplay()            // gameplay logic
@@ -198,18 +238,35 @@ void clearScreen()
     g_Console.clearBuffer(0x1F);
 }
 
-void renderSplashScreen()  // renders the splash screen
+void renderGameMenu()  // renders the game menu	//TODO: change this to game menu
 {
     COORD c = g_Console.getConsoleSize();
     c.Y /= 3;
     c.X = c.X / 2 - 9;
-    g_Console.writeToBuffer(c, "A game in 3 seconds", 0x03);
-    c.Y += 1;
-    c.X = g_Console.getConsoleSize().X / 2 - 20;
-    g_Console.writeToBuffer(c, "Press <Space> to change character colour", 0x09);
+    g_Console.writeToBuffer(c, "Normal Mode (more like ez)", 0x03);
     c.Y += 1;
     c.X = g_Console.getConsoleSize().X / 2 - 9;
-    g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x09);
+    g_Console.writeToBuffer(c, "HELL MODE (HEHEHEHAHAHOHO)", 0x09);
+    c.Y += 1;
+    c.X = g_Console.getConsoleSize().X / 2 - 9;
+    g_Console.writeToBuffer(c, "Exit Game (noooo pls :<)", 0x09);
+
+	c.Y = c.Y / 3 + 5;
+	c.X = g_Console.getConsoleSize().X / 2 - 12;
+
+	switch (choice) {
+	case 1: g_Console.writeToBuffer(c, "->", 0x03);
+		break;
+	case 2: c.Y += 1; 
+		
+		g_Console.writeToBuffer(c, "->", 0x03);
+		break;
+	case 3: c.Y += 2; 
+		g_Console.writeToBuffer(c, "->", 0x03);
+		break;
+	}
+
+
 }
 
 void renderGame()
