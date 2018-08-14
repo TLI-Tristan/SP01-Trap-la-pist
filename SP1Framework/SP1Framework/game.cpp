@@ -215,7 +215,7 @@ if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize()
 	}
 
 }
-if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 42) // FOR "RIGHT"
+if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 41) // FOR "RIGHT"
 {
 	//Beep(1440, 30);
 	if (mapStorage[(int)g_sChar.m_cLocation.Y-1][(int)g_sChar.m_cLocation.X+1] != '#')
