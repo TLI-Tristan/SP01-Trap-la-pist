@@ -1,5 +1,5 @@
 // This is the main file for the game logic and function
-//
+// gud day 14/8/2018
 //
 #include "game.h"
 #include "Framework\console.h"
@@ -15,6 +15,7 @@ double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
 int Choice;
+char mapStorage[100][100];
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -76,13 +77,13 @@ void shutdown( void )
 //--------------------------------------------------------------
 void getInput( void )
 {    
-    g_abKeyPressed[K_UP]     = isKeyPressed(VK_UP);
-    g_abKeyPressed[K_DOWN]   = isKeyPressed(VK_DOWN);
-    g_abKeyPressed[K_LEFT]   = isKeyPressed(VK_LEFT);
-    g_abKeyPressed[K_RIGHT]  = isKeyPressed(VK_RIGHT);
+    g_abKeyPressed[K_UP]     = isKeyPressed(VK_UP)    || isKeyPressed(0x57); // "WASD" added
+    g_abKeyPressed[K_DOWN]   = isKeyPressed(VK_DOWN)  || isKeyPressed(0x53);
+    g_abKeyPressed[K_LEFT]   = isKeyPressed(VK_LEFT)  || isKeyPressed(0x41);
+    g_abKeyPressed[K_RIGHT]  = isKeyPressed(VK_RIGHT) || isKeyPressed(0x44);
     g_abKeyPressed[K_SPACE]  = isKeyPressed(VK_SPACE);
     g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
-	g_abKeyPressed[K_ENTER] = isKeyPressed(VK_RETURN);
+	g_abKeyPressed[K_ENTER]  = isKeyPressed(VK_RETURN);
 }
 
 //--------------------------------------------------------------
@@ -185,29 +186,44 @@ void moveCharacter()
 
     // Updating the location of the character based on the key press
     // providing a beep sound whenver we shift the character
-if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0)
+if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 2) // FOR "UP"
 {
 	//Beep(1440, 30);
-	g_sChar.m_cLocation.Y--;
-	bSomethingHappened = true;
+	if (mapStorage[(int)g_sChar.m_cLocation.Y - 2][(int)g_sChar.m_cLocation.X] != '#')
+	{
+		g_sChar.m_cLocation.Y--;
+		bSomethingHappened = true;
+	}
 }
-if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0)
+if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0 && g_sChar.m_cLocation.X < 79) // FOR "LEFT"
 {
 	//Beep(1440, 30);
-	g_sChar.m_cLocation.X--;
-	bSomethingHappened = true;
+	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 1] != '#')
+	{
+		g_sChar.m_cLocation.X--;
+		bSomethingHappened = true;
+	}
+
 }
-if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
+if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 7) // FOR "DOWN"
 {
 	//Beep(1440, 30);
-	g_sChar.m_cLocation.Y++;
-	bSomethingHappened = true;
+	if (mapStorage[(int)g_sChar.m_cLocation.Y][(int)g_sChar.m_cLocation.X] != '#')
+	{
+		g_sChar.m_cLocation.Y++;
+		bSomethingHappened = true;
+	}
+
 }
-if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
+if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 42) // FOR "RIGHT"
 {
 	//Beep(1440, 30);
-	g_sChar.m_cLocation.X++;
-	bSomethingHappened = true;
+	if (mapStorage[(int)g_sChar.m_cLocation.Y-1][(int)g_sChar.m_cLocation.X+1] != '#')
+	{
+		g_sChar.m_cLocation.X++;
+		bSomethingHappened = true;
+	}
+
 }
 if (g_abKeyPressed[K_SPACE])
 {
@@ -247,7 +263,7 @@ void renderGameMenu()  // renders the game menu	//TODO: change this to game menu
 	c.X = g_Console.getConsoleSize().X / 2 - 9;
 	g_Console.writeToBuffer(c, "Exit Game (noooo pls :<)", 0x09);
 
-	c.Y = c.Y / 3 + 5;
+	c.Y = c.Y / 3 + 7; // ARROW LOCATION
 	c.X = g_Console.getConsoleSize().X / 2 - 12;
 
 	switch (Choice) {
@@ -275,7 +291,6 @@ void renderMap()
 {
 
 	COORD c;
-	char mapStorage[30][80];
 	string line;
 	ifstream myfile("maze.txt");
 	int i = 0;
@@ -286,7 +301,7 @@ void renderMap()
 		{
 			for (int j = 0; j < 80; j++)
 			{
-				mapStorage[i][j] = line[j];
+				mapStorage[i][j] = line[j]; // WHY IS IT Y,X
 			}
 			i++;
 		}
