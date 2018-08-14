@@ -181,7 +181,7 @@ void movingTrap() {
 
 	bool bChangeDirection = false;
 
-	if (g_dDeltaTime >= 0.01) {
+/*	if (g_dDeltaTime >= 0.01) {
 		if (bChangeDirection == false) {
 			g_sTrap01.m_cLocation.Y -= 1;
 		}
@@ -192,7 +192,7 @@ void movingTrap() {
 	if (g_sTrap01.m_cLocation.Y == 13) {
 		bChangeDirection = true;
 	}
-
+	*/
 }
 void gameplay()            // gameplay logic
 {
@@ -287,11 +287,8 @@ void renderGameMenu()  // renders the game menu	//TODO: change this to game menu
 	c.X = g_Console.getConsoleSize().X / 2 - 9;
 	g_Console.writeToBuffer(c, "Exit Game (noooo pls :<)", 0x03);
 
-<<<<<<< HEAD
-	c.Y = c.Y / 3 + 7;
-=======
 	c.Y = c.Y / 3 + 7; // ARROW LOCATION
->>>>>>> 12a890eed1859eaab44773ba5e5e0ef1ee97a064
+
 	c.X = g_Console.getConsoleSize().X / 2 - 12;
 
 	switch (Choice) {
