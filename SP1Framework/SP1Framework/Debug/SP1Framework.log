@@ -1,4 +1,9 @@
 ﻿  game.cpp
+<<<<<<< HEAD
 c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(183): warning C4700: uninitialized local variable 'bChangeDirection' used
   SP1Framework.vcxproj -> C:\Users\Chew Hui Feng\Desktop\Studio Project sem 1\SP1Framework\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.exe
   SP1Framework.vcxproj -> C:\Users\Chew Hui Feng\Desktop\Studio Project sem 1\SP1Framework\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.pdb (Full PDB)
+=======
+  SP1Framework.vcxproj -> D:\Users\l533\Desktop\New folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.exe
+  SP1Framework.vcxproj -> D:\Users\l533\Desktop\New folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.pdb (Full PDB)
+>>>>>>> 12a890eed1859eaab44773ba5e5e0ef1ee97a064
