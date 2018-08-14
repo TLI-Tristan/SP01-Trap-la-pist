@@ -6,11 +6,15 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <fstream>
+#include <string>
+
+using namespace std;
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
-int choice;
+int Choice;
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -18,7 +22,7 @@ EGAMESTATES g_eGameState = S_GAMEMENU;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 // Console object
-Console g_Console(80, 25, "SP1 Framework");
+Console g_Console(120, 35, "SP1 Framework");
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
@@ -41,7 +45,7 @@ void init( void )
     g_sChar.m_bActive = true;
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
-	choice = 1;
+	Choice = 1;
 }
 
 //--------------------------------------------------------------
@@ -135,26 +139,18 @@ void render()
 void gameMenu()    // waits for user choice
 {
 	bool bSelection = false;
-	/*if (g_abKeyPressed[K_DOWN])
-	{
-		choice = 2;
-	}
-	if (g_abKeyPressed[K_UP])
-	{
-		choice = 1 ;
-	}*/
 
 	if (g_dBounceTime > g_dElapsedTime)
 		return;
 
-	if (g_abKeyPressed[K_DOWN] && choice != 3)
+	if (g_abKeyPressed[K_DOWN] && Choice != 3)
 	{
-		choice += 1;
+		Choice += 1;
 		bSelection = true;
 	}
-	if (g_abKeyPressed[K_UP] && choice != 1)
+	if (g_abKeyPressed[K_UP] && Choice != 1)
 	{
-		choice -= 1;
+		Choice -= 1;
 		bSelection = true;
 	}
 
@@ -164,7 +160,7 @@ void gameMenu()    // waits for user choice
 		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
 	}
 	if (g_abKeyPressed[K_ENTER]) { // Press enter to start game
-		switch (choice) {
+		switch (Choice) {
 		case 1: g_eGameState = S_GAME;
 			break;
 		case 3: g_bQuitGame = true;
@@ -189,79 +185,79 @@ void moveCharacter()
 
     // Updating the location of the character based on the key press
     // providing a beep sound whenver we shift the character
-    if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0)
-    {
-        //Beep(1440, 30);
-        g_sChar.m_cLocation.Y--;
-        bSomethingHappened = true;
-    }
-    if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0)
-    {
-        //Beep(1440, 30);
-        g_sChar.m_cLocation.X--;
-        bSomethingHappened = true;
-    }
-    if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
-    {
-        //Beep(1440, 30);
-        g_sChar.m_cLocation.Y++;
-        bSomethingHappened = true;
-    }
-    if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
-    {
-        //Beep(1440, 30);
-        g_sChar.m_cLocation.X++;
-        bSomethingHappened = true;
-    }
-    if (g_abKeyPressed[K_SPACE])
-    {
-        g_sChar.m_bActive = !g_sChar.m_bActive;
-        bSomethingHappened = true;
-    }
+if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0)
+{
+	//Beep(1440, 30);
+	g_sChar.m_cLocation.Y--;
+	bSomethingHappened = true;
+}
+if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0)
+{
+	//Beep(1440, 30);
+	g_sChar.m_cLocation.X--;
+	bSomethingHappened = true;
+}
+if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
+{
+	//Beep(1440, 30);
+	g_sChar.m_cLocation.Y++;
+	bSomethingHappened = true;
+}
+if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
+{
+	//Beep(1440, 30);
+	g_sChar.m_cLocation.X++;
+	bSomethingHappened = true;
+}
+if (g_abKeyPressed[K_SPACE])
+{
+	g_sChar.m_bActive = !g_sChar.m_bActive;
+	bSomethingHappened = true;
+}
 
-    if (bSomethingHappened)
-    {
-        // set the bounce time to some time in the future to prevent accidental triggers
-        g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
-    }
+if (bSomethingHappened)
+{
+	// set the bounce time to some time in the future to prevent accidental triggers
+	g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
+}
 }
 void processUserInput()
 {
-    // quits the game if player hits the escape key
-    if (g_abKeyPressed[K_ESCAPE])
-        g_bQuitGame = true;    
+	// quits the game if player hits the escape key
+	if (g_abKeyPressed[K_ESCAPE])
+		g_bQuitGame = true;
 }
 
 void clearScreen()
 {
-    // Clears the buffer with this colour attribute
-    g_Console.clearBuffer(0x1F);
+	// Clears the buffer with this colour attribute
+	g_Console.clearBuffer(0x00);
 }
 
 void renderGameMenu()  // renders the game menu	//TODO: change this to game menu
 {
-    COORD c = g_Console.getConsoleSize();
-    c.Y /= 3;
-    c.X = c.X / 2 - 9;
-    g_Console.writeToBuffer(c, "Normal Mode (more like ez)", 0x03);
-    c.Y += 1;
-    c.X = g_Console.getConsoleSize().X / 2 - 9;
-    g_Console.writeToBuffer(c, "HELL MODE (HEHEHEHAHAHOHO)", 0x09);
-    c.Y += 1;
-    c.X = g_Console.getConsoleSize().X / 2 - 9;
-    g_Console.writeToBuffer(c, "Exit Game (noooo pls :<)", 0x09);
+	COORD c = g_Console.getConsoleSize();
+	c.Y /= 3;
+	c.X = c.X / 2 - 9;
+	g_Console.writeToBuffer(c, "Normal Mode (more like ez)", 0x03);
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "HELL MODE (HEHEHEHAHAHOHO)", 0x09);
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "Exit Game (noooo pls :<)", 0x09);
 
 	c.Y = c.Y / 3 + 5;
 	c.X = g_Console.getConsoleSize().X / 2 - 12;
 
-	switch (choice) {
+	switch (Choice) {
 	case 1: g_Console.writeToBuffer(c, "->", 0x03);
 		break;
-	case 2: c.Y += 1; 
-		
+	case 2: c.Y += 1;
+
 		g_Console.writeToBuffer(c, "->", 0x03);
 		break;
-	case 3: c.Y += 2; 
+	case 3: c.Y += 2;
 		g_Console.writeToBuffer(c, "->", 0x03);
 		break;
 	}
@@ -271,26 +267,87 @@ void renderGameMenu()  // renders the game menu	//TODO: change this to game menu
 
 void renderGame()
 {
-    renderMap();        // renders the map to the buffer first
-    renderCharacter();  // renders the character into the buffer
+	renderMap();        // renders the map to the buffer first
+	renderCharacter();  // renders the character into the buffer
 }
 
 void renderMap()
 {
-    // Set up sample colours, and output shadings
-    const WORD colors[] = {
-        0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
-        0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6
-    };
 
-    COORD c;
-    for (int i = 0; i < 12; ++i)
-    {
-        c.X = 5 * i;
-        c.Y = i + 1;
-        colour(colors[i]);
-        g_Console.writeToBuffer(c, " °±²Û", colors[i]);
-    }
+	COORD c;
+	char mapStorage[30][80];
+	string line;
+	ifstream myfile("maze.txt");
+	int i = 0;
+	int pos = 0;
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			for (int j = 0; j < 80; j++)
+			{
+				mapStorage[i][j] = line[j];
+			}
+			i++;
+		}
+		myfile.close();
+	}
+
+
+	for (int k = 0; k < 30; k++) {
+		int pos2 = 0;
+		c.Y = 1 + pos;
+		for (int j = 0; j < 80; j++) {
+			c.X = pos2;
+			if (mapStorage[k][j] == '#') {
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x0);
+			}
+			else if (mapStorage[k][j] == 'S') 
+			{
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x25A1);
+			}
+			else if (mapStorage[k][j] == 'D')
+			{
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0xC);
+			}
+			else if (mapStorage[k][j] == 'E')
+			{
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x25);
+			}
+			else if (mapStorage[k][j] == 'P')
+			{
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x27);
+			}
+			else if (mapStorage[k][j] == 'F')
+			{
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x29);
+			}
+			else if (mapStorage[k][j] == 'T')
+			{
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x10);
+			}
+			else if (mapStorage[k][j] == 'A')
+			{
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x99);
+			}
+			else if (mapStorage[k][j] == 'W')
+			{
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x35);
+			}
+			else if (mapStorage[k][j] == 'C')
+			{
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x18);
+			}
+			else 
+			{
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0xFF);
+			}
+			pos2++;
+		}
+		pos++;
+	}
+
+
 }
 
 void renderCharacter()
