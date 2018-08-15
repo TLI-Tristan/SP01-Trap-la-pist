@@ -13,6 +13,7 @@ using namespace std;
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
+double g_dTrapTime;
 bool    g_abKeyPressed[K_COUNT];
 int Choice;
 char mapStorage[100][100];
@@ -38,6 +39,7 @@ void init( void )
     // Set precision for floating point output
     g_dElapsedTime = 0.0;
     g_dBounceTime = 0.0;
+	g_dTrapTime = 0.0;
 
     // sets the initial state for the game
     g_eGameState = S_GAMEMENU;		//18   13		8
@@ -111,6 +113,7 @@ void update(double dt)
     // get the delta time
     g_dElapsedTime += dt;
     g_dDeltaTime = dt;
+	g_dTrapTime += dt;
 
     switch (g_eGameState)
     {
@@ -183,9 +186,14 @@ int direction = 1;
 
 void movingTrap() {
 
-	if (g_sTrap01.m_cLocation.Y == 13) {
-
+	if (g_sTrap01.m_cLocation.Y == 13 || g_sTrap01.m_cLocation.Y == 18) {
+		direction *= 1;
 	}
+
+	if (g_dTrapTime >= 0.1) {
+		g_sTrap01.m_cLocation.Y += direction;
+		g_dTrapTime = 0.0;
+  }
 
 }
 void gameplay()            // gameplay logic
@@ -335,7 +343,7 @@ void renderMap()
 		for (int j = 0; j < 80; j++) {
 			c.X = pos2;
 			if (mapStorage[k][j] == '#') {
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x0);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x88);
 			}
 			else if (mapStorage[k][j] == 'S') 
 			{
