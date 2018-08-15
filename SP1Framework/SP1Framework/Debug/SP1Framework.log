@@ -1,3 +1,8 @@
 ﻿  game.cpp
+<<<<<<< HEAD
   SP1Framework.vcxproj -> C:\Users\mdirf\Desktop\New folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.exe
   SP1Framework.vcxproj -> C:\Users\mdirf\Desktop\New folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.pdb (Full PDB)
+=======
+  SP1Framework.vcxproj -> D:\Users\L533\Desktop\Studio Project\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.exe
+  SP1Framework.vcxproj -> D:\Users\L533\Desktop\Studio Project\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.pdb (Full PDB)
+>>>>>>> 76b2db011e2a078fb228fe8f2ba8f4662d571f0f

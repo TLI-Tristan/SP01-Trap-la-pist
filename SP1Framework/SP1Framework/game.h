@@ -60,5 +60,6 @@ void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
 void renderMovingTrap();
+void renderUI();
 
 #endif // _GAME_H

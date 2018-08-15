@@ -1,2 +1,6 @@
 #TargetFrameworkVersion=v4.0:PlatformToolSet=v140:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit:WindowsTargetPlatformVersion=8.1
+<<<<<<< HEAD
 Debug|Win32|C:\Users\mdirf\Desktop\New folder\SP01-Trap-la-pist\SP1Framework\|
+=======
+Debug|Win32|D:\Users\L533\Desktop\Studio Project\SP01-Trap-la-pist\SP1Framework\|
+>>>>>>> 76b2db011e2a078fb228fe8f2ba8f4662d571f0f
