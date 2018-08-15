@@ -2,28 +2,28 @@
 #TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT     #                                      E
 #                                       #                                      #
 #                                       ##################################DD####
-#                                  EEEEE#SFG  S   S   E   S   S   E      EEE SS#
+#                                  EEEEE#SG   S   S   E   S   S   E      EEE SS#
 #                                      DC S    E   S   S   E   S   E S         #
 #                                      D  SSSSSSSSSSSSSSSSSSSSSSSSSS     S###  #
 #                                  EEEEE#  S     S                       S     #
 #                                       #  SSS S                         S ### #
-#                                       #   S  SSSSSSSEEEEEEEEEEEEEESSSSSS ^^^^#
+#                                       #   S  SSSSSSSEEEEEEEEEEEEEESSSSSS     #
 #               PP                      #S     S G  PPPPPPPPPPPPPPPPPP     FFFF#
 ################DD#######################F######################################
 #SE                                        #       C      EEEEEEEEEEEEEEEEE S S#
-#SE  E                                  <-F#              E                 S G#
-#W   E       ST       ST                   D E A  A  A    E EEEEEEEEEEEEES  S  #
-#G   E  ST        ST       ST            C D E            E E           S   S  #
-#SE  E                                  <-F#              E E           S      #
+#SE  E                                    F#              E                 S G#
+#W   E       A        A                    D E A  A  A    E EEEEEEEEEEEEES  S  #
+#G   E  A         A        A             C D E            E E           S   S  #
+#SE  E                                    F#              E E           S      #
 #SE                                        ################D####################
 #########################################F##             P#      #   #        P#
-#     S                        <-F##########     #####    #     P#   #         #
-#     S                                          #   #T   #### ###   ##S########
-#     S                                          #   #   T#        C           #
-#     S                        <-F#################  #T   #######    #########S#
+#     S                          F##########     #####    #     P#   #         #
+#     S                                          #####T   #### ###   ##S########
+#     S                                          #####   T#        C           #
+#     S                          F####################T   #######    #########S#
 ##############   #####################################   T#P    S    #P        #
 ##############   #####################################    ##################   #
 ##############   ###########P      S                          S     P#######   #
 ##############   ###########    S     S           C        S     S  D          #
-                          W#P      S                          S     P###########
+S                         W#P      S                          S     P###########
 ################################################################################

@@ -16,7 +16,9 @@ enum EKEYS
 	K_ESCAPE,
 	K_SPACE,
 	K_COUNT,
-	K_ENTER
+	K_ENTER,
+	K_RESET,
+	K_HOME
 };
 
 // Enumeration for the different screen states
@@ -51,5 +53,5 @@ void renderMap();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
-
+void renderUI(); //UI stuff when game starts
 #endif // _GAME_H
