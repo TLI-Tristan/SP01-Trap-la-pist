@@ -1,3 +1,24 @@
-﻿  game.cpp
-  SP1Framework.vcxproj -> C:\Users\Chew Hui Feng\Desktop\Studio Project sem 1\SP1Framework\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.exe
-  SP1Framework.vcxproj -> C:\Users\Chew Hui Feng\Desktop\Studio Project sem 1\SP1Framework\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.pdb (Full PDB)
+﻿  main.cpp
+  game.cpp
+c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(22): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(22): error C2146: syntax error: missing ';' before identifier 'g_sTrap01'
+c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(49): error C2065: 'g_sTrap01': undeclared identifier
+c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(49): error C2228: left of '.m_bActive' must have class/struct/union
+  c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(49): note: type is 'unknown-type'
+c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(50): error C2065: 'g_sTrap01': undeclared identifier
+c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(50): error C2228: left of '.m_cLocation' must have class/struct/union
+  c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(50): note: type is 'unknown-type'
+c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(50): error C2228: left of '.X' must have class/struct/union
+c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(51): error C2065: 'g_sTrap01': undeclared identifier
+c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(51): error C2228: left of '.m_cLocation' must have class/struct/union
+  c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(51): note: type is 'unknown-type'
+c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(51): error C2228: left of '.Y' must have class/struct/union
+c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(186): error C2065: 'g_sTrap01': undeclared identifier
+c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(186): error C2228: left of '.m_cLocation' must have class/struct/union
+  c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(186): note: type is 'unknown-type'
+c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(186): error C2228: left of '.Y' must have class/struct/union
+c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(307): error C3861: 'renderMovingTrap': identifier not found
+c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(393): error C2065: 'g_sTrap01': undeclared identifier
+c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(393): error C2228: left of '.m_cLocation' must have class/struct/union
+  c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\sp01-trap-la-pist\sp1framework\sp1framework\game.cpp(393): note: type is 'unknown-type'
+  Generating Code...
