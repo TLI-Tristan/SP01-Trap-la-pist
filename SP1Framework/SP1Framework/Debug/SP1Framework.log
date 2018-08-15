@@ -1,3 +1,10 @@
 ﻿  game.cpp
-  SP1Framework.vcxproj -> D:\Users\L533\Desktop\Studio Project\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.exe
-  SP1Framework.vcxproj -> D:\Users\L533\Desktop\Studio Project\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.pdb (Full PDB)
+  Generating Code...
+  Compiling...
+  main.cpp
+  collisioncheck.cpp
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  GameAsset.cpp
+  SP1Framework.vcxproj -> C:\Users\Chew Hui Feng\Desktop\Studio Project sem 1\SP1Framework\New folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.exe
+  SP1Framework.vcxproj -> C:\Users\Chew Hui Feng\Desktop\Studio Project sem 1\SP1Framework\New folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.pdb (Full PDB)

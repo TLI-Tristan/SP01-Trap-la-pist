@@ -2,6 +2,8 @@
 #define _GAME_H
 
 #include "Framework\timer.h"
+#include "collisioncheck.h"
+#include "GameAsset.h"
 
 extern CStopWatch g_swTimer;
 extern bool g_bQuitGame;
@@ -33,14 +35,6 @@ struct SGameChar
     COORD m_cLocation;
     bool  m_bActive;
 };
-
-struct SGameTrap
-{
-	COORD m_cLocation;
-	bool  m_bActive;
-	bool m_cDirection;
-};
-
 
 void init        ( void );      // initialize your variables, allocate memory, etc
 void getInput    ( void );      // get input from player
