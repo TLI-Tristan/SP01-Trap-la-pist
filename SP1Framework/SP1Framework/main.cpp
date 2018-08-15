@@ -20,7 +20,7 @@ int main( void )
 {
     init();      // initialize your variables
     mainLoop();  // main loop
-    shutdown();  // do clean up, if any. free memory.
+    shutdown();  // do clean up, if any. free memory.gzozr thrrt
     
     return 0;
 }
