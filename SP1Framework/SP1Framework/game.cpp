@@ -336,31 +336,31 @@ void renderMap()
 		for (int j = 0; j < 80; j++) {
 			c.X = pos2;
 			if (mapStorage[k][j] == '#') {
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x0);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x88);
 			}
-			else if (mapStorage[k][j] == 'S') 
+			else if (mapStorage[k][j] == 'S')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x25A1);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x40);
 			}
 			else if (mapStorage[k][j] == 'D')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0xC);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0xF0);
 			}
 			else if (mapStorage[k][j] == 'E')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x25);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x4C);
 			}
 			else if (mapStorage[k][j] == 'P')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x27);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x21);
 			}
 			else if (mapStorage[k][j] == 'F')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x29);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0xE);
 			}
 			else if (mapStorage[k][j] == 'T')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x10);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x3);
 			}
 			else if (mapStorage[k][j] == 'A')
 			{
@@ -374,14 +374,19 @@ void renderMap()
 			{
 				g_Console.writeToBuffer(c, mapStorage[k][j], 0x18);
 			}
-			else 
+			else if (mapStorage[k][j] == 'G')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0xFF);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0xE0);
+			}
+			else
+			{
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x00);
 			}
 			pos2++;
 		}
 		pos++;
 	}
+
 
 
 }
@@ -407,21 +412,21 @@ void renderCharacter()
 
 void renderFramerate()
 {
-    COORD c;
-    // displays the framerate
-    std::ostringstream ss;
-    ss << std::fixed << std::setprecision(3);
-    ss << 1.0 / g_dDeltaTime << "fps";
-    c.X = g_Console.getConsoleSize().X - 9;
-    c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str());
+	COORD c;
+	// displays the framerate
+	std::ostringstream ss;
+	ss << std::fixed << std::setprecision(3);
+	ss << "Frame Rate: " << 1.0 / g_dDeltaTime << "fps";
+	c.X = g_Console.getConsoleSize().X; //THIS IS WHERE THE FRAMERATE THINGY AT Initial TOP RIGHT SHOWS UP
+	c.Y = g_Console.getConsoleSize().Y - 2;
+	g_Console.writeToBuffer(c, ss.str());
 
-    // displays the elapsed time
-    ss.str("");
-    ss << g_dElapsedTime << "secs";
-    c.X = 0;
-    c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str(), 0x59);
+	// displays the elapsed time
+	ss.str("");
+	ss << "Elapsed Time: " << g_dElapsedTime << "secs";
+	c.X = 0;
+	c.Y = g_Console.getConsoleSize().Y - 2;
+	g_Console.writeToBuffer(c, ss.str());
 }
 
 void renderUI()
