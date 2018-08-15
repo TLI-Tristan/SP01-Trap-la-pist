@@ -55,5 +55,7 @@ void renderFramerate();     // renders debug information, frame rate, elapsed ti
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
 void renderMovingTrap();
 void renderUI();
+void RespawnAt();			// Defines where to spawn at
+void renderLives();			// Changes number of lives displayed
 
 #endif // _GAME_H
