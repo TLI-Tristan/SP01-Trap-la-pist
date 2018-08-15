@@ -185,8 +185,6 @@ void gameMenu()    // waits for user choice
 
 int direction = 1;
 
-
-
 void gameplay()            // gameplay logic
 {
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
@@ -506,7 +504,7 @@ void renderCharacter()
 {
     // Draw the location of the character
     WORD charColor = 0x0C;
-    if (g_sChar.m_bActive)
+    if(g_sChar.m_bActive)
     {
         charColor = 0x0A;
     }
