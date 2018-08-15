@@ -348,7 +348,7 @@ void renderMap()
 			}
 			else if (mapStorage[k][j] == 'E')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x4C);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0xC0);
 			}
 			else if (mapStorage[k][j] == 'P')
 			{
@@ -356,15 +356,15 @@ void renderMap()
 			}
 			else if (mapStorage[k][j] == 'F')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0xE);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0xE0);
 			}
 			else if (mapStorage[k][j] == 'T')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x3);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x30);
 			}
 			else if (mapStorage[k][j] == 'A')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x99);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x90);
 			}
 			else if (mapStorage[k][j] == 'W')
 			{
@@ -372,7 +372,7 @@ void renderMap()
 			}
 			else if (mapStorage[k][j] == 'C')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x18);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0xB0);
 			}
 			else if (mapStorage[k][j] == 'G')
 			{
