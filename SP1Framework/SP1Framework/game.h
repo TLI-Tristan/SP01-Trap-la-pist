@@ -38,6 +38,7 @@ struct SGameTrap
 {
 	COORD m_cLocation;
 	bool  m_bActive;
+	bool m_cDirection;
 };
 
 

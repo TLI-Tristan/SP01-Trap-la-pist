@@ -176,23 +176,17 @@ void gameMenu()    // waits for user choice
 	}
 
 }
+//moveTrap Global variable
+
+int direction = 1;
+
 
 void movingTrap() {
 
-	bool bChangeDirection = false;
-
-/*	if (g_dDeltaTime >= 0.01) {
-		if (bChangeDirection == false) {
-			g_sTrap01.m_cLocation.Y -= 1;
-		}
-		else {
-			g_sTrap01.m_cLocation.Y += 1;
-		}
-	}
 	if (g_sTrap01.m_cLocation.Y == 13) {
-		bChangeDirection = true;
+
 	}
-	*/
+
 }
 void gameplay()            // gameplay logic
 {
