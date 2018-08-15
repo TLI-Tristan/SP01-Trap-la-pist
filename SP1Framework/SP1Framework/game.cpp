@@ -19,6 +19,7 @@ char mapStorage[100][100];
 
 // Game specific variables here
 SGameChar   g_sChar;
+SGameTrap	g_sTrap01;
 EGAMESTATES g_eGameState = S_GAMEMENU;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
@@ -39,11 +40,16 @@ void init( void )
     g_dBounceTime = 0.0;
 
     // sets the initial state for the game
-    g_eGameState = S_GAMEMENU;
+    g_eGameState = S_GAMEMENU;		//18   13		8
 
-    g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
-    g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
+    g_sChar.m_cLocation.X = 0;
+    g_sChar.m_cLocation.Y = 28;
     g_sChar.m_bActive = true;
+
+	g_sTrap01.m_bActive = true;
+	g_sTrap01.m_cLocation.X = 8;
+	g_sTrap01.m_cLocation.Y = 18;
+
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
 	Choice = 1;
@@ -170,12 +176,24 @@ void gameMenu()    // waits for user choice
 	}
 
 }
+//moveTrap Global variable
 
+int direction = 1;
+
+
+void movingTrap() {
+
+	if (g_sTrap01.m_cLocation.Y == 13) {
+
+	}
+
+}
 void gameplay()            // gameplay logic
 {
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
     moveCharacter();    // moves the character, collision detection, physics, etc
                         // sound can be played here too.
+	movingTrap();
 }
 
 void moveCharacter()
@@ -258,12 +276,13 @@ void renderGameMenu()  // renders the game menu	//TODO: change this to game menu
 	g_Console.writeToBuffer(c, "Normal Mode (more like ez)", 0x03);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 9;
-	g_Console.writeToBuffer(c, "HELL MODE (HEHEHEHAHAHOHO)", 0x09);
+	g_Console.writeToBuffer(c, "HELL MODE (HEHEHEHAHAHOHO)", 0x03);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 9;
-	g_Console.writeToBuffer(c, "Exit Game (noooo pls :<)", 0x09);
+	g_Console.writeToBuffer(c, "Exit Game (noooo pls :<)", 0x03);
 
 	c.Y = c.Y / 3 + 7; // ARROW LOCATION
+
 	c.X = g_Console.getConsoleSize().X / 2 - 12;
 
 	switch (Choice) {
@@ -285,6 +304,7 @@ void renderGame()
 {
 	renderMap();        // renders the map to the buffer first
 	renderCharacter();  // renders the character into the buffer
+	renderMovingTrap();
 }
 
 void renderMap()
@@ -365,6 +385,14 @@ void renderMap()
 
 }
 
+void renderMovingTrap() {
+	WORD trapColor = 0x0C;
+	{
+		trapColor = 0x0A;
+	}
+	g_Console.writeToBuffer(g_sTrap01.m_cLocation, (char)1, trapColor);
+
+}
 void renderCharacter()
 {
     // Draw the location of the character
