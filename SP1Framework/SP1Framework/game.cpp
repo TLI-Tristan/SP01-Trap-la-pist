@@ -305,6 +305,7 @@ void renderGame()
 	renderMap();        // renders the map to the buffer first
 	renderCharacter();  // renders the character into the buffer
 	renderMovingTrap();
+	renderUI();
 }
 
 void renderMap()
@@ -335,35 +336,35 @@ void renderMap()
 		for (int j = 0; j < 80; j++) {
 			c.X = pos2;
 			if (mapStorage[k][j] == '#') {
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x0);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x88);
 			}
-			else if (mapStorage[k][j] == 'S') 
+			else if (mapStorage[k][j] == 'S')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x25A1);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x40);
 			}
 			else if (mapStorage[k][j] == 'D')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0xC);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0xF0);
 			}
 			else if (mapStorage[k][j] == 'E')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x25);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0xC0);
 			}
 			else if (mapStorage[k][j] == 'P')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x27);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x21);
 			}
 			else if (mapStorage[k][j] == 'F')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x29);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0xE0);
 			}
 			else if (mapStorage[k][j] == 'T')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x10);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x30);
 			}
 			else if (mapStorage[k][j] == 'A')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x99);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x90);
 			}
 			else if (mapStorage[k][j] == 'W')
 			{
@@ -371,16 +372,21 @@ void renderMap()
 			}
 			else if (mapStorage[k][j] == 'C')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x18);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0xB0);
 			}
-			else 
+			else if (mapStorage[k][j] == 'G')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0xFF);
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0xE0);
+			}
+			else
+			{
+				g_Console.writeToBuffer(c, mapStorage[k][j], 0x00);
 			}
 			pos2++;
 		}
 		pos++;
 	}
+
 
 
 }
@@ -406,21 +412,218 @@ void renderCharacter()
 
 void renderFramerate()
 {
-    COORD c;
-    // displays the framerate
-    std::ostringstream ss;
-    ss << std::fixed << std::setprecision(3);
-    ss << 1.0 / g_dDeltaTime << "fps";
-    c.X = g_Console.getConsoleSize().X - 9;
-    c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str());
+	COORD c;
+	// displays the framerate
+	std::ostringstream ss;
+	ss << std::fixed << std::setprecision(3);
+	ss << "Frame Rate: " << 1.0 / g_dDeltaTime << "fps";
+	c.X = g_Console.getConsoleSize().X; //THIS IS WHERE THE FRAMERATE THINGY AT Initial TOP RIGHT SHOWS UP
+	c.Y = g_Console.getConsoleSize().Y - 2;
+	g_Console.writeToBuffer(c, ss.str());
 
-    // displays the elapsed time
-    ss.str("");
-    ss << g_dElapsedTime << "secs";
-    c.X = 0;
-    c.Y = 0;
-    g_Console.writeToBuffer(c, ss.str(), 0x59);
+	// displays the elapsed time
+	ss.str("");
+	ss << "Elapsed Time: " << g_dElapsedTime << "secs";
+	c.X = 0;
+	c.Y = g_Console.getConsoleSize().Y - 2;
+	g_Console.writeToBuffer(c, ss.str());
+}
+
+void renderUI()
+{
+	COORD c;
+	std::ostringstream ss;
+	//Displays the Level at the Right
+	ss.str("");
+	ss << "Level: " << "<<" << "sth" << ">>"; //Change to Level with buttons
+	c.X = g_Console.getConsoleSize().X + 100;
+	c.Y = 0;
+	g_Console.writeToBuffer(c, ss.str(), 0xC);
+
+	//Displays Lives at the Right
+	ss.str("");
+	ss << "Lives: " << (char)3 << (char)3 << (char)3; //Change to Number of Lives
+	c.X = g_Console.getConsoleSize().X + 100;
+	c.Y = 1;
+	g_Console.writeToBuffer(c, ss.str(), 0xC);
+
+	//Displays Difficulty at the Right
+	ss.str("");
+	ss << "Difficulty: " << "Hell"; //Change to Difficulty
+	c.X = g_Console.getConsoleSize().X + 100;
+	c.Y = 2;
+	g_Console.writeToBuffer(c, ss.str(), 0xC);
+
+	//Displays Legend at the Right
+	ss.str("");
+	ss << "Legend:"; //Add boxes
+	c.X = g_Console.getConsoleSize().X + 100;
+	c.Y = 4;
+	g_Console.writeToBuffer(c, ss.str(), 0xE0);
+
+	//Displays Legends1 at the Right
+	ss.str("");
+	ss << "#";
+	c.X = g_Console.getConsoleSize().X + 100;
+	c.Y = 5;
+	g_Console.writeToBuffer(c, ss.str(), 0x11);
+	ss.str(" - Walls");
+	c.X = g_Console.getConsoleSize().X + 101;
+	c.Y = 5;
+	g_Console.writeToBuffer(c, ss.str());
+	//Displays Legends2 at the Right
+	ss.str("");
+	ss << (char)2 << " - Character";
+	c.X = g_Console.getConsoleSize().X + 100;
+	c.Y = 6;
+	g_Console.writeToBuffer(c, ss.str());
+	//Displays Legends3 at the Right
+	ss.str("");
+	ss << "F";
+	c.X = g_Console.getConsoleSize().X + 100;
+	c.Y = 7;
+	g_Console.writeToBuffer(c, ss.str(), 0xE0);
+	ss.str("");
+	ss << " - Fan";
+	c.X = g_Console.getConsoleSize().X + 101;
+	c.Y = 7;
+	g_Console.writeToBuffer(c, ss.str());
+	//Displays Legends4 at the Right
+	ss.str("");
+	ss << "W";
+	c.X = g_Console.getConsoleSize().X + 100;
+	c.Y = 8;
+	g_Console.writeToBuffer(c, ss.str(), 0x35);
+	ss.str("");
+	ss << " - Fan Switch";
+	c.X = g_Console.getConsoleSize().X + 101;
+	c.Y = 8;
+	g_Console.writeToBuffer(c, ss.str());
+	//Displays Legends5 at the Right
+	ss.str("");
+	ss << "S";
+	c.X = g_Console.getConsoleSize().X + 100;
+	c.Y = 9;
+	g_Console.writeToBuffer(c, ss.str(), 0x40);
+	ss.str("");
+	ss << " - Spike";
+	c.X = g_Console.getConsoleSize().X + 101;
+	c.Y = 9;
+	g_Console.writeToBuffer(c, ss.str());
+	//Displays Legends6 at the Right
+	ss.str("");
+	ss << "A";
+	c.X = g_Console.getConsoleSize().X + 100;
+	c.Y = 10;
+	g_Console.writeToBuffer(c, ss.str(), 0x90);
+	ss.str("");
+	ss << " - Saw Trap";
+	c.X = g_Console.getConsoleSize().X + 101;
+	c.Y = 10;
+	g_Console.writeToBuffer(c, ss.str());
+	//Displays Legends7 at the Right
+	ss.str("");
+	ss << "T";
+	c.X = g_Console.getConsoleSize().X + 100;
+	c.Y = 11;
+	g_Console.writeToBuffer(c, ss.str(), 0x30);
+	ss.str("");
+	ss << " - Falling Trap";
+	c.X = g_Console.getConsoleSize().X + 101;
+	c.Y = 11;
+	g_Console.writeToBuffer(c, ss.str());
+	//Displays Legends8 at the Right
+	ss.str("");
+	ss << "G";
+	c.X = g_Console.getConsoleSize().X + 100;
+	c.Y = 12;
+	g_Console.writeToBuffer(c, ss.str(), 0xE0);
+	ss.str("");
+	ss << " - Generator";
+	c.X = g_Console.getConsoleSize().X + 101;
+	c.Y = 12;
+	g_Console.writeToBuffer(c, ss.str());
+	//Displays Legends9 at the Right
+	ss.str("");
+	ss << "E";
+	c.X = g_Console.getConsoleSize().X + 100;
+	c.Y = 13;
+	g_Console.writeToBuffer(c, ss.str(), 0xC0);
+	ss.str("");
+	ss << " - Electric Floor";
+	c.X = g_Console.getConsoleSize().X + 101;
+	c.Y = 13;
+	g_Console.writeToBuffer(c, ss.str());
+	//Displays Legends10 at the Right
+	ss.str("");
+	ss << "P";
+	c.X = g_Console.getConsoleSize().X + 100;
+	c.Y = 14;
+	g_Console.writeToBuffer(c, ss.str(), 0x21);
+	ss.str("");
+	ss << " - Pressure Plate";
+	c.X = g_Console.getConsoleSize().X + 101;
+	c.Y = 14;
+	g_Console.writeToBuffer(c, ss.str());
+	//Displays Legends11 at the Right
+	ss.str("");
+	ss << "D";
+	c.X = g_Console.getConsoleSize().X + 100;
+	c.Y = 15;
+	g_Console.writeToBuffer(c, ss.str(), 0xF0);
+	ss.str("");
+	ss << " - Door";
+	c.X = g_Console.getConsoleSize().X + 101;
+	c.Y = 15;
+	g_Console.writeToBuffer(c, ss.str());
+	//Displays Legends12 at the Right
+	ss.str("");
+	ss << "C";
+	c.X = g_Console.getConsoleSize().X + 100;
+	c.Y = 16;
+	g_Console.writeToBuffer(c, ss.str(), 0xB0);
+	ss.str("");
+	ss << " - Checkpoint";
+	c.X = g_Console.getConsoleSize().X + 101;
+	c.Y = 16;
+	g_Console.writeToBuffer(c, ss.str());
+	//Displays Reset and Home Button at the Right
+	ss.str("");
+	ss << "Reset"; //Program in the buttons
+	c.X = g_Console.getConsoleSize().X + 100;
+	c.Y = 18;
+	g_Console.writeToBuffer(c, ss.str(), 0xE0);
+
+	ss.str("");
+	ss << "Home"; //Program in the buttons
+	c.X = g_Console.getConsoleSize().X + 115;
+	c.Y = 18;
+	g_Console.writeToBuffer(c, ss.str(), 0xE0);
+
+	//Displays instructions1 at the Bottom
+	ss.str("");
+	ss << "WASD and arrowkeys - Move";
+	c.X = 50;
+	c.Y = g_Console.getConsoleSize().Y - 2;
+	g_Console.writeToBuffer(c, ss.str());
+	//Displays instructions2 at the Bottom
+	ss.str("");
+	ss << "R - Reset(lose a life)";
+	c.X = 50;
+	c.Y = g_Console.getConsoleSize().Y - 1;
+	g_Console.writeToBuffer(c, ss.str());
+	//Displays instructions3 at the Bottom
+	ss.str("");
+	ss << "ESC - Quit game";
+	c.X = 80;
+	c.Y = g_Console.getConsoleSize().Y - 2;
+	g_Console.writeToBuffer(c, ss.str());
+	//Displays instructions4 at the Bottom
+	ss.str("");
+	ss << "H - Exit to Home Screen";
+	c.X = 80;
+	c.Y = g_Console.getConsoleSize().Y - 1;
+	g_Console.writeToBuffer(c, ss.str());
 }
 void renderToScreen()
 {
