@@ -413,12 +413,10 @@ void renderGame()
 {
 	renderMap();        // renders the map to the buffer first
 	renderCharacter();  // renders the character into the buffer
-<<<<<<< HEAD
+
 	renderMovingTrap(g_Console);
-=======
-	renderMovingTrap();
+	//renderMovingTrap();
 	renderLives();
->>>>>>> pr/14
 	renderUI();
 	collisionChecker(g_sChar);
 }
