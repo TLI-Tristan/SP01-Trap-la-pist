@@ -17,12 +17,16 @@ double g_dTrapTime;
 bool    g_abKeyPressed[K_COUNT];
 int Choice;
 char mapStorage[100][100];
+int NewX = 0, NewY = 28;
+int NumberDIE = 0;
+std::string NumberOfLives;
 
 // Game specific variables here
 SGameChar   g_sChar;
-SGameTrap	g_sTrap01;
 EGAMESTATES g_eGameState = S_GAMEMENU;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
+int FanBlowLeftDelay = 0, FanBlowRightDelay = 0, FanBlowUpDelay = 0, FanBlowDownDelay = 0;
+int AllowedMaxFanDelay = 3; // maximum frames allowed for delay CAN BE EDITED
 
 // Console object
 Console g_Console(120, 35, "SP1 Framework");
@@ -48,9 +52,7 @@ void init( void )
     g_sChar.m_cLocation.Y = 28;
     g_sChar.m_bActive = true;
 
-	g_sTrap01.m_bActive = true;
-	g_sTrap01.m_cLocation.X = 8;
-	g_sTrap01.m_cLocation.Y = 18;
+	initGameAsset();
 
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
@@ -183,25 +185,12 @@ void gameMenu()    // waits for user choice
 
 int direction = 1;
 
-
-void movingTrap() {
-
-	if (g_sTrap01.m_cLocation.Y == 13 || g_sTrap01.m_cLocation.Y == 18) {
-		direction *= 1;
-	}
-
-	if (g_dTrapTime >= 0.1) {
-		g_sTrap01.m_cLocation.Y += direction;
-		g_dTrapTime = 0.0;
-  }
-
-}
 void gameplay()            // gameplay logic
 {
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
     moveCharacter();    // moves the character, collision detection, physics, etc
                         // sound can be played here too.
-	movingTrap();
+	movingTrap(direction,g_dTrapTime);
 }
 
 void moveCharacter()
@@ -257,10 +246,114 @@ if (g_abKeyPressed[K_SPACE])
 	bSomethingHappened = true;
 }
 
+if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 9] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 8] == 'N' ||
+	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 7] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 6] == 'N' ||
+	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 5] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 4] == 'N' ||
+	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 3] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 2] == 'N' ||
+	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 1] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'N')
+{
+	if (FanBlowLeftDelay < AllowedMaxFanDelay) // left fan
+	{
+		FanBlowLeftDelay++;
+	}
+	else if (FanBlowLeftDelay == AllowedMaxFanDelay && mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 1] != '#')
+	{
+		if (g_sChar.m_cLocation.X > 0 && g_sChar.m_cLocation.X < 79)
+		{
+			g_sChar.m_cLocation.X--;
+		}
+		FanBlowLeftDelay = 0;
+	}
+
+}
+
+if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 9] == 'M' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 8] == 'M' ||
+	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 7] == 'M' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 6] == 'M' ||
+	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 5] == 'M' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 4] == 'M' ||
+	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 3] == 'M' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 2] == 'M' ||
+	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 1] == 'M' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'M')
+{
+	if (FanBlowRightDelay < AllowedMaxFanDelay) // right fan
+	{
+		FanBlowRightDelay++;
+	}
+	else if (FanBlowRightDelay == AllowedMaxFanDelay)
+	{
+		if (g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 41 && mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 1] != '#')
+		{
+			g_sChar.m_cLocation.X++;
+		}
+		FanBlowRightDelay = 0;
+	}
+
+}
+
+if (mapStorage[(int)g_sChar.m_cLocation.Y + 9][(int)g_sChar.m_cLocation.X] == 'Z' || mapStorage[(int)g_sChar.m_cLocation.Y + 8][(int)g_sChar.m_cLocation.X] == 'Z' ||
+	mapStorage[(int)g_sChar.m_cLocation.Y + 7][(int)g_sChar.m_cLocation.X] == 'Z' || mapStorage[(int)g_sChar.m_cLocation.Y + 6][(int)g_sChar.m_cLocation.X] == 'Z' ||
+	mapStorage[(int)g_sChar.m_cLocation.Y + 5][(int)g_sChar.m_cLocation.X] == 'Z' || mapStorage[(int)g_sChar.m_cLocation.Y + 4][(int)g_sChar.m_cLocation.X] == 'Z' ||
+	mapStorage[(int)g_sChar.m_cLocation.Y + 3][(int)g_sChar.m_cLocation.X] == 'Z' || mapStorage[(int)g_sChar.m_cLocation.Y + 2][(int)g_sChar.m_cLocation.X] == 'Z' ||
+	mapStorage[(int)g_sChar.m_cLocation.Y + 1][(int)g_sChar.m_cLocation.X] == 'Z' || mapStorage[(int)g_sChar.m_cLocation.Y][(int)g_sChar.m_cLocation.X] == 'Z')
+{
+	if (FanBlowUpDelay < AllowedMaxFanDelay) // up fan // unable to push player if player is IN UP fan
+	{
+		FanBlowUpDelay++;
+	}
+	else if (FanBlowUpDelay == AllowedMaxFanDelay)
+	{
+		if (g_sChar.m_cLocation.Y > 2 && mapStorage[(int)g_sChar.m_cLocation.Y - 2][(int)g_sChar.m_cLocation.X] != '#')
+		{
+			g_sChar.m_cLocation.Y--;
+		}
+		FanBlowUpDelay = 0;
+	}
+
+}
+
+if (mapStorage[(int)g_sChar.m_cLocation.Y - 9][(int)g_sChar.m_cLocation.X] == 'X' || mapStorage[(int)g_sChar.m_cLocation.Y - 8][(int)g_sChar.m_cLocation.X] == 'X' ||
+	mapStorage[(int)g_sChar.m_cLocation.Y - 7][(int)g_sChar.m_cLocation.X] == 'X' || mapStorage[(int)g_sChar.m_cLocation.Y - 6][(int)g_sChar.m_cLocation.X] == 'X' ||
+	mapStorage[(int)g_sChar.m_cLocation.Y - 5][(int)g_sChar.m_cLocation.X] == 'X' || mapStorage[(int)g_sChar.m_cLocation.Y - 4][(int)g_sChar.m_cLocation.X] == 'X' ||
+	mapStorage[(int)g_sChar.m_cLocation.Y - 3][(int)g_sChar.m_cLocation.X] == 'X' || mapStorage[(int)g_sChar.m_cLocation.Y - 2][(int)g_sChar.m_cLocation.X] == 'X' ||
+	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'X' || mapStorage[(int)g_sChar.m_cLocation.Y][(int)g_sChar.m_cLocation.X] == 'X')
+{
+	if (FanBlowDownDelay < AllowedMaxFanDelay) // down fan
+	{
+		FanBlowDownDelay++;
+	}
+	else if (FanBlowDownDelay == AllowedMaxFanDelay)
+	{
+		if (g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 7 && mapStorage[(int)g_sChar.m_cLocation.Y][(int)g_sChar.m_cLocation.X] != '#')
+		{
+			g_sChar.m_cLocation.Y++;
+		}
+		FanBlowDownDelay = 0;
+	}
+
+}
+
+
 if (bSomethingHappened)
 {
 	// set the bounce time to some time in the future to prevent accidental triggers
 	g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
+
+
+	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'S') //TRAP "SPIKE" 'y-1'
+	{
+		RespawnAt();
+		NumberDIE++;
+	}
+
+	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'E') //TRAP "ELECTRIC FLOOR" 'y-1'
+	{
+		RespawnAt();
+		NumberDIE++;
+	}
+
+	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'C') // CHECKPOINT
+	{
+		NewX = g_sChar.m_cLocation.X;
+		NewY = g_sChar.m_cLocation.Y;
+	}
 }
 }
 void processUserInput()
@@ -268,6 +361,12 @@ void processUserInput()
 	// quits the game if player hits the escape key
 	if (g_abKeyPressed[K_ESCAPE])
 		g_bQuitGame = true;
+}
+
+void RespawnAt()
+{
+	g_sChar.m_cLocation.X = NewX;
+	g_sChar.m_cLocation.Y = NewY;
 }
 
 void clearScreen()
@@ -312,8 +411,12 @@ void renderGame()
 {
 	renderMap();        // renders the map to the buffer first
 	renderCharacter();  // renders the character into the buffer
-	renderMovingTrap();
+
+	renderMovingTrap(g_Console);
+	//renderMovingTrap();
+	renderLives();
 	renderUI();
+	collisionChecker(g_sChar);
 }
 
 void renderMap()
@@ -362,9 +465,9 @@ void renderMap()
 			{
 				g_Console.writeToBuffer(c, mapStorage[k][j], 0x21);
 			}
-			else if (mapStorage[k][j] == 'F')
+			else if (mapStorage[k][j] == 'Z' || mapStorage[k][j] == 'X' || mapStorage[k][j] == 'N' || mapStorage[k][j] == 'M')
 			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0xE0);
+				g_Console.writeToBuffer(c, 'F', 0xE0);
 			}
 			else if (mapStorage[k][j] == 'T')
 			{
@@ -394,28 +497,41 @@ void renderMap()
 		}
 		pos++;
 	}
-
-
-
 }
 
-void renderMovingTrap() {
-	WORD trapColor = 0x0C;
-	{
-		trapColor = 0x0A;
-	}
-	g_Console.writeToBuffer(g_sTrap01.m_cLocation, (char)1, trapColor);
 
-}
 void renderCharacter()
 {
     // Draw the location of the character
     WORD charColor = 0x0C;
-    if (g_sChar.m_bActive)
+    if(g_sChar.m_bActive)
     {
         charColor = 0x0A;
     }
     g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, charColor);
+}
+
+void renderLives()
+{
+	if (NumberDIE == 0)
+	{
+		NumberOfLives = (char)3;
+		NumberOfLives += (char)3;
+		NumberOfLives += (char)3;
+	}
+	else if (NumberDIE == 1)
+	{
+		NumberOfLives = (char)3;
+		NumberOfLives += (char)3;
+	}
+	else if (NumberDIE == 2)
+	{
+		NumberOfLives = (char)3;
+	}
+	else
+	{
+		NumberOfLives = "Dead"; // to add: "restart level"
+	}
 }
 
 void renderFramerate()
@@ -450,7 +566,7 @@ void renderUI()
 
 	//Displays Lives at the Right
 	ss.str("");
-	ss << "Lives: " << (char)3 << (char)3 << (char)3; //Change to Number of Lives
+	ss << "Lives: " << NumberOfLives; //Change to Number of Lives
 	c.X = g_Console.getConsoleSize().X + 100;
 	c.Y = 1;
 	g_Console.writeToBuffer(c, ss.str(), 0xC);
@@ -632,7 +748,19 @@ void renderUI()
 	c.X = 80;
 	c.Y = g_Console.getConsoleSize().Y - 1;
 	g_Console.writeToBuffer(c, ss.str());
-}
+
+	std::ostringstream cd, ra;
+	cd << "(" << g_sChar.m_cLocation.X << ", " << g_sChar.m_cLocation.Y << ")"; //coord
+	c.X = g_Console.getConsoleSize().X - 20;
+	c.Y = 25;
+	g_Console.writeToBuffer(c, cd.str(), 0x0f);
+
+	ra << "Respawn at: (" << NewX << ", " << NewY << ")"; //coord
+	c.X = g_Console.getConsoleSize().X - 25;
+	c.Y = 29;
+	g_Console.writeToBuffer(c, ra.str(), 0x0f);
+
+} // added coord display (for testing purposes)
 void renderToScreen()
 {
     // Writes the buffer to the console, hence you will see what you have written

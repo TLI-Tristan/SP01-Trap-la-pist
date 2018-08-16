@@ -2,6 +2,8 @@
 #define _GAME_H
 
 #include "Framework\timer.h"
+#include "collisioncheck.h"
+#include "GameAsset.h"
 
 extern CStopWatch g_swTimer;
 extern bool g_bQuitGame;
@@ -34,14 +36,6 @@ struct SGameChar
     bool  m_bActive;
 };
 
-struct SGameTrap
-{
-	COORD m_cLocation;
-	bool  m_bActive;
-	bool m_cDirection;
-};
-
-
 void init        ( void );      // initialize your variables, allocate memory, etc
 void getInput    ( void );      // get input from player
 void update      ( double dt ); // update the game and the state of the game
@@ -59,7 +53,9 @@ void renderMap();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
-void renderMovingTrap();
+//void renderMovingTrap();
 void renderUI();
+void RespawnAt();			// Defines where to spawn at
+void renderLives();			// Changes number of lives displayed
 
 #endif // _GAME_H
