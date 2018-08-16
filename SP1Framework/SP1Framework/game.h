@@ -17,8 +17,11 @@ enum EKEYS
 	K_RIGHT,
 	K_ESCAPE,
 	K_SPACE,
-	K_COUNT,
-	K_ENTER
+	K_RESET,
+	K_HOME,
+	K_PAUSE,
+	K_ENTER,
+	K_COUNT
 };
 
 // Enumeration for the different screen states
@@ -26,7 +29,10 @@ enum EGAMESTATES
 {
     S_GAMEMENU,
     S_GAME,
-    S_COUNT,
+	S_PAUSE,
+	S_DEFEAT,
+	S_VICTORY,
+    S_COUNT
 };
 
 // struct for the game character
@@ -58,5 +64,10 @@ void renderUI();
 void RespawnAt();			// Defines where to spawn at
 void renderLives();			// Changes number of lives displayed
 void renderCollisionCheck();
+void renderDefeatScreen();  // Changes to defeat screen when die
+//void renderVictoryScreen(); // Changes to victory screen when win
+//void renderPauseScreen(); // Changes to pause screen when paused
+
+
 
 #endif // _GAME_H
