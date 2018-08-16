@@ -18,10 +18,10 @@ bool    g_abKeyPressed[K_COUNT];
 int Choice;
 char mapStorage[100][100];
 int NewX = 1, NewY = 28;
-std::string NumberOfLives;
+string NumberOfLives;
 int LevelSelected = 0;
 int ChangesArrayOne[50] = { 0, };
-
+int PauseCounter;
 bool bHitSomething;
 int test1, test2;
 // Game specific variables here
@@ -120,6 +120,9 @@ void getInput( void )
     g_abKeyPressed[K_SPACE]  = isKeyPressed(VK_SPACE);
     g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
 	g_abKeyPressed[K_ENTER]  = isKeyPressed(VK_RETURN);
+	g_abKeyPressed[K_RESET] = isKeyPressed(0x52);
+	g_abKeyPressed[K_HOME] = isKeyPressed(0x48);
+	//g_abKeyPressed[K_PAUSE] = isKeyPressed(0x50);
 }
 
 //--------------------------------------------------------------
@@ -168,7 +171,8 @@ void render()
             break;
         case S_GAME: renderGame();
             break;
-			
+		case S_DEFEAT: renderDefeatScreen();
+			break;
     }
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
     renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
@@ -176,6 +180,7 @@ void render()
 
 void gameMenu()    // waits for user choice
 {
+	g_eGameState = S_GAMEMENU;
 	bool bSelection = false;
 
 	if (g_dBounceTime > g_dElapsedTime)
@@ -206,7 +211,6 @@ void gameMenu()    // waits for user choice
 			break;
 		}
 	}
-
 }
 //moveTrap Global variable
 
@@ -283,6 +287,30 @@ if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize(
 if (g_abKeyPressed[K_SPACE])
 {
 	g_sChar.m_bActive = !g_sChar.m_bActive;
+	bSomethingHappened = true;
+}
+
+//if (g_abKeyPressed[K_PAUSE])
+//{
+//	PauseCounter++;
+//	if (PauseCounter == 1)
+//	{
+//		g_dElapsedTime = 0;
+//	}
+//	else if (PauseCounter == 2)
+//	{
+//
+//		PauseCounter = 0; //resets PauseCounter
+//	}
+//}
+if (g_abKeyPressed[K_RESET])
+{
+	bSomethingHappened = true;
+}
+
+if (g_abKeyPressed[K_HOME])
+{
+	gameMenu();
 	bSomethingHappened = true;
 }
 
@@ -392,6 +420,7 @@ if (bSomethingHappened)
 	{
 		playerKilled(g_sChar);
 		respawnAt(g_sChar);
+		playerKilled(g_sChar);
 	}
 
 	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'E') //TRAP "ELECTRIC FLOOR" 'y-1'
@@ -459,7 +488,6 @@ if (bSomethingHappened)
 		{
 			ChangesArrayOne[12] = 1;
 		}		
-
 	}
 }
 }
@@ -479,7 +507,38 @@ void clearScreen()
 void renderGameMenu()  // renders the game menu	//TODO: change this to game menu
 {
 	COORD c = g_Console.getConsoleSize();
-	c.Y /= 3;
+	COORD d;
+	string line;
+	ifstream myfile("Name.txt");
+	char NameStorage[100][100];
+	int i = 0, j = 0;
+	int pos = 0;
+	int p = 0;
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			d.Y = i;
+			p = 0;
+			for (j = 0; j < 120; j++)
+			{
+				NameStorage[i][j] = line[j]; // WHY IS IT Y,X
+				d.X = p;
+				if (NameStorage[i][j] == '#')
+				{
+					g_Console.writeToBuffer(d, NameStorage[i][j], 0x33);
+				}
+				else
+				{
+					g_Console.writeToBuffer(d, NameStorage[i][j], 0x03);
+				}
+				p++;
+			}
+			i++;
+		}
+		myfile.close();
+	}
+	c.Y = 17;
 	c.X = c.X / 2 - 9;
 	g_Console.writeToBuffer(c, "Normal Mode (more like ez)", 0x03);
 	c.Y += 1;
@@ -488,23 +547,88 @@ void renderGameMenu()  // renders the game menu	//TODO: change this to game menu
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 9;
 	g_Console.writeToBuffer(c, "Exit Game (noooo pls :<)", 0x03);
-
-	c.Y = c.Y / 3 + 7; // ARROW LOCATION
-
+	c.Y = 16 + Choice; //Arrow location
 	c.X = g_Console.getConsoleSize().X / 2 - 12;
+	g_Console.writeToBuffer(c, "->", 0x03);
+}
 
-	switch (Choice) {
-	case 1: g_Console.writeToBuffer(c, "->", 0x03);
-		break;
-	case 2: c.Y += 1;
-		g_Console.writeToBuffer(c, "->", 0x03);
-		break;
-	case 3: c.Y += 2;
-		g_Console.writeToBuffer(c, "->", 0x03);
-		break;
+//void renderPauseScreen()
+//{
+//	COORD c = g_Console.getConsoleSize();
+//	COORD d;
+//	string line;
+//	ifstream myfile("Pause.txt");
+//	char NameStorage[100][100];
+//	int i = 0, j = 0;
+//	int pos = 0;
+//	int p = 0;
+//	if (myfile.is_open())
+//	{
+//		while (getline(myfile, line))
+//		{
+//			d.Y = i;
+//			p = 0;
+//			for (j = 0; j < 120; j++)
+//			{
+//				NameStorage[i][j] = line[j]; // WHY IS IT Y,X
+//				d.X = p;
+//				if (NameStorage[i][j] == '#') {
+//					g_Console.writeToBuffer(d, NameStorage[i][j], 0x44);
+//				}
+//				else
+//				{
+//					g_Console.writeToBuffer(d, NameStorage[i][j], 0x04);
+//				}
+//				p++;
+//			}
+//			i++;
+//		}
+//		if (g_abKeyPressed[K_HOME])
+//		{
+//			gameMenu();
+//			NumberDIE = 0;
+//		}
+//		myfile.close();
+//	}
+//}
+
+void renderDefeatScreen()
+{
+	COORD c = g_Console.getConsoleSize();
+	COORD d;
+	string line;
+	ifstream myfile("Defeat.txt");
+	char NameStorage[100][100];
+	int i = 0, j = 0;
+	int pos = 0;
+	int p = 0;
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			d.Y = i;
+			p = 0;
+			for (j = 0; j < 120; j++)
+			{
+				NameStorage[i][j] = line[j]; // WHY IS IT Y,X
+				d.X = p;
+				if (NameStorage[i][j] == '#') {
+					g_Console.writeToBuffer(d, NameStorage[i][j], 0x44);
+				}
+				else
+				{
+					g_Console.writeToBuffer(d, NameStorage[i][j], 0x04);
+				}
+				p++;
+			}
+			i++;
+		}
+		if (g_abKeyPressed[K_HOME])
+		{
+			gameMenu();
+		}
+		myfile.close();
 	}
-
-
 }
 
 void renderGame()
@@ -694,7 +818,7 @@ void renderLives()
 	}
 	else
 	{
-		NumberOfLives = "Dead"; // to add: "restart level"
+		g_eGameState = S_DEFEAT;
 	}
 }
 
