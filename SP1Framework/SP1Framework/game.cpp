@@ -13,6 +13,7 @@ using namespace std;
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
+double g_dTrapTime;
 bool    g_abKeyPressed[K_COUNT];
 int Choice;
 char mapStorage[100][100];
@@ -22,7 +23,6 @@ std::string NumberOfLives;
 
 // Game specific variables here
 SGameChar   g_sChar;
-SGameTrap	g_sTrap01;
 EGAMESTATES g_eGameState = S_GAMEMENU;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 int FanBlowLeftDelay = 0, FanBlowRightDelay = 0, FanBlowUpDelay = 0, FanBlowDownDelay = 0;
@@ -43,6 +43,7 @@ void init( void )
     // Set precision for floating point output
     g_dElapsedTime = 0.0;
     g_dBounceTime = 0.0;
+	g_dTrapTime = 0.0;
 
     // sets the initial state for the game
     g_eGameState = S_GAMEMENU;		//18   13		8
@@ -51,9 +52,7 @@ void init( void )
     g_sChar.m_cLocation.Y = 28;
     g_sChar.m_bActive = true;
 
-	g_sTrap01.m_bActive = true;
-	g_sTrap01.m_cLocation.X = 8;
-	g_sTrap01.m_cLocation.Y = 18;
+	initGameAsset();
 
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
@@ -116,6 +115,7 @@ void update(double dt)
     // get the delta time
     g_dElapsedTime += dt;
     g_dDeltaTime = dt;
+	g_dTrapTime += dt;
 
     switch (g_eGameState)
     {
@@ -185,20 +185,12 @@ void gameMenu()    // waits for user choice
 
 int direction = 1;
 
-
-void movingTrap() {
-
-	if (g_sTrap01.m_cLocation.Y == 13) {
-
-	}
-
-}
 void gameplay()            // gameplay logic
 {
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
     moveCharacter();    // moves the character, collision detection, physics, etc
                         // sound can be played here too.
-	movingTrap();
+	movingTrap(direction,g_dTrapTime);
 }
 
 void moveCharacter()
@@ -419,9 +411,12 @@ void renderGame()
 {
 	renderMap();        // renders the map to the buffer first
 	renderCharacter();  // renders the character into the buffer
-	renderMovingTrap();
+
+	renderMovingTrap(g_Console);
+	//renderMovingTrap();
 	renderLives();
 	renderUI();
+	collisionChecker(g_sChar);
 }
 
 void renderMap()
@@ -504,19 +499,12 @@ void renderMap()
 	}
 }
 
-void renderMovingTrap() {
-	WORD trapColor = 0x0C;
-	{
-		trapColor = 0x0A;
-	}
-	g_Console.writeToBuffer(g_sTrap01.m_cLocation, (char)1, trapColor);
 
-}
 void renderCharacter()
 {
     // Draw the location of the character
     WORD charColor = 0x0C;
-    if (g_sChar.m_bActive)
+    if(g_sChar.m_bActive)
     {
         charColor = 0x0A;
     }
