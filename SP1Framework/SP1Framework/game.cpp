@@ -543,8 +543,6 @@ void renderMap()
 	string line;
 	
 	int i = 0;
-	int pos = 0;
-
 	if (LevelSelected == 1) // FOR LEVEL ONE
 	{
 		for (int i = 0; i < 50; i++) // FOR LEVEL ONE
