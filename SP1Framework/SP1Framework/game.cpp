@@ -539,9 +539,7 @@ void renderMap()
 {
 
 	COORD c;
-<<<<<<< HEAD
 	int pos = 0;
-=======
 	string line;
 	
 	int i = 0;
@@ -549,20 +547,6 @@ void renderMap()
 
 	if (LevelSelected == 1) // FOR LEVEL ONE
 	{
-		ifstream myfile("maze.txt");
-		if (myfile.is_open())
-		{
-			while (getline(myfile, line))
-			{
-				for (int j = 0; j < 80; j++)
-				{
-					mapStorage[i][j] = line[j]; // WHY IS IT Y,X
-				}
-				i++;
-			}
-			myfile.close();
-		}
-
 		for (int i = 0; i < 50; i++) // FOR LEVEL ONE
 		{
 			if (ChangesArrayOne[0] == 1)
@@ -633,8 +617,6 @@ void renderMap()
 		
 
 	}
-	
->>>>>>> pr/17
 
 	for (int k = 0; k < 30; k++) {
 		int pos2 = 0;
