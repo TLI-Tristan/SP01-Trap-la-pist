@@ -18,7 +18,6 @@ bool    g_abKeyPressed[K_COUNT];
 int Choice;
 char mapStorage[100][100];
 int NewX = 1, NewY = 28;
-int NumberDIE = 0;
 std::string NumberOfLives;
 int LevelSelected = 0;
 int ChangesArrayOne[50] = { 0, };
@@ -55,6 +54,9 @@ void init( void )
     g_sChar.m_cLocation.X = 1;
     g_sChar.m_cLocation.Y = 28;
     g_sChar.m_bActive = true;
+	g_sChar.m_iLife = 3;
+	g_sChar.m_iRespawnX = 1;
+	g_sChar.m_iRespawnY = 28;
 
 	initGameAsset();
 
@@ -63,9 +65,6 @@ void init( void )
 	Choice = 1;
 
 	bHitSomething = false;
-
-	test1 = 0;
-	test2 = 0;
 
 	string line;
 	ifstream myfile("maze.txt");
@@ -201,11 +200,6 @@ void gameMenu()    // waits for user choice
 	if (g_abKeyPressed[K_ENTER]) { // Press enter to start game
 		switch (Choice) {
 		case 1: LevelSelected = 1; // set LevelSelected values (for hard-coding level assets)
-
-			g_sChar.m_cLocation.X = 0; // initialise player for Level 1 (Easy Mode)
-			g_sChar.m_cLocation.Y = 28;
-			g_sChar.m_bActive = true;
-
 			g_eGameState = S_GAME;
 			break;
 		case 3: g_bQuitGame = true;
@@ -223,7 +217,7 @@ void gameplay()            // gameplay logic
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
     moveCharacter();    // moves the character, collision detection, physics, etc
                         // sound can be played here too.
-	collisionChecker(g_sChar, mapStorage, bHitSomething, NumberDIE);
+	collisionChecker(g_sChar, mapStorage, bHitSomething);
 	movingTrap(direction, g_dTrapTime);
 }
 
@@ -396,21 +390,19 @@ if (bSomethingHappened)
 
 	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'S' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == '!') //TRAP "SPIKE" 'y-1'
 	{
-		playerKilled(NumberDIE, g_sChar);
-		//RespawnAt();
-		//NumberDIE++;
+		playerKilled(g_sChar);
+		respawnAt(g_sChar);
 	}
 
 	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'E') //TRAP "ELECTRIC FLOOR" 'y-1'
 	{
-		RespawnAt();
-		NumberDIE++;
+		playerKilled(g_sChar);
+		respawnAt(g_sChar);
 	}
 
 	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'C') // CHECKPOINT
 	{
-		NewX = g_sChar.m_cLocation.X;
-		NewY = g_sChar.m_cLocation.Y;
+		newRespawnLocation(g_sChar);
 	}
 
 	if (LevelSelected == 1) // FOR FIRST LEVEL
@@ -477,14 +469,6 @@ void processUserInput()
 	if (g_abKeyPressed[K_ESCAPE])
 		g_bQuitGame = true;
 }
-
-void RespawnAt()
-{
-	g_sChar.m_cLocation.X = NewX;
-	g_sChar.m_cLocation.Y = NewY;
-}
-
-
 
 void clearScreen()
 {
@@ -693,18 +677,18 @@ void renderCharacter()
 
 void renderLives()
 {
-	if (NumberDIE == 0)
+	if (g_sChar.m_iLife == 3)
 	{
 		NumberOfLives = (char)3;
 		NumberOfLives += (char)3;
 		NumberOfLives += (char)3;
 	}
-	else if (NumberDIE == 1)
+	else if (g_sChar.m_iLife == 2)
 	{
 		NumberOfLives = (char)3;
 		NumberOfLives += (char)3;
 	}
-	else if (NumberDIE == 2)
+	else if (g_sChar.m_iLife == 1)
 	{
 		NumberOfLives = (char)3;
 	}
@@ -935,10 +919,10 @@ void renderUI()
 	c.Y = 25;
 	g_Console.writeToBuffer(c, cd.str(), 0x0f);
 
-	ra << "Respawn at: (" << NewX << ", " << NewY << ")"; //coord
-	c.X = g_Console.getConsoleSize().X - 25;
-	c.Y = 29;
-	g_Console.writeToBuffer(c, ra.str(), 0x0f);
+	//ra << "Respawn at: (" << NewX << ", " << NewY << ")"; //coord
+	//c.X = g_Console.getConsoleSize().X - 25;
+	//c.Y = 29;
+	//g_Console.writeToBuffer(c, ra.str(), 0x0f);
 
 } // added coord display (for testing purposes)
 

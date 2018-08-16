@@ -2,7 +2,7 @@
 #define _GAME_H
 
 #include "Framework\timer.h"
-#include "collisioncheck.h"
+#include "collision.h"
 #include "GameAsset.h"
 
 extern CStopWatch g_swTimer;
@@ -34,6 +34,9 @@ struct SGameChar
 {
     COORD m_cLocation;
     bool  m_bActive;
+	int m_iLife;
+	int m_iRespawnX;
+	int m_iRespawnY;
 };
 
 void init        ( void );      // initialize your variables, allocate memory, etc
@@ -54,8 +57,7 @@ void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
 //void renderMovingTrap();
-void renderUI();
-void RespawnAt();			// Defines where to spawn at
+void renderUI();			// Defines where to spawn at
 void renderLives();			// Changes number of lives displayed
 void renderCollisionCheck();
 
