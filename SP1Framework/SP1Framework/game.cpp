@@ -17,10 +17,12 @@ double g_dTrapTime;
 bool    g_abKeyPressed[K_COUNT];
 int Choice;
 char mapStorage[100][100];
-int NewX = 0, NewY = 28;
+int NewX = 1, NewY = 28;
 int NumberDIE = 0;
 std::string NumberOfLives;
 
+bool bHitSomething;
+int test1, test2;
 // Game specific variables here
 SGameChar   g_sChar;
 EGAMESTATES g_eGameState = S_GAMEMENU;
@@ -46,9 +48,9 @@ void init( void )
 	g_dTrapTime = 0.0;
 
     // sets the initial state for the game
-    g_eGameState = S_GAMEMENU;		//18   13		8
+    g_eGameState = S_GAMEMENU;		
 
-    g_sChar.m_cLocation.X = 0;
+    g_sChar.m_cLocation.X = 1;
     g_sChar.m_cLocation.Y = 28;
     g_sChar.m_bActive = true;
 
@@ -57,6 +59,29 @@ void init( void )
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
 	Choice = 1;
+
+	bHitSomething = false;
+
+	test1 = 0;
+	test2 = 0;
+
+	string line;
+	ifstream myfile("maze.txt");
+	int i = 0;
+	int pos = 0;
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			for (int j = 0; j < 80; j++)
+			{
+				mapStorage[i][j] = line[j]; // WHY IS IT Y,X
+			}
+			i++;
+		}
+		myfile.close();
+	}
+
 }
 
 //--------------------------------------------------------------
@@ -190,7 +215,8 @@ void gameplay()            // gameplay logic
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
     moveCharacter();    // moves the character, collision detection, physics, etc
                         // sound can be played here too.
-	movingTrap(direction,g_dTrapTime);
+	collisionChecker(g_sChar, mapStorage, bHitSomething, NumberDIE);
+	movingTrap(direction, g_dTrapTime);
 }
 
 void moveCharacter()
@@ -339,8 +365,9 @@ if (bSomethingHappened)
 
 	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'S') //TRAP "SPIKE" 'y-1'
 	{
-		RespawnAt();
-		NumberDIE++;
+		playerKilled(NumberDIE, g_sChar);
+		//RespawnAt();
+		//NumberDIE++;
 	}
 
 	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'E') //TRAP "ELECTRIC FLOOR" 'y-1'
@@ -368,6 +395,8 @@ void RespawnAt()
 	g_sChar.m_cLocation.X = NewX;
 	g_sChar.m_cLocation.Y = NewY;
 }
+
+
 
 void clearScreen()
 {
@@ -409,37 +438,21 @@ void renderGameMenu()  // renders the game menu	//TODO: change this to game menu
 
 void renderGame()
 {
+	renderCollisionCheck();
 	renderMap();        // renders the map to the buffer first
 	renderCharacter();  // renders the character into the buffer
 
 	renderMovingTrap(g_Console);
-	//renderMovingTrap();
 	renderLives();
 	renderUI();
-	collisionChecker(g_sChar);
+	
 }
 
 void renderMap()
 {
 
 	COORD c;
-	string line;
-	ifstream myfile("maze.txt");
-	int i = 0;
 	int pos = 0;
-	if (myfile.is_open())
-	{
-		while (getline(myfile, line))
-		{
-			for (int j = 0; j < 80; j++)
-			{
-				mapStorage[i][j] = line[j]; // WHY IS IT Y,X
-			}
-			i++;
-		}
-		myfile.close();
-	}
-
 
 	for (int k = 0; k < 30; k++) {
 		int pos2 = 0;
@@ -452,6 +465,7 @@ void renderMap()
 			else if (mapStorage[k][j] == 'S')
 			{
 				g_Console.writeToBuffer(c, mapStorage[k][j], 0x40);
+
 			}
 			else if (mapStorage[k][j] == 'D')
 			{
@@ -761,6 +775,24 @@ void renderUI()
 	g_Console.writeToBuffer(c, ra.str(), 0x0f);
 
 } // added coord display (for testing purposes)
+
+void renderCollisionCheck() {
+
+	COORD c;
+	c.X = g_Console.getConsoleSize().X + 80;
+	c.Y = 0;
+
+	if (bHitSomething == false) {
+		g_Console.writeToBuffer(c, "No collision", 0xC);
+	}
+	if (bHitSomething == true) {
+	
+		g_Console.writeToBuffer(c, "COLLISION DETECTED", 0xC);
+		bHitSomething = false;
+		
+	}
+}
+
 void renderToScreen()
 {
     // Writes the buffer to the console, hence you will see what you have written

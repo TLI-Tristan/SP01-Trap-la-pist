@@ -10,7 +10,7 @@ struct _CollisionLocation {
 	bool bCollisionCheck;
 };
 
-void collisionChecker(struct SGameChar &playerInfo);
-
+void collisionChecker(struct SGameChar &playerInfo, char map[100][100], bool &bHitSomething, int &DeathCount);
+void playerKilled(int &DeathCount, struct SGameChar &playerInfo);
 
 #endif

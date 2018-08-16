@@ -57,5 +57,6 @@ void renderToScreen();      // dump the contents of the buffer to the screen, on
 void renderUI();
 void RespawnAt();			// Defines where to spawn at
 void renderLives();			// Changes number of lives displayed
+void renderCollisionCheck();
 
 #endif // _GAME_H
