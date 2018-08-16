@@ -1,8 +1,5 @@
 ﻿  game.cpp
-<<<<<<< HEAD
+  LINK : C:\Users\Chew Hui Feng\Desktop\Studio Project sem 1\SP1Framework\New folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.exe not found or not built by the last incremental link; performing full link
+timer.obj : warning LNK4020: a type record in 'c:\users\chew hui feng\desktop\studio project sem 1\sp1framework\new folder\sp01-trap-la-pist\sp1framework\sp1framework\debug\vc140.pdb' is corrupted; some symbols and types may not be accessible from the debugger
   SP1Framework.vcxproj -> C:\Users\Chew Hui Feng\Desktop\Studio Project sem 1\SP1Framework\New folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.exe
   SP1Framework.vcxproj -> C:\Users\Chew Hui Feng\Desktop\Studio Project sem 1\SP1Framework\New folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.pdb (Full PDB)
-=======
-  SP1Framework.vcxproj -> D:\Users\l533\Desktop\16.8 New Folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.exe
-  SP1Framework.vcxproj -> D:\Users\l533\Desktop\16.8 New Folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.pdb (Full PDB)
->>>>>>> pr/17
