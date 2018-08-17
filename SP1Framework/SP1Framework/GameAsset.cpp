@@ -1,6 +1,7 @@
 #include "GameAsset.h"
 
 int direction = 1;
+SGameTrap g_fTrap01;
 
 void getMovingTrapPos(bool &bGotTrapPos, char map[100][100], struct SGameTrap g_sMovingTrap[8]) {
 
@@ -23,35 +24,31 @@ void getMovingTrapPos(bool &bGotTrapPos, char map[100][100], struct SGameTrap g_
 void movingTrap(double &trapTime, struct SGameTrap g_sMovingTrap[8]) {
 	//static bool forward = true;
 
-		/*	if (g_sMovingTrap[0].m_cLocation.Y > 13 && forward == true) {
-				if (g_sMovingTrap[0].m_cLocation.Y == 19)
-				{
-					forward = false;
-				}
-					g_sMovingTrap[0].m_cLocation.Y++;
-					map[g_sMovingTrap[0].m_cLocation.Y - 1][g_sMovingTrap[0].m_cLocation.X] = ' ';
-					map[g_sMovingTrap[0].m_cLocation.Y][g_sMovingTrap[0].m_cLocation.X] = 'A';
+	/*	if (g_sMovingTrap[0].m_cLocation.Y > 13 && forward == true) {
+	if (g_sMovingTrap[0].m_cLocation.Y == 19)
+	{
+	forward = false;
+	}
+	g_sMovingTrap[0].m_cLocation.Y++;
+	map[g_sMovingTrap[0].m_cLocation.Y - 1][g_sMovingTrap[0].m_cLocation.X] = ' ';
+	map[g_sMovingTrap[0].m_cLocation.Y][g_sMovingTrap[0].m_cLocation.X] = 'A';
 
-			
-			if (forward == false) {
-				if (g_sMovingTrap[0].m_cLocation.Y >= 14)
-				{
-					forward = true;
-				}
-					g_sMovingTrap[0].m_cLocation.Y -= 1;
-					map[g_sMovingTrap[0].m_cLocation.Y + 1][g_sMovingTrap[0].m_cLocation.X] = ' ';
-					map[g_sMovingTrap[0].m_cLocation.Y][g_sMovingTrap[0].m_cLocation.X] = 'A';
+	if (forward == false) {
+	if (g_sMovingTrap[0].m_cLocation.Y >= 14)
+	{
+	forward = true;
+	}
+	g_sMovingTrap[0].m_cLocation.Y -= 1;
+	map[g_sMovingTrap[0].m_cLocation.Y + 1][g_sMovingTrap[0].m_cLocation.X] = ' ';
+	map[g_sMovingTrap[0].m_cLocation.Y][g_sMovingTrap[0].m_cLocation.X] = 'A';
+	}
+	if (map[playerInfo.m_cLocation.Y][playerInfo.m_cLocation.X] == 'A') {
+	playerInfo.m_iLife -= 1;
+	}*/
 
-			}
-			if (map[playerInfo.m_cLocation.Y][playerInfo.m_cLocation.X] == 'A') {
+	//	map[g_sMovingTrap[0].m_cLocation.X][g_sMovingTrap[0].m_cLocation.Y] = 'A';
 
-				playerInfo.m_iLife -= 1;
-
-			}*/
-
-		//	map[g_sMovingTrap[0].m_cLocation.X][g_sMovingTrap[0].m_cLocation.Y] = 'A';
-			
-		//}
+	//}
 	if (trapTime >= 0.8) {
 
 		for (int i = 0; i < 8; i++) {
@@ -81,4 +78,13 @@ void renderMovingTrap(Console &g_Console, struct SGameTrap g_sMovingTrap[8]) {
 	for (int i = 0; i < 8; i++) {
 		g_Console.writeToBuffer(g_sMovingTrap[i].m_cLocation, "A", trapColor);
 	}
+}
+
+void renderFallingTrap(Console &g_console)
+{
+	WORD trapColor = 0x0C;
+	{
+		trapColor = 0x0A;
+	}
+	g_console.writeToBuffer(g_fTrap01.m_cLocation, (char)4 , trapColor);
 }
