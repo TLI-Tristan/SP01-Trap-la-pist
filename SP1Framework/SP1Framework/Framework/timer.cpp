@@ -92,6 +92,6 @@ void CStopWatch::waitUntil(long long llTime)
         if (llTimeElapsed > llTime)
             return;
         else if (llTime - llTimeElapsed > 1)
-            Sleep(1);
+      Sleep(1);
     }
 }

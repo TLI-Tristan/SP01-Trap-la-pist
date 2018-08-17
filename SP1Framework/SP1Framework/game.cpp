@@ -85,6 +85,7 @@ void init( void )
 
 }
 
+
 //--------------------------------------------------------------
 // Purpose  : Reset before exiting the program
 //            Do your clean up of memory here
@@ -120,8 +121,8 @@ void getInput( void )
     g_abKeyPressed[K_SPACE]  = isKeyPressed(VK_SPACE);
     g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
 	g_abKeyPressed[K_ENTER]  = isKeyPressed(VK_RETURN);
-	g_abKeyPressed[K_RESET] = isKeyPressed(0x52);
-	g_abKeyPressed[K_HOME] = isKeyPressed(0x48);
+	g_abKeyPressed[K_RESET]	 = isKeyPressed(0x52);
+	g_abKeyPressed[K_HOME]	 = isKeyPressed(0x48);
 	//g_abKeyPressed[K_PAUSE] = isKeyPressed(0x50);
 }
 
@@ -206,6 +207,17 @@ void gameMenu()    // waits for user choice
 		switch (Choice) {
 		case 1: LevelSelected = 1; // set LevelSelected values (for hard-coding level assets)
 			g_eGameState = S_GAME;
+
+			g_sChar.m_iLife = 3;			// reset lives
+			g_sChar.m_cLocation.X = 1;		// reset coord x
+			g_sChar.m_cLocation.Y = 28;		// reset coord y
+			newRespawnLocation(g_sChar);	// reset spawn
+
+			for (int i = 0; i < 50; i++)	// reset array
+			{
+				ChangesArrayOne[i] = 0;
+			}
+
 			break;
 		case 3: g_bQuitGame = true;
 			break;
@@ -305,6 +317,8 @@ if (g_abKeyPressed[K_SPACE])
 //}
 if (g_abKeyPressed[K_RESET])
 {
+	g_sChar.m_iLife -= 1;
+	respawnAt(g_sChar);
 	bSomethingHappened = true;
 }
 
@@ -420,7 +434,6 @@ if (bSomethingHappened)
 	{
 		playerKilled(g_sChar);
 		respawnAt(g_sChar);
-		playerKilled(g_sChar);
 	}
 
 	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'E') //TRAP "ELECTRIC FLOOR" 'y-1'
@@ -649,74 +662,93 @@ void renderMap()
 	COORD c;
 	int pos = 0;
 	string line;
-	
-	int i = 0;
-	if (LevelSelected == 1) // FOR LEVEL ONE
-	{
-		for (int i = 0; i < 50; i++) // FOR LEVEL ONE
+
+		for (int k = 0; k < 30; k++) // Reset Traps loop
 		{
+			for (int j = 0; j < 80; j++)
+			{
+				if (mapStorage[k][j] == ',')
+				{
+					mapStorage[k][j] = 'D';
+				}
+				else if (mapStorage[k][j] == '.')
+				{
+					mapStorage[k][j] = 'E';
+				}
+				else if (mapStorage[k][j] == 'b')
+				{
+					mapStorage[k][j] = 'S';
+				}
+			}
+		}
+
+	int i = 0;
+	if (LevelSelected == 1) // FOR LEVEL ONE					// LEGEND:
+	{															// ',' (Comma) = Deactivated Door
+		for (int i = 0; i < 50; i++) // FOR LEVEL ONE			// '.' (FullStop) = Deactivated Electric Floor
+		{														// 'b' (b) = Deactivated Spikes
 			if (ChangesArrayOne[0] == 1)
 			{
 				// add first falling traps
 			}
 			if (ChangesArrayOne[1] == 1)
 			{
-				mapStorage[26][68] = ' '; // opens 1st door
+				mapStorage[26][68] = ','; // opens 1st door
 			}
 			if (ChangesArrayOne[2] == 1)
 			{
-				mapStorage[22][78] = ' '; // removes bottom right spike at 2nd checkpoint room
+				mapStorage[22][78] = 'b'; // removes bottom right spike at 2nd checkpoint room
 			}
 			if (ChangesArrayOne[3] == 1)
 			{
-				mapStorage[23][64] = ' ';// removes bottom left spike at 2nd checkpoint room
+				mapStorage[23][64] = 'b';// removes bottom left spike at 2nd checkpoint room
 			}
 			if (ChangesArrayOne[4] == 1)
 			{
-				mapStorage[20][71] = ' '; // removes top right spike at 2nd checkpoint room
+				mapStorage[20][71] = 'b'; // removes top right spike at 2nd checkpoint room
 			}
 			if (ChangesArrayOne[5] == 1)
 			{
-				mapStorage[17][59] = ' '; // opens 2nd door
+				mapStorage[17][59] = ','; // opens 2nd door
 			}
 			if (ChangesArrayOne[6] == 1)
 			{
-				mapStorage[12][58] = ' ', mapStorage[12][59] = ' ', mapStorage[12][60] = ' ', mapStorage[12][61] = ' ', mapStorage[12][62] = ' ', mapStorage[12][63] = ' ', mapStorage[12][64] = ' ', mapStorage[12][65] = ' ', mapStorage[12][66] = ' ', mapStorage[12][67] = ' ', mapStorage[12][68] = ' ', mapStorage[12][69] = ' ', mapStorage[12][70] = ' ', mapStorage[12][71] = ' ', mapStorage[12][72] = ' ';
-				mapStorage[13][58] = ' ';
-				mapStorage[14][58] = ' ', mapStorage[14][60] = ' ', mapStorage[14][61] = ' ', mapStorage[14][62] = ' ', mapStorage[14][63] = ' ', mapStorage[14][64] = ' ', mapStorage[14][65] = ' ', mapStorage[14][66] = ' ', mapStorage[14][67] = ' ', mapStorage[14][68] = ' ', mapStorage[14][69] = ' ', mapStorage[14][70] = ' ', mapStorage[14][71] = ' ', mapStorage[14][72] = ' ';
-				mapStorage[15][58] = ' ', mapStorage[15][60] = ' ';
-				mapStorage[16][58] = ' ', mapStorage[16][60] = ' '; // turns off rightmost electric floors (Coding order follows map display order)
+				mapStorage[12][58] = '.', mapStorage[12][59] = '.', mapStorage[12][60] = '.', mapStorage[12][61] = '.', mapStorage[12][62] = '.', mapStorage[12][63] = '.', mapStorage[12][64] = '.', mapStorage[12][65] = '.', mapStorage[12][66] = '.', mapStorage[12][67] = '.', mapStorage[12][68] = '.', mapStorage[12][69] = '.', mapStorage[12][70] = '.', mapStorage[12][71] = '.', mapStorage[12][72] = '.';
+				mapStorage[13][58] = '.';
+				mapStorage[14][58] = '.', mapStorage[14][60] = '.', mapStorage[14][61] = '.', mapStorage[14][62] = '.', mapStorage[14][63] = '.', mapStorage[14][64] = '.', mapStorage[14][65] = '.', mapStorage[14][66] = '.', mapStorage[14][67] = '.', mapStorage[14][68] = '.', mapStorage[14][69] = '.', mapStorage[14][70] = '.', mapStorage[14][71] = '.', mapStorage[14][72] = '.';
+				mapStorage[15][58] = '.', mapStorage[15][60] = '.';
+				mapStorage[16][58] = '.', mapStorage[16][60] = '.'; // turns off rightmost electric floors (Coding order follows map display order)
 			}
 			if (ChangesArrayOne[7] == 1)
 			{
-				mapStorage[14][43] = ' ', mapStorage[15][43] = ' '; // opens 3rd door (double door)
+				mapStorage[14][43] = ',', mapStorage[15][43] = ','; // opens 3rd door (double door)
 			}
 			if (ChangesArrayOne[8] == 1)
 			{
-				mapStorage[11][16] = ' ', mapStorage[11][17] = ' '; // opens 4th door (double door)
+				mapStorage[11][16] = ',', mapStorage[11][17] = ','; // opens 4th door (double door)
 			}
 			if (ChangesArrayOne[9] == 1)
 			{
-				mapStorage[12][2] = ' '; // removes electric floor behind moving traps
-				mapStorage[13][2] = ' ', mapStorage[13][5] = ' ';
-										mapStorage[14][5] = ' ';
-										mapStorage[15][5] = ' ';
-				mapStorage[16][2] = ' ', mapStorage[16][5] = ' ';
-				mapStorage[17][2] = ' ';
+				mapStorage[12][2] = '.'; // removes electric floor behind moving traps
+				mapStorage[13][2] = '.', mapStorage[13][5] = '.';
+										mapStorage[14][5] = '.';
+										mapStorage[15][5] = '.';
+				mapStorage[16][2] = '.', mapStorage[16][5] = '.';
+				mapStorage[17][2] = '.';
 			}
 			if (ChangesArrayOne[10] == 1)
 			{
-				mapStorage[5][39] = ' ', mapStorage[6][39] = ' '; // opens 5th door between electric floors (room with row of falling traps) (double door)
+				mapStorage[5][39] = ',', mapStorage[6][39] = ','; // opens 5th door between electric floors (room with row of falling traps) (double door)
 				// add 2nd falling trap
 			}
 			if (ChangesArrayOne[11] == 1)
 			{
-				mapStorage[9][54] = ' ', mapStorage[9][55] = ' ', mapStorage[9][56] = ' ', mapStorage[9][57] = ' ', mapStorage[9][58] = ' ', mapStorage[9][59] = ' ', mapStorage[9][60] = ' ', mapStorage[9][61] = ' ', mapStorage[9][62] = ' ', mapStorage[9][63] = ' ', mapStorage[9][64] = ' ', mapStorage[9][65] = ' ', mapStorage[9][66] = ' ', mapStorage[9][67] = ' ';
-				mapStorage[4][73] = ' ', mapStorage[4][74] = ' ', mapStorage[4][75] = ' '; // removes electric floor near row of pressure plates and infront of final door in 2nd last room
+				mapStorage[9][54] = '.', mapStorage[9][55] = '.', mapStorage[9][56] = '.', mapStorage[9][57] = '.', mapStorage[9][58] = '.', mapStorage[9][59] = '.', mapStorage[9][60] = '.', mapStorage[9][61] = '.', mapStorage[9][62] = '.', mapStorage[9][63] = '.', mapStorage[9][64] = '.', mapStorage[9][65] = '.', mapStorage[9][66] = '.', mapStorage[9][67] = '.';
+				mapStorage[4][73] = '.', mapStorage[4][74] = '.', mapStorage[4][75] = '.'; // removes electric floor near row of pressure plates and infront of final door in 2nd last room
 			}
 			if (ChangesArrayOne[12] == 1)
 			{
-				mapStorage[3][74] = ' ', mapStorage[3][75] = ' '; // opens last door (double door)
+				mapStorage[3][74] = ',', mapStorage[3][75] = ','; // opens last door (double door)
 			}
 
 		}
@@ -1042,6 +1074,12 @@ void renderUI()
 	c.X = g_Console.getConsoleSize().X - 20;
 	c.Y = 25;
 	g_Console.writeToBuffer(c, cd.str(), 0x0f);
+
+	//std::ostringstream fk; // testing wholly phuck
+	//fk << "ChangesArrayOne[1] = (" << ChangesArrayOne[1] << ")"; //coord
+	//c.X = g_Console.getConsoleSize().X - 33;
+	//c.Y = 24;
+	//g_Console.writeToBuffer(c, fk.str(), 0x0f);
 
 	//ra << "Respawn at: (" << NewX << ", " << NewY << ")"; //coord
 	//c.X = g_Console.getConsoleSize().X - 25;
