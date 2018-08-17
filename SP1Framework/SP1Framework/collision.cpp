@@ -23,10 +23,16 @@ void collisionChecker(struct SGameChar &playerInfo, char map[100][100], bool &bH
 		//if (map[Y][X] == '#') {
 
 		//}
-		 if (map[Y][X] == 'S')
+		 if (map[Y][X] == 'S' || map[Y][X] == '!' || map[Y][X] == 'E')
 		{
-			 playerKilled(*&playerInfo);
+			 playerKilled(playerInfo);
+			 respawnAt(playerInfo);
+
 		}
+		 else if (map[Y][X] == 'C')
+		 {
+			 newRespawnLocation(playerInfo);
+		 }
 		//else if (map[Y][X] == 'D')
 		//{
 
@@ -55,10 +61,7 @@ void collisionChecker(struct SGameChar &playerInfo, char map[100][100], bool &bH
 		//{
 
 		//}
-		//else if (map[Y][X] == 'C')
-		//{
-
-		//}
+		
 		//else if (map[Y][X] == 'G')
 		//{
 
@@ -69,9 +72,9 @@ void collisionChecker(struct SGameChar &playerInfo, char map[100][100], bool &bH
 
 
 void playerKilled(struct SGameChar &playerInfo){
-	playerInfo.m_cLocation.X = 1;
-	playerInfo.m_cLocation.Y = 28;
-	playerInfo.m_iLife -= 1;
+     playerInfo.m_cLocation.X = 1;
+	 playerInfo.m_cLocation.Y = 28;
+	 playerInfo.m_iLife -= 1;
 }
 
 void newRespawnLocation(struct SGameChar &playerInfo) {
@@ -86,9 +89,3 @@ void respawnAt(struct SGameChar &playerInfo) {
 	playerInfo.m_cLocation.Y = playerInfo.m_iRespawnY;
 	playerInfo.m_cLocation.X = playerInfo.m_iRespawnX;
 }
-/*
-void RespawnAt()
-{
-	g_sChar.m_cLocation.X = NewX;
-	g_sChar.m_cLocation.Y = NewY;
-}*/

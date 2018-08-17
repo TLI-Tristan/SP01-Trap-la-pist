@@ -305,13 +305,14 @@ if (g_abKeyPressed[K_SPACE])
 //}
 if (g_abKeyPressed[K_RESET])
 {
-	bSomethingHappened = true;
+
 }
 
 if (g_abKeyPressed[K_HOME])
 {
 	gameMenu();
-	bSomethingHappened = true;
+	g_sChar.m_iLife = 3;
+	
 }
 
 if (/*mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 29] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 28] == 'N' ||
@@ -414,25 +415,6 @@ if (bSomethingHappened)
 {
 	// set the bounce time to some time in the future to prevent accidental triggers
 	g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
-
-
-	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'S' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == '!') //TRAP "SPIKE" 'y-1'
-	{
-		playerKilled(g_sChar);
-		respawnAt(g_sChar);
-		playerKilled(g_sChar);
-	}
-
-	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'E') //TRAP "ELECTRIC FLOOR" 'y-1'
-	{
-		playerKilled(g_sChar);
-		respawnAt(g_sChar);
-	}
-
-	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'C') // CHECKPOINT
-	{
-		newRespawnLocation(g_sChar);
-	}
 
 	if (LevelSelected == 1) // FOR FIRST LEVEL
 	{
