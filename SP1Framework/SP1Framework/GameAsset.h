@@ -8,6 +8,8 @@ using namespace std;
 void initGameAsset();
 void movingTrap(int &direction, double trapTime);
 void renderMovingTrap(Console &g_console);
+void fallingTrap(int &direction, double trapTime);
+void renderFallingTrap(Console &g_console);
 
 struct SGameTrap
 {

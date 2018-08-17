@@ -62,14 +62,12 @@ void renderMap();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
-//void renderMovingTrap();
 void renderUI();			// Defines where to spawn at
 void renderLives();			// Changes number of lives displayed
 void renderCollisionCheck();
 void renderDefeatScreen();  // Changes to defeat screen when die
-//void renderVictoryScreen(); // Changes to victory screen when win
-//void renderPauseScreen(); // Changes to pause screen when paused
-
+void renderVictoryScreen(); // Changes to victory screen when win
+void renderPauseScreen(); // Changes to pause screen when paused
 
 
 #endif // _GAME_H

@@ -21,7 +21,6 @@ int NewX = 1, NewY = 28;
 string NumberOfLives;
 int LevelSelected = 0;
 int ChangesArrayOne[50] = { 0, };
-int PauseCounter;
 bool bHitSomething;
 int test1, test2;
 // Game specific variables here
@@ -82,7 +81,6 @@ void init( void )
 		}
 		myfile.close();
 	}
-
 }
 
 //--------------------------------------------------------------
@@ -122,7 +120,7 @@ void getInput( void )
 	g_abKeyPressed[K_ENTER]  = isKeyPressed(VK_RETURN);
 	g_abKeyPressed[K_RESET] = isKeyPressed(0x52);
 	g_abKeyPressed[K_HOME] = isKeyPressed(0x48);
-	//g_abKeyPressed[K_PAUSE] = isKeyPressed(0x50);
+	g_abKeyPressed[K_PAUSE] = isKeyPressed(0x50);
 }
 
 //--------------------------------------------------------------
@@ -173,6 +171,10 @@ void render()
             break;
 		case S_DEFEAT: renderDefeatScreen();
 			break;
+		case S_PAUSE: renderPauseScreen();
+			break;
+		case S_VICTORY: renderVictoryScreen();
+			break;
     }
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
     renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
@@ -206,6 +208,10 @@ void gameMenu()    // waits for user choice
 		switch (Choice) {
 		case 1: LevelSelected = 1; // set LevelSelected values (for hard-coding level assets)
 			g_eGameState = S_GAME;
+			g_sChar.m_iLife = 3;
+			g_sChar.m_cLocation.X = 1;
+			g_sChar.m_cLocation.Y = 28;
+			ChangesArrayOne[14] = 0;
 			break;
 		case 3: g_bQuitGame = true;
 			break;
@@ -223,6 +229,7 @@ void gameplay()            // gameplay logic
                         // sound can be played here too.
 	collisionChecker(g_sChar, mapStorage, bHitSomething);
 	movingTrap(direction, g_dTrapTime);
+	
 }
 
 void moveCharacter()
@@ -290,21 +297,15 @@ if (g_abKeyPressed[K_SPACE])
 	bSomethingHappened = true;
 }
 
-//if (g_abKeyPressed[K_PAUSE])
-//{
-//	PauseCounter++;
-//	if (PauseCounter == 1)
-//	{
-//		g_dElapsedTime = 0;
-//	}
-//	else if (PauseCounter == 2)
-//	{
-//
-//		PauseCounter = 0; //resets PauseCounter
-//	}
-//}
+if (g_abKeyPressed[K_PAUSE])
+{
+		g_eGameState = S_PAUSE;
+}
+
 if (g_abKeyPressed[K_RESET])
 {
+	respawnAt(g_sChar);
+	g_sChar.m_iLife -= 1;
 	bSomethingHappened = true;
 }
 
@@ -420,7 +421,6 @@ if (bSomethingHappened)
 	{
 		playerKilled(g_sChar);
 		respawnAt(g_sChar);
-		playerKilled(g_sChar);
 	}
 
 	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'E') //TRAP "ELECTRIC FLOOR" 'y-1'
@@ -487,7 +487,15 @@ if (bSomethingHappened)
 		if ((int)g_sChar.m_cLocation.Y - 1 == 10 && (int)g_sChar.m_cLocation.X == 52) // for spike room leftmost pressure plate
 		{
 			ChangesArrayOne[12] = 1;
-		}		
+		}
+		if ((int)g_sChar.m_cLocation.Y - 1 == 27 && (int)g_sChar.m_cLocation.X == 26)
+		{
+			ChangesArrayOne[13] = 1;
+		}
+		if ((int)g_sChar.m_cLocation.Y - 1 == 1 && (int)g_sChar.m_cLocation.X == 79)
+		{
+			ChangesArrayOne[14] = 1;
+		}
 	}
 }
 }
@@ -552,45 +560,48 @@ void renderGameMenu()  // renders the game menu	//TODO: change this to game menu
 	g_Console.writeToBuffer(c, "->", 0x03);
 }
 
-//void renderPauseScreen()
-//{
-//	COORD c = g_Console.getConsoleSize();
-//	COORD d;
-//	string line;
-//	ifstream myfile("Pause.txt");
-//	char NameStorage[100][100];
-//	int i = 0, j = 0;
-//	int pos = 0;
-//	int p = 0;
-//	if (myfile.is_open())
-//	{
-//		while (getline(myfile, line))
-//		{
-//			d.Y = i;
-//			p = 0;
-//			for (j = 0; j < 120; j++)
-//			{
-//				NameStorage[i][j] = line[j]; // WHY IS IT Y,X
-//				d.X = p;
-//				if (NameStorage[i][j] == '#') {
-//					g_Console.writeToBuffer(d, NameStorage[i][j], 0x44);
-//				}
-//				else
-//				{
-//					g_Console.writeToBuffer(d, NameStorage[i][j], 0x04);
-//				}
-//				p++;
-//			}
-//			i++;
-//		}
-//		if (g_abKeyPressed[K_HOME])
-//		{
-//			gameMenu();
-//			NumberDIE = 0;
-//		}
-//		myfile.close();
-//	}
-//}
+void renderPauseScreen()
+{
+	COORD c = g_Console.getConsoleSize();
+	COORD d;
+	string line;
+	ifstream myfile("Pause.txt");
+	char NameStorage[100][100];
+	int i = 0, j = 0;
+	int pos = 0;
+	int p = 0;
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			d.Y = i;
+			p = 0;
+			for (j = 0; j < 120; j++)
+			{
+				NameStorage[i][j] = line[j]; // WHY IS IT Y,X
+				d.X = p;
+				if (NameStorage[i][j] == '#') {
+					g_Console.writeToBuffer(d, NameStorage[i][j], 0x44);
+				}
+				else
+				{
+					g_Console.writeToBuffer(d, NameStorage[i][j], 0x04);
+				}
+				p++;
+			}
+			i++;
+		}
+		if (g_abKeyPressed[K_HOME])
+		{
+			gameMenu();
+		}
+		myfile.close();
+	}
+	//if (g_abKeyPressed[K_PAUSE])
+	//{
+	//	gameMenu()
+	//}
+}
 
 void renderDefeatScreen()
 {
@@ -631,6 +642,45 @@ void renderDefeatScreen()
 	}
 }
 
+void renderVictoryScreen()
+{
+	COORD c = g_Console.getConsoleSize();
+	COORD d;
+	string line;
+	ifstream myfile("Victory.txt");
+	char NameStorage[100][100];
+	int i = 0, j = 0;
+	int pos = 0;
+	int p = 0;
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			d.Y = i;
+			p = 0;
+			for (j = 0; j < 120; j++)
+			{
+				NameStorage[i][j] = line[j]; // WHY IS IT Y,X
+				d.X = p;
+				if (NameStorage[i][j] == '#') {
+					g_Console.writeToBuffer(d, NameStorage[i][j], 0xEE);
+				}
+				else
+				{
+					g_Console.writeToBuffer(d, NameStorage[i][j], 0x0E);
+				}
+				p++;
+			}
+			i++;
+		}
+		if (g_abKeyPressed[K_HOME])
+		{
+			gameMenu();
+		}
+		myfile.close();
+	}
+}
+
 void renderGame()
 {
 	renderCollisionCheck();
@@ -640,7 +690,6 @@ void renderGame()
 	renderMovingTrap(g_Console);
 	renderLives();
 	renderUI();
-	
 }
 
 void renderMap()
@@ -658,6 +707,7 @@ void renderMap()
 			if (ChangesArrayOne[0] == 1)
 			{
 				// add first falling traps
+				mapStorage[20][54] = ' ', mapStorage[21][57] = ' ', mapStorage[22][54] = ' ', mapStorage[23][57] = ' ';
 			}
 			if (ChangesArrayOne[1] == 1)
 			{
@@ -708,6 +758,10 @@ void renderMap()
 			{
 				mapStorage[5][39] = ' ', mapStorage[6][39] = ' '; // opens 5th door between electric floors (room with row of falling traps) (double door)
 				// add 2nd falling trap
+				mapStorage[1][1] = ' ', mapStorage[1][2] = ' ', mapStorage[1][3] = ' ', mapStorage[1][4] = ' ', mapStorage[1][5] = ' ', mapStorage[1][6] = ' ', mapStorage[1][7]= ' ', mapStorage[1][8] = ' ', mapStorage[1][9] = ' ', mapStorage[1][10] = ' ';
+				mapStorage[1][11] = ' ', mapStorage[1][12] = ' ', mapStorage[1][13] = ' ', mapStorage[1][14] = ' ', mapStorage[1][15] = ' ', mapStorage[1][16] = ' ', mapStorage[1][17] = ' ', mapStorage[1][18] = ' ', mapStorage[1][19] = ' ', mapStorage[1][20] = ' ';
+				mapStorage[1][21] = ' ', mapStorage[1][22] = ' ', mapStorage[1][23] = ' ', mapStorage[1][24] = ' ', mapStorage[1][25] = ' ', mapStorage[1][26] = ' ', mapStorage[1][27] = ' ', mapStorage[1][28] = ' ', mapStorage[1][29] = ' ', mapStorage[1][30] = ' ';
+				mapStorage[1][31] = ' ', mapStorage[1][32] = ' ', mapStorage[1][33] = ' ', mapStorage[1][34] = ' ';
 			}
 			if (ChangesArrayOne[11] == 1)
 			{
@@ -718,7 +772,14 @@ void renderMap()
 			{
 				mapStorage[3][74] = ' ', mapStorage[3][75] = ' '; // opens last door (double door)
 			}
-
+			if (ChangesArrayOne[13] == 1)
+			{
+				mapStorage[19][33] = ' ', mapStorage[22][33] = ' ' ; //Fanswitch to disable first few fans
+			}
+			if (ChangesArrayOne[14] == 1)
+			{
+				g_eGameState = S_VICTORY;
+			}
 		}
 		
 
@@ -776,6 +837,10 @@ void renderMap()
 			else if (mapStorage[k][j] == 'G')
 			{
 				g_Console.writeToBuffer(c, mapStorage[k][j], 0xE0);
+			}
+			else if (mapStorage[k][j] == '~')
+			{
+				g_Console.writeToBuffer(c, "WIN" , 0xE0);
 			}
 			else
 			{
