@@ -45,6 +45,13 @@ struct SGameChar
 	int m_iRespawnY;
 };
 
+struct SGameTrap
+{
+	COORD m_cLocation;
+	bool  m_bActive;
+	bool m_cDirection;
+};
+
 void init        ( void );      // initialize your variables, allocate memory, etc
 void getInput    ( void );      // get input from player
 void update      ( double dt ); // update the game and the state of the game

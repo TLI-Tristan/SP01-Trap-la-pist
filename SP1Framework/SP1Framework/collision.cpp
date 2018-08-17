@@ -2,31 +2,29 @@
 #include "collision.h"
 #include "game.h"
 
-//objective : check collision every frame
-
-// object
-
-// collision between
-
-// player
-
-
-void collisionChecker(struct SGameChar &playerInfo, char map[100][100], bool &bHitSomething) // check if player hit anything
+void collisionChecker(struct SGameChar &playerInfo, char map[100][100], bool &bHitSomething, struct SGameTrap MovingTrap[8]) // check if player hit anything
 {
 	int Y = playerInfo.m_cLocation.Y - 1;
 	int X = playerInfo.m_cLocation.X;
 
-	if (map[Y][X] != ' ') 
+	if (map[Y][X] != ' ' && map[Y][X] != 'A')
 	{
 		bHitSomething = true;
 
 		//if (map[Y][X] == '#') {
 
 		//}
-		 if (map[Y][X] == 'S')
+		 if (map[Y][X] == 'S' || map[Y][X] == '!' || map[Y][X] == 'E')
 		{
-			 playerKilled(*&playerInfo);
+			 playerKilled(playerInfo);
+			 respawnAt(playerInfo);
+
 		}
+		 else if (map[Y][X] == 'C')
+		 {
+			 newRespawnLocation(playerInfo);
+		 }
+
 		//else if (map[Y][X] == 'D')
 		//{
 
@@ -55,23 +53,30 @@ void collisionChecker(struct SGameChar &playerInfo, char map[100][100], bool &bH
 		//{
 
 		//}
-		//else if (map[Y][X] == 'C')
-		//{
-
-		//}
+		
 		//else if (map[Y][X] == 'G')
 		//{
 
 		//}
 	}
+
+	for (int i = 0; i < 8; i++) {
+		if (playerInfo.m_cLocation.X == MovingTrap[i].m_cLocation.X && playerInfo.m_cLocation.Y == MovingTrap[i].m_cLocation.Y)
+		{
+
+			bHitSomething = true;
+			playerKilled(playerInfo);
+		}
+	}
+
 }
 
 
 
 void playerKilled(struct SGameChar &playerInfo){
-	playerInfo.m_cLocation.X = 1;
-	playerInfo.m_cLocation.Y = 28;
-	playerInfo.m_iLife -= 1;
+     playerInfo.m_cLocation.X = 1;
+	 playerInfo.m_cLocation.Y = 28;
+	 playerInfo.m_iLife -= 1;
 }
 
 void newRespawnLocation(struct SGameChar &playerInfo) {
@@ -86,9 +91,3 @@ void respawnAt(struct SGameChar &playerInfo) {
 	playerInfo.m_cLocation.Y = playerInfo.m_iRespawnY;
 	playerInfo.m_cLocation.X = playerInfo.m_iRespawnX;
 }
-/*
-void RespawnAt()
-{
-	g_sChar.m_cLocation.X = NewX;
-	g_sChar.m_cLocation.Y = NewY;
-}*/
