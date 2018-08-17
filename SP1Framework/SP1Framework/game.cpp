@@ -17,12 +17,13 @@ double g_dTrapTime;
 bool    g_abKeyPressed[K_COUNT];
 int Choice;
 char mapStorage[100][100];
-int NewX = 0, NewY = 28;
-int NumberDIE = 0;
-std::string NumberOfLives;
+int NewX = 1, NewY = 28;
+string NumberOfLives;
 int LevelSelected = 0;
 int ChangesArrayOne[50] = { 0, };
-
+int PauseCounter;
+bool bHitSomething;
+int test1, test2;
 // Game specific variables here
 SGameChar   g_sChar;
 EGAMESTATES g_eGameState = S_GAMEMENU;
@@ -48,13 +49,40 @@ void init( void )
 	g_dTrapTime = 0.0;
 
     // sets the initial state for the game
-    g_eGameState = S_GAMEMENU;		//18   13		8
+    g_eGameState = S_GAMEMENU;		
+
+    g_sChar.m_cLocation.X = 1;
+    g_sChar.m_cLocation.Y = 28;
+    g_sChar.m_bActive = true;
+	g_sChar.m_iLife = 3;
+	g_sChar.m_iRespawnX = 1;
+	g_sChar.m_iRespawnY = 28;
 
 	initGameAsset();
 
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
 	Choice = 1;
+
+	bHitSomething = false;
+
+	string line;
+	ifstream myfile("maze.txt");
+	int i = 0;
+	int pos = 0;
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			for (int j = 0; j < 80; j++)
+			{
+				mapStorage[i][j] = line[j]; // WHY IS IT Y,X
+			}
+			i++;
+		}
+		myfile.close();
+	}
+
 }
 
 //--------------------------------------------------------------
@@ -92,6 +120,9 @@ void getInput( void )
     g_abKeyPressed[K_SPACE]  = isKeyPressed(VK_SPACE);
     g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
 	g_abKeyPressed[K_ENTER]  = isKeyPressed(VK_RETURN);
+	g_abKeyPressed[K_RESET] = isKeyPressed(0x52);
+	g_abKeyPressed[K_HOME] = isKeyPressed(0x48);
+	//g_abKeyPressed[K_PAUSE] = isKeyPressed(0x50);
 }
 
 //--------------------------------------------------------------
@@ -140,7 +171,8 @@ void render()
             break;
         case S_GAME: renderGame();
             break;
-			
+		case S_DEFEAT: renderDefeatScreen();
+			break;
     }
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
     renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
@@ -148,6 +180,7 @@ void render()
 
 void gameMenu()    // waits for user choice
 {
+	g_eGameState = S_GAMEMENU;
 	bool bSelection = false;
 
 	if (g_dBounceTime > g_dElapsedTime)
@@ -172,18 +205,12 @@ void gameMenu()    // waits for user choice
 	if (g_abKeyPressed[K_ENTER]) { // Press enter to start game
 		switch (Choice) {
 		case 1: LevelSelected = 1; // set LevelSelected values (for hard-coding level assets)
-
-			g_sChar.m_cLocation.X = 0; // initialise player for Level 1 (Easy Mode)
-			g_sChar.m_cLocation.Y = 28;
-			g_sChar.m_bActive = true;
-
 			g_eGameState = S_GAME;
 			break;
 		case 3: g_bQuitGame = true;
 			break;
 		}
 	}
-
 }
 //moveTrap Global variable
 
@@ -194,7 +221,8 @@ void gameplay()            // gameplay logic
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
     moveCharacter();    // moves the character, collision detection, physics, etc
                         // sound can be played here too.
-	movingTrap(direction,g_dTrapTime);
+	collisionChecker(g_sChar, mapStorage, bHitSomething);
+	movingTrap(direction, g_dTrapTime);
 }
 
 void moveCharacter()
@@ -259,6 +287,30 @@ if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize(
 if (g_abKeyPressed[K_SPACE])
 {
 	g_sChar.m_bActive = !g_sChar.m_bActive;
+	bSomethingHappened = true;
+}
+
+//if (g_abKeyPressed[K_PAUSE])
+//{
+//	PauseCounter++;
+//	if (PauseCounter == 1)
+//	{
+//		g_dElapsedTime = 0;
+//	}
+//	else if (PauseCounter == 2)
+//	{
+//
+//		PauseCounter = 0; //resets PauseCounter
+//	}
+//}
+if (g_abKeyPressed[K_RESET])
+{
+	bSomethingHappened = true;
+}
+
+if (g_abKeyPressed[K_HOME])
+{
+	gameMenu();
 	bSomethingHappened = true;
 }
 
@@ -366,20 +418,20 @@ if (bSomethingHappened)
 
 	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'S' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == '!') //TRAP "SPIKE" 'y-1'
 	{
-		RespawnAt();
-		NumberDIE++;
+		playerKilled(g_sChar);
+		respawnAt(g_sChar);
+		playerKilled(g_sChar);
 	}
 
 	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'E') //TRAP "ELECTRIC FLOOR" 'y-1'
 	{
-		RespawnAt();
-		NumberDIE++;
+		playerKilled(g_sChar);
+		respawnAt(g_sChar);
 	}
 
 	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'C') // CHECKPOINT
 	{
-		NewX = g_sChar.m_cLocation.X;
-		NewY = g_sChar.m_cLocation.Y;
+		newRespawnLocation(g_sChar);
 	}
 
 	if (LevelSelected == 1) // FOR FIRST LEVEL
@@ -436,7 +488,6 @@ if (bSomethingHappened)
 		{
 			ChangesArrayOne[12] = 1;
 		}		
-
 	}
 }
 }
@@ -445,12 +496,6 @@ void processUserInput()
 	// quits the game if player hits the escape key
 	if (g_abKeyPressed[K_ESCAPE])
 		g_bQuitGame = true;
-}
-
-void RespawnAt()
-{
-	g_sChar.m_cLocation.X = NewX;
-	g_sChar.m_cLocation.Y = NewY;
 }
 
 void clearScreen()
@@ -462,7 +507,38 @@ void clearScreen()
 void renderGameMenu()  // renders the game menu	//TODO: change this to game menu
 {
 	COORD c = g_Console.getConsoleSize();
-	c.Y /= 3;
+	COORD d;
+	string line;
+	ifstream myfile("Name.txt");
+	char NameStorage[100][100];
+	int i = 0, j = 0;
+	int pos = 0;
+	int p = 0;
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			d.Y = i;
+			p = 0;
+			for (j = 0; j < 120; j++)
+			{
+				NameStorage[i][j] = line[j]; // WHY IS IT Y,X
+				d.X = p;
+				if (NameStorage[i][j] == '#')
+				{
+					g_Console.writeToBuffer(d, NameStorage[i][j], 0x33);
+				}
+				else
+				{
+					g_Console.writeToBuffer(d, NameStorage[i][j], 0x03);
+				}
+				p++;
+			}
+			i++;
+		}
+		myfile.close();
+	}
+	c.Y = 17;
 	c.X = c.X / 2 - 9;
 	g_Console.writeToBuffer(c, "Normal Mode (more like ez)", 0x03);
 	c.Y += 1;
@@ -471,62 +547,112 @@ void renderGameMenu()  // renders the game menu	//TODO: change this to game menu
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 9;
 	g_Console.writeToBuffer(c, "Exit Game (noooo pls :<)", 0x03);
-
-	c.Y = c.Y / 3 + 7; // ARROW LOCATION
-
+	c.Y = 16 + Choice; //Arrow location
 	c.X = g_Console.getConsoleSize().X / 2 - 12;
+	g_Console.writeToBuffer(c, "->", 0x03);
+}
 
-	switch (Choice) {
-	case 1: g_Console.writeToBuffer(c, "->", 0x03);
-		break;
-	case 2: c.Y += 1;
-		g_Console.writeToBuffer(c, "->", 0x03);
-		break;
-	case 3: c.Y += 2;
-		g_Console.writeToBuffer(c, "->", 0x03);
-		break;
+//void renderPauseScreen()
+//{
+//	COORD c = g_Console.getConsoleSize();
+//	COORD d;
+//	string line;
+//	ifstream myfile("Pause.txt");
+//	char NameStorage[100][100];
+//	int i = 0, j = 0;
+//	int pos = 0;
+//	int p = 0;
+//	if (myfile.is_open())
+//	{
+//		while (getline(myfile, line))
+//		{
+//			d.Y = i;
+//			p = 0;
+//			for (j = 0; j < 120; j++)
+//			{
+//				NameStorage[i][j] = line[j]; // WHY IS IT Y,X
+//				d.X = p;
+//				if (NameStorage[i][j] == '#') {
+//					g_Console.writeToBuffer(d, NameStorage[i][j], 0x44);
+//				}
+//				else
+//				{
+//					g_Console.writeToBuffer(d, NameStorage[i][j], 0x04);
+//				}
+//				p++;
+//			}
+//			i++;
+//		}
+//		if (g_abKeyPressed[K_HOME])
+//		{
+//			gameMenu();
+//			NumberDIE = 0;
+//		}
+//		myfile.close();
+//	}
+//}
+
+void renderDefeatScreen()
+{
+	COORD c = g_Console.getConsoleSize();
+	COORD d;
+	string line;
+	ifstream myfile("Defeat.txt");
+	char NameStorage[100][100];
+	int i = 0, j = 0;
+	int pos = 0;
+	int p = 0;
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			d.Y = i;
+			p = 0;
+			for (j = 0; j < 120; j++)
+			{
+				NameStorage[i][j] = line[j]; // WHY IS IT Y,X
+				d.X = p;
+				if (NameStorage[i][j] == '#') {
+					g_Console.writeToBuffer(d, NameStorage[i][j], 0x44);
+				}
+				else
+				{
+					g_Console.writeToBuffer(d, NameStorage[i][j], 0x04);
+				}
+				p++;
+			}
+			i++;
+		}
+		if (g_abKeyPressed[K_HOME])
+		{
+			gameMenu();
+		}
+		myfile.close();
 	}
-
-
 }
 
 void renderGame()
 {
+	renderCollisionCheck();
 	renderMap();        // renders the map to the buffer first
 	renderCharacter();  // renders the character into the buffer
 
 	renderMovingTrap(g_Console);
-	//renderMovingTrap();
 	renderLives();
 	renderUI();
-	collisionChecker(g_sChar);
+	
 }
 
 void renderMap()
 {
 
 	COORD c;
+	int pos = 0;
 	string line;
 	
 	int i = 0;
-	int pos = 0;
-
 	if (LevelSelected == 1) // FOR LEVEL ONE
 	{
-		ifstream myfile("maze.txt");
-		if (myfile.is_open())
-		{
-			while (getline(myfile, line))
-			{
-				for (int j = 0; j < 80; j++)
-				{
-					mapStorage[i][j] = line[j]; // WHY IS IT Y,X
-				}
-				i++;
-			}
-			myfile.close();
-		}
-
 		for (int i = 0; i < 50; i++) // FOR LEVEL ONE
 		{
 			if (ChangesArrayOne[0] == 1)
@@ -597,7 +723,6 @@ void renderMap()
 		
 
 	}
-	
 
 	for (int k = 0; k < 30; k++) {
 		int pos2 = 0;
@@ -610,6 +735,7 @@ void renderMap()
 			else if (mapStorage[k][j] == 'S')
 			{
 				g_Console.writeToBuffer(c, mapStorage[k][j], 0x40);
+
 			}
 			else if (mapStorage[k][j] == 'D')
 			{
@@ -675,24 +801,24 @@ void renderCharacter()
 
 void renderLives()
 {
-	if (NumberDIE == 0)
+	if (g_sChar.m_iLife == 3)
 	{
 		NumberOfLives = (char)3;
 		NumberOfLives += (char)3;
 		NumberOfLives += (char)3;
 	}
-	else if (NumberDIE == 1)
+	else if (g_sChar.m_iLife == 2)
 	{
 		NumberOfLives = (char)3;
 		NumberOfLives += (char)3;
 	}
-	else if (NumberDIE == 2)
+	else if (g_sChar.m_iLife == 1)
 	{
 		NumberOfLives = (char)3;
 	}
 	else
 	{
-		NumberOfLives = "Dead"; // to add: "restart level"
+		g_eGameState = S_DEFEAT;
 	}
 }
 
@@ -917,12 +1043,30 @@ void renderUI()
 	c.Y = 25;
 	g_Console.writeToBuffer(c, cd.str(), 0x0f);
 
-	ra << "Respawn at: (" << NewX << ", " << NewY << ")"; //coord
-	c.X = g_Console.getConsoleSize().X - 25;
-	c.Y = 29;
-	g_Console.writeToBuffer(c, ra.str(), 0x0f);
+	//ra << "Respawn at: (" << NewX << ", " << NewY << ")"; //coord
+	//c.X = g_Console.getConsoleSize().X - 25;
+	//c.Y = 29;
+	//g_Console.writeToBuffer(c, ra.str(), 0x0f);
 
 } // added coord display (for testing purposes)
+
+void renderCollisionCheck() {
+
+	COORD c;
+	c.X = g_Console.getConsoleSize().X + 80;
+	c.Y = 0;
+
+	if (bHitSomething == false) {
+		g_Console.writeToBuffer(c, "No collision", 0xC);
+	}
+	if (bHitSomething == true) {
+	
+		g_Console.writeToBuffer(c, "COLLISION DETECTED", 0xC);
+		bHitSomething = false;
+		
+	}
+}
+
 void renderToScreen()
 {
     // Writes the buffer to the console, hence you will see what you have written
