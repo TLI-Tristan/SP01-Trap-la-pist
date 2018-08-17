@@ -36,7 +36,7 @@
     <ClCompile Include="GameAsset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="collisioncheck.cpp">
+    <ClCompile Include="collision.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -53,7 +53,7 @@
     <ClInclude Include="GameAsset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="collisioncheck.h">
+    <ClInclude Include="collision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

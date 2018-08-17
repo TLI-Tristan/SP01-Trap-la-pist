@@ -2,7 +2,7 @@
 #define _GAME_H
 
 #include "Framework\timer.h"
-#include "collisioncheck.h"
+#include "collision.h"
 #include "GameAsset.h"
 
 extern CStopWatch g_swTimer;
@@ -17,8 +17,11 @@ enum EKEYS
 	K_RIGHT,
 	K_ESCAPE,
 	K_SPACE,
-	K_COUNT,
-	K_ENTER
+	K_RESET,
+	K_HOME,
+	K_PAUSE,
+	K_ENTER,
+	K_COUNT
 };
 
 // Enumeration for the different screen states
@@ -26,7 +29,10 @@ enum EGAMESTATES
 {
     S_GAMEMENU,
     S_GAME,
-    S_COUNT,
+	S_PAUSE,
+	S_DEFEAT,
+	S_VICTORY,
+    S_COUNT
 };
 
 // struct for the game character
@@ -34,6 +40,9 @@ struct SGameChar
 {
     COORD m_cLocation;
     bool  m_bActive;
+	int m_iLife;
+	int m_iRespawnX;
+	int m_iRespawnY;
 };
 
 void init        ( void );      // initialize your variables, allocate memory, etc
@@ -54,8 +63,13 @@ void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
 //void renderMovingTrap();
-void renderUI();
-void RespawnAt();			// Defines where to spawn at
+void renderUI();			// Defines where to spawn at
 void renderLives();			// Changes number of lives displayed
+void renderCollisionCheck();
+void renderDefeatScreen();  // Changes to defeat screen when die
+//void renderVictoryScreen(); // Changes to victory screen when win
+//void renderPauseScreen(); // Changes to pause screen when paused
+
+
 
 #endif // _GAME_H
