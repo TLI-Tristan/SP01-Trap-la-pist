@@ -2,21 +2,12 @@
 #include "collision.h"
 #include "game.h"
 
-//objective : check collision every frame
-
-// object
-
-// collision between
-
-// player
-
-
-void collisionChecker(struct SGameChar &playerInfo, char map[100][100], bool &bHitSomething) // check if player hit anything
+void collisionChecker(struct SGameChar &playerInfo, char map[100][100], bool &bHitSomething, struct SGameTrap MovingTrap[8]) // check if player hit anything
 {
 	int Y = playerInfo.m_cLocation.Y - 1;
 	int X = playerInfo.m_cLocation.X;
 
-	if (map[Y][X] != ' ') 
+	if (map[Y][X] != ' ' && map[Y][X] != 'A')
 	{
 		bHitSomething = true;
 
@@ -33,6 +24,7 @@ void collisionChecker(struct SGameChar &playerInfo, char map[100][100], bool &bH
 		 {
 			 newRespawnLocation(playerInfo);
 		 }
+
 		//else if (map[Y][X] == 'D')
 		//{
 
@@ -67,6 +59,16 @@ void collisionChecker(struct SGameChar &playerInfo, char map[100][100], bool &bH
 
 		//}
 	}
+
+	for (int i = 0; i < 8; i++) {
+		if (playerInfo.m_cLocation.X == MovingTrap[i].m_cLocation.X && playerInfo.m_cLocation.Y == MovingTrap[i].m_cLocation.Y)
+		{
+
+			bHitSomething = true;
+			playerKilled(playerInfo);
+		}
+	}
+
 }
 
 

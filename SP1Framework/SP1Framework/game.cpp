@@ -14,6 +14,7 @@ using namespace std;
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 double g_dTrapTime;
+
 bool    g_abKeyPressed[K_COUNT];
 int Choice;
 char mapStorage[100][100];
@@ -23,13 +24,18 @@ int LevelSelected = 0;
 int ChangesArrayOne[50] = { 0, };
 int PauseCounter;
 bool bHitSomething;
-int test1, test2;
+bool bGotTrapPos;
+
 // Game specific variables here
 SGameChar   g_sChar;
+SGameTrap g_sMovingTrap[8];
+
 EGAMESTATES g_eGameState = S_GAMEMENU;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 int FanBlowLeftDelay = 0, FanBlowRightDelay = 0, FanBlowUpDelay = 0, FanBlowDownDelay = 0;
 int AllowedMaxFanDelay = 3; // maximum frames allowed for delay CAN BE EDITED
+
+struct SGameTrap *ptr;
 
 // Console object
 Console g_Console(120, 35, "SP1 Framework");
@@ -51,20 +57,19 @@ void init( void )
     // sets the initial state for the game
     g_eGameState = S_GAMEMENU;		
 
-    g_sChar.m_cLocation.X = 1;
-    g_sChar.m_cLocation.Y = 28;
+    g_sChar.m_cLocation.X = 13;
+    g_sChar.m_cLocation.Y = 13;
     g_sChar.m_bActive = true;
 	g_sChar.m_iLife = 3;
 	g_sChar.m_iRespawnX = 1;
 	g_sChar.m_iRespawnY = 28;
-
-	initGameAsset();
 
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
 	Choice = 1;
 
 	bHitSomething = false;
+	bGotTrapPos = false;
 
 	string line;
 	ifstream myfile("maze.txt");
@@ -178,7 +183,7 @@ void render()
     renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
 }
 
-void gameMenu()    // waits for user choice
+void gameMenu()
 {
 	g_eGameState = S_GAMEMENU;
 	bool bSelection = false;
@@ -212,17 +217,16 @@ void gameMenu()    // waits for user choice
 		}
 	}
 }
-//moveTrap Global variable
 
-int direction = 1;
 
 void gameplay()            // gameplay logic
 {
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
     moveCharacter();    // moves the character, collision detection, physics, etc
                         // sound can be played here too.
-	collisionChecker(g_sChar, mapStorage, bHitSomething);
-	movingTrap(direction, g_dTrapTime);
+	movingTrap(g_dTrapTime, g_sMovingTrap);
+	collisionChecker(g_sChar, mapStorage, bHitSomething, g_sMovingTrap);
+	
 }
 
 void moveCharacter()
@@ -619,7 +623,7 @@ void renderGame()
 	renderMap();        // renders the map to the buffer first
 	renderCharacter();  // renders the character into the buffer
 
-	renderMovingTrap(g_Console);
+	renderMovingTrap(g_Console, g_sMovingTrap);
 	renderLives();
 	renderUI();
 	
@@ -743,10 +747,6 @@ void renderMap()
 			{
 				g_Console.writeToBuffer(c, mapStorage[k][j], 0x30);
 			}
-			else if (mapStorage[k][j] == 'A')
-			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x90);
-			}
 			else if (mapStorage[k][j] == 'W')
 			{
 				g_Console.writeToBuffer(c, mapStorage[k][j], 0x35);
@@ -767,6 +767,11 @@ void renderMap()
 		}
 		pos++;
 	}
+
+		if (bGotTrapPos == false)
+		{
+			getMovingTrapPos(bGotTrapPos, mapStorage, g_sMovingTrap);
+		}
 }
 
 
