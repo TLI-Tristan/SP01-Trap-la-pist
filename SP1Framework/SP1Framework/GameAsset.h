@@ -12,7 +12,7 @@ void renderMovingTrap(Console &g_Console, struct SGameTrap g_sMovingTrap[8]);
 void movingTrap(double &trapTime, struct SGameTrap g_sMovingTrap[8]);
 void renderFallingTrap(Console &g_console);
 void renderCharacter(Console &g_Console, struct SGameChar playerInfo);
-
+void initMovingTrap(struct SGameTrap g_sMovingTrap[8]);
 
 
 

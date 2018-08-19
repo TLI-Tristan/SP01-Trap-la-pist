@@ -10,11 +10,11 @@
 #                                       #   S  SSSSSSSEEEEEEEEEEEEEESSSSSS     #
 #               PP                      #S     S G  PPPPPPPPPPPPPPPPPP     ZZZZ#
 ################DD##############################################################
-#SE                                        #       C      EEEEEEEEEEEEEEESSSS S#
+#SE          A       A                     #      AC      EEEEEEEEEEEEEEESSSS S#
 #SE  E                                    N#              E               SSS G#
-#P   E       A         A                   D E A  A  A    E EEEEEEEEEEEES  SS  #
-#G   E  A         A        A             C D E            E ESSSSSSSSSSSSS  S  #
-#SE  E                                    N#              E E          PSSS    #
+#P   E                                     D E            E EEEEEEEEEEEES  SS  #
+#G   E                                   C D E A     A    E ESSSSSSSSSSSSS  S  #
+#SE  E   A       A       A                N#              E E          PSSS    #
 #SE                                        ################D####################
 ############################################             P#      #   #        P#
 #     S                          N##########     #####    #     P#   #         #

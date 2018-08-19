@@ -21,18 +21,17 @@ char mapStorage[100][100];
 string NumberOfLives;
 int LevelSelected = 0;
 int ChangesArrayOne[50] = { 0, };
+
 bool bGotTrapPos;
 
 // Game specific variables here
 SGameChar   g_sChar;
-SGameTrap g_sMovingTrap[8];
+SGameTrap g_sMovingTrap[12];
 
 EGAMESTATES g_eGameState = S_GAMEMENU;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 int FanBlowLeftDelay = 0, FanBlowRightDelay = 0, FanBlowUpDelay = 0, FanBlowDownDelay = 0;
 int AllowedMaxFanDelay = 3; // maximum frames allowed for delay CAN BE EDITED
-
-struct SGameTrap *ptr;
 
 // Console object
 Console g_Console(120, 35, "SP1 Framework");
@@ -66,6 +65,7 @@ void init( void )
 	Choice = 1;
 
 	bGotTrapPos = false;
+	initMovingTrap(g_sMovingTrap);
 
 	string line;
 	ifstream myfile("maze.txt");
@@ -682,7 +682,7 @@ void renderGame()
 	renderCharacter(g_Console, g_sChar);  // renders the character into the buffer
 
 	renderMovingTrap(g_Console, g_sMovingTrap);
-	renderLives();
+	renderLives(g_sChar, NumberOfLives, g_eGameState);
 	renderUI(g_Console, NumberOfLives, g_sChar);
 }
 
@@ -864,29 +864,6 @@ void renderMap()
 		{
 			getMovingTrapPos(bGotTrapPos, mapStorage, g_sMovingTrap);
 		}
-}
-
-void renderLives() {
-
-	if (g_sChar.m_iLife == 3)
-	{
-		NumberOfLives = (char)3;
-		NumberOfLives += (char)3;
-		NumberOfLives += (char)3;
-	}
-	else if (g_sChar.m_iLife == 2)
-	{
-		NumberOfLives = (char)3;
-		NumberOfLives += (char)3;
-	}
-	else if (g_sChar.m_iLife == 1)
-	{
-		NumberOfLives = (char)3;
-	}
-	else
-	{
-		g_eGameState = S_DEFEAT;
-	}
 }
 
 void renderFramerate()

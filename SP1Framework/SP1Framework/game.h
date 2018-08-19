@@ -50,7 +50,7 @@ struct SGameTrap
 {
 	COORD m_cLocation;
 	bool  m_bActive;
-	bool m_cDirection;
+	int m_cDirection;
 };
 
 void init        ( void );      // initialize your variables, allocate memory, etc

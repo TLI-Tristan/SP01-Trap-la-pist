@@ -215,25 +215,25 @@ void renderUI(Console &g_Console, string NumberOfLives, struct SGameChar &player
 
 } // added coord display (for testing purposes)
 
-//void renderLives(struct SGameChar &playerInfo, string NumberOfLives, EGAMESTATES g_eGameState){
-//
-//	if (playerInfo.m_iLife == 3)
-//	{
-//		NumberOfLives = (char)3;
-//		NumberOfLives += (char)3;
-//		NumberOfLives += (char)3;
-//	}
-//	else if (playerInfo.m_iLife == 2)
-//	{
-//		NumberOfLives = (char)3;
-//		NumberOfLives += (char)3;
-//	}
-//	else if (playerInfo.m_iLife == 1)
-//	{
-//		NumberOfLives = (char)3;
-//	}
-//	else
-//	{
-//		g_eGameState = S_DEFEAT;
-//	}
-//}
+void renderLives(struct SGameChar &playerInfo, string &NumberOfLives, enum EGAMESTATES &g_eGameState){
+
+	if (playerInfo.m_iLife == 3)
+	{
+		NumberOfLives = (char)3;
+		NumberOfLives += (char)3;
+		NumberOfLives += (char)3;
+	}
+	else if (playerInfo.m_iLife == 2)
+	{
+		NumberOfLives = (char)3;
+		NumberOfLives += (char)3;
+	}
+	else if (playerInfo.m_iLife == 1)
+	{
+		NumberOfLives = (char)3;
+	}
+	else
+	{
+		g_eGameState = S_DEFEAT;
+	}
+}

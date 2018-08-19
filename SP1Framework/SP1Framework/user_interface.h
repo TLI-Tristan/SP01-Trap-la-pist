@@ -8,7 +8,7 @@
 using namespace std;
 
 void renderUI(Console &g_console, string NumberOfLives, struct SGameChar &playerInfo);
-//void renderLives(struct SGameChar &playerInfo, string NumberOfLives, EGAMESTATES g_eGameState);
+void renderLives(struct SGameChar &playerInfo, string &NumberOfLives, enum EGAMESTATES &g_eGameState);
 
 
 
