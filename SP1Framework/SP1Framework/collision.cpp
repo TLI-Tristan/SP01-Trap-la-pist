@@ -1,8 +1,9 @@
 #include <iostream>
 #include "collision.h"
-#include "game.h"
 
-void collisionChecker(struct SGameChar &playerInfo, char map[100][100], bool &bHitSomething, struct SGameTrap MovingTrap[8]) // check if player hit anything
+bool bHitSomething = false;
+
+void collisionChecker(struct SGameChar &playerInfo, char map[100][100], struct SGameTrap MovingTrap[8]) // check if player hit anything
 {
 	int Y = playerInfo.m_cLocation.Y - 1;
 	int X = playerInfo.m_cLocation.X;
@@ -90,4 +91,21 @@ void respawnAt(struct SGameChar &playerInfo) {
 
 	playerInfo.m_cLocation.Y = playerInfo.m_iRespawnY;
 	playerInfo.m_cLocation.X = playerInfo.m_iRespawnX;
+}
+
+void renderCollisionCheck(Console &g_Console) {
+
+	COORD c;
+	c.X = g_Console.getConsoleSize().X + 80;
+	c.Y = 0;
+
+	if (bHitSomething == false) {
+		g_Console.writeToBuffer(c, "No collision", 0xC);
+	}
+	if (bHitSomething == true) {
+
+		g_Console.writeToBuffer(c, "COLLISION DETECTED", 0xC);
+		bHitSomething = false;
+
+	}
 }

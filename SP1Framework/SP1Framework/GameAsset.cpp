@@ -88,3 +88,14 @@ void renderFallingTrap(Console &g_console)
 	}
 	g_console.writeToBuffer(g_fTrap01.m_cLocation, (char)4 , trapColor);
 }
+
+void renderCharacter(Console &g_Console, struct SGameChar playerInfo)
+{
+	// Draw the location of the character
+	WORD charColor = 0x0C;
+	if (playerInfo.m_bActive)
+	{
+		charColor = 0x0A;
+	}
+	g_Console.writeToBuffer(playerInfo.m_cLocation, (char)1, charColor);
+}

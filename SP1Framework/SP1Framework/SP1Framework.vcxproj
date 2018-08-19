@@ -82,7 +82,9 @@
     <ClCompile Include="Framework\timer.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="GameAsset.cpp" />
+    <ClCompile Include="levels.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="user_interface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="collision.h" />
@@ -90,6 +92,8 @@
     <ClInclude Include="Framework\timer.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="GameAsset.h" />
+    <ClInclude Include="user_interface.h" />
+    <ClInclude Include="levels.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
