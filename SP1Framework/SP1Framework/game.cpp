@@ -15,18 +15,18 @@ double  g_dElapsedTime;
 double  g_dDeltaTime;
 double g_dTrapTime;
 
-bool    g_abKeyPressed[K_COUNT];
+bool g_abKeyPressed[K_COUNT];
 int Choice;
 char mapStorage[100][100];
 string NumberOfLives;
 int LevelSelected = 0;
-int ChangesArrayOne[50] = { 0, };
 
 bool bGotTrapPos;
 
 // Game specific variables here
 SGameChar   g_sChar;
 SGameTrap g_sMovingTrap[12];
+int ChangesArrayOne[50];
 
 EGAMESTATES g_eGameState = S_GAMEMENU;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
@@ -53,8 +53,8 @@ void init( void )
     // sets the initial state for the game
     g_eGameState = S_GAMEMENU;		
 
-    g_sChar.m_cLocation.X = 13;
-    g_sChar.m_cLocation.Y = 13;
+    g_sChar.m_cLocation.X = 1;
+    g_sChar.m_cLocation.Y = 28;
     g_sChar.m_bActive = true;
 	g_sChar.m_iLife = 3;
 	g_sChar.m_iRespawnX = 1;
@@ -66,6 +66,7 @@ void init( void )
 
 	bGotTrapPos = false;
 	initMovingTrap(g_sMovingTrap);
+	ChangesArrayOne[50] = { 0, };
 
 	string line;
 	ifstream myfile("maze.txt");
@@ -210,20 +211,7 @@ void gameMenu()
 		switch (Choice) {
 		case 1: LevelSelected = 1; // set LevelSelected values (for hard-coding level assets)
 			g_eGameState = S_GAME;
-
-			g_sChar.m_iLife = 3;			// reset lives
-			g_sChar.m_cLocation.X = 1;		// reset coord x
-			g_sChar.m_cLocation.Y = 28;		// reset coord y
-			newRespawnLocation(g_sChar);	// reset spawn
-
-			for (int i = 0; i < 50; i++)	// reset array
-			{
-				ChangesArrayOne[i] = 0;
-			}
-			g_sChar.m_iLife = 3;
-			g_sChar.m_cLocation.X = 1;
-			g_sChar.m_cLocation.Y = 28;
-			ChangesArrayOne[14] = 0;
+			resetGame(g_sChar, ChangesArrayOne);
 			break;
 		case 3: g_bQuitGame = true;
 			break;
@@ -240,6 +228,8 @@ void gameplay()            // gameplay logic
 	// sound can be played here too.
 	
 }
+
+
 
 void moveCharacter()
 {
@@ -314,14 +304,14 @@ if (g_abKeyPressed[K_PAUSE])
 if (g_abKeyPressed[K_RESET])
 {
 	g_sChar.m_iLife -= 1;
-	respawnAt(g_sChar);
+	playerKilled(g_sChar);
 	bSomethingHappened = true;
 }
 
 if (g_abKeyPressed[K_HOME])
 {
+	//resetGame();
 	gameMenu();
-	g_sChar.m_iLife = 3;
 	
 }
 
