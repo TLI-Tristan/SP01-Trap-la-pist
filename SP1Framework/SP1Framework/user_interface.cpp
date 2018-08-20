@@ -237,3 +237,42 @@ void renderLives(struct SGameChar &playerInfo, string &NumberOfLives, enum EGAME
 		g_eGameState = S_DEFEAT;
 	}
 }
+
+//void renderDefeatScreen(Console &g_Console, bool g_abKeyPressed[])
+//{
+//	COORD c = g_Console.getConsoleSize();
+//	COORD d;
+//	string line;
+//	ifstream myfile("Defeat.txt");
+//	char NameStorage[100][100];
+//	int i = 0, j = 0;
+//	int pos = 0;
+//	int p = 0;
+//	if (myfile.is_open())
+//	{
+//		while (getline(myfile, line))
+//		{
+//			d.Y = i;
+//			p = 0;
+//			for (j = 0; j < 120; j++)
+//			{
+//				NameStorage[i][j] = line[j]; // WHY IS IT Y,X
+//				d.X = p;
+//				if (NameStorage[i][j] == '#') {
+//					g_Console.writeToBuffer(d, NameStorage[i][j], 0x44);
+//				}
+//				else
+//				{
+//					g_Console.writeToBuffer(d, NameStorage[i][j], 0x04);
+//				}
+//				p++;
+//			}
+//			i++;
+//		}
+//		if (g_abKeyPressed[K_HOME])
+//		{
+//			gameMenu();
+//		}
+//		myfile.close();
+//	}
+//}

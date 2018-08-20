@@ -215,7 +215,7 @@ void gameMenu()
 		switch (Choice) {
 		case 1: LevelSelected = 1; // set LevelSelected values (for hard-coding level assets)
 			g_eGameState = S_GAME;
-			resetGame(g_sChar, ChangesArrayOne, g_fTrap);
+			resetGame(g_sChar, ChangesArrayOne, g_fTrap, bGotTrapPos);
 			break;
 		case 3: g_bQuitGame = true;
 			break;
@@ -633,7 +633,7 @@ void renderMap()
 			//================
 			//====  WIP  =====
 			//================
-			ArrayLevelOneActivate(g_sChar, ChangesArrayOne, mapStorage); // WIP (currently for ChangesArrayOne[1] ONLY)
+			ArrayLevelOneActivate(g_sChar, ChangesArrayOne, mapStorage, g_fTrap); // WIP (currently for ChangesArrayOne[1] ONLY)
 
 			if (ChangesArrayOne[0] == 1)
 			{
