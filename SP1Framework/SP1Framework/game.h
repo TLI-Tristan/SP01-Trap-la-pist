@@ -22,6 +22,7 @@ enum EKEYS
 	K_RESET,
 	K_HOME,
 	K_PAUSE,
+	K_RESUME,
 	K_ENTER,
 	K_COUNT
 };
@@ -52,6 +53,13 @@ struct SGameTrap
 	COORD m_cLocation;
 	bool  m_bActive;
 	int m_cDirection;
+};
+
+struct SFallingTrap
+{
+	COORD m_cLocation;
+	bool  m_bActive;
+	bool m_bTriggered;
 };
 
 void init        ( void );      // initialize your variables, allocate memory, etc

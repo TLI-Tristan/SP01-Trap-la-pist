@@ -14,6 +14,7 @@ using namespace std;
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 double g_dTrapTime;
+double g_fTrapTime;
 
 bool g_abKeyPressed[K_COUNT];
 int Choice;
@@ -26,6 +27,7 @@ bool bGotTrapPos;
 // Game specific variables here
 SGameChar   g_sChar;
 SGameTrap g_sMovingTrap[12];
+SFallingTrap g_fTrap[38];
 int ChangesArrayOne[50];
 
 EGAMESTATES g_eGameState = S_GAMEMENU;
@@ -47,6 +49,7 @@ void init( void )
     g_dElapsedTime = 0.0;
     g_dBounceTime = 0.0;
 	g_dTrapTime = 0.0;
+	g_fTrapTime = 0.0;
 
     // sets the initial state for the game
     g_eGameState = S_GAMEMENU;		
@@ -64,6 +67,7 @@ void init( void )
 
 	bGotTrapPos = false;
 	initMovingTrap(g_sMovingTrap);
+	initFallingTrap(g_fTrap);
 	ChangesArrayOne[50] = { 0, };
 
 	string line;
@@ -123,6 +127,7 @@ void getInput( void )
 	g_abKeyPressed[K_RESET] = isKeyPressed(0x52);
 	g_abKeyPressed[K_HOME] = isKeyPressed(0x48);
 	g_abKeyPressed[K_PAUSE] = isKeyPressed(0x50);
+	g_abKeyPressed[K_RESUME] = isKeyPressed(0x4F);
 }
 //--------------------------------------------------------------
 // Purpose  : Update function
@@ -144,6 +149,7 @@ void update(double dt)
     g_dElapsedTime += dt;
     g_dDeltaTime = dt;
 	g_dTrapTime += dt;
+	g_fTrapTime += dt;
 
     switch (g_eGameState)
     {
@@ -209,7 +215,7 @@ void gameMenu()
 		switch (Choice) {
 		case 1: LevelSelected = 1; // set LevelSelected values (for hard-coding level assets)
 			g_eGameState = S_GAME;
-			resetGame(g_sChar, ChangesArrayOne);
+			resetGame(g_sChar, ChangesArrayOne, g_fTrap);
 			break;
 		case 3: g_bQuitGame = true;
 			break;
@@ -222,7 +228,8 @@ void gameplay()            // gameplay logic
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
     moveCharacter();    // moves the character, collision detection, physics, etc
 	movingTrap(g_dTrapTime, g_sMovingTrap);
-	collisionChecker(g_sChar, mapStorage, g_sMovingTrap);
+	FallingTrap(g_fTrapTime, g_fTrap);
+	collisionChecker(g_sChar, mapStorage, g_sMovingTrap, g_fTrap);
 	// sound can be played here too.
 	
 }
@@ -310,7 +317,6 @@ if (g_abKeyPressed[K_HOME])
 {
 	//resetGame();
 	gameMenu();
-	
 }
 
 FanFunctionMain(g_sChar, mapStorage, g_Console); // calls main fan function
@@ -368,10 +374,10 @@ if (bSomethingHappened)
 		{
 			ChangesArrayOne[9] = 1;
 		}
-		if ((int)g_sChar.m_cLocation.Y - 1 == 10 && (int)g_sChar.m_cLocation.X == 16 || (int)g_sChar.m_cLocation.Y - 1 == 10 && (int)g_sChar.m_cLocation.X == 17) // for falling trap row room pressure plate
-		{
-			ChangesArrayOne[10] = 1;
-		}
+		//if ((int)g_sChar.m_cLocation.Y - 1 == 10 && (int)g_sChar.m_cLocation.X == 16 || (int)g_sChar.m_cLocation.Y - 1 == 10 && (int)g_sChar.m_cLocation.X == 17) // for falling trap row room pressure plate
+		//{
+		//	ChangesArrayOne[10] = 1;
+		//}
 		if ((int)g_sChar.m_cLocation.Y - 1 == 10 && (int)g_sChar.m_cLocation.X == 49) // for spike room generator
 		{
 			ChangesArrayOne[11] = 1;
@@ -380,11 +386,11 @@ if (bSomethingHappened)
 		{
 			ChangesArrayOne[12] = 1;
 		}
-		if ((int)g_sChar.m_cLocation.Y - 1 == 27 && (int)g_sChar.m_cLocation.X == 26)
+		if ((int)g_sChar.m_cLocation.Y - 1 == 27 && (int)g_sChar.m_cLocation.X == 26) // Fans
 		{
 			ChangesArrayOne[13] = 1;
 		}
-		if ((int)g_sChar.m_cLocation.Y - 1 == 1 && (int)g_sChar.m_cLocation.X == 79)
+		if ((int)g_sChar.m_cLocation.Y - 1 == 1 && (int)g_sChar.m_cLocation.X == 79) // Victory
 		{
 			ChangesArrayOne[14] = 1;
 		}
@@ -489,12 +495,12 @@ void renderPauseScreen()
 		{
 			gameMenu();
 		}
+		if (g_abKeyPressed[K_RESUME])
+		{
+			g_eGameState = S_GAME;
+		}
 		myfile.close();
 	}
-	//if (g_abKeyPressed[K_PAUSE])
-	//{
-	//	gameMenu()
-	//}
 }
 
 void renderDefeatScreen()
@@ -582,6 +588,7 @@ void renderGame()
 	renderCharacter(g_Console, g_sChar);  // renders the character into the buffer
 
 	renderMovingTrap(g_Console, g_sMovingTrap);
+	renderFallingTrap(g_Console, g_fTrap);
 	renderLives(g_sChar, NumberOfLives, g_eGameState);
 	renderUI(g_Console, NumberOfLives, g_sChar);
 }
@@ -609,6 +616,10 @@ void renderMap()
 				{
 					mapStorage[k][j] = 'S';
 				}
+				else if (mapStorage[k][j] == 'l')
+				{
+					mapStorage[k][j] = 'N';
+				}
 			}
 		}
 
@@ -617,7 +628,7 @@ void renderMap()
 	{															// ',' (Comma) = Deactivated Door
 		for (int i = 0; i < 50; i++) // FOR LEVEL ONE			// '.' (FullStop) = Deactivated Electric Floor
 		{														// 'b' (b) = Deactivated Spikes
-
+																// 'l' (l) = Deactivated Fans
 
 			//================
 			//====  WIP  =====
@@ -627,7 +638,37 @@ void renderMap()
 			if (ChangesArrayOne[0] == 1)
 			{
 				// add first falling traps
-				mapStorage[20][54] = ' ', mapStorage[21][57] = ' ', mapStorage[22][54] = ' ', mapStorage[23][57] = ' ';
+				/*for (int i = 0; i < 38; i++)
+				{
+				if (i >= 34 && i <= 37)
+				{
+				if (g_fTrap[i].m_cLocation.Y >= 14 && g_fTrap[i].m_cLocation.Y <= 17)
+				{
+				g_fTrap[i].m_cDirection = 1;
+				if (g_fTrap[i].m_cDirection = 0)
+				{
+				ChangesArrayOne[0] = 0;
+				}
+				}
+
+				if (i == 34 || i == 35)
+				{
+				if (g_fTrap[i].m_cLocation.Y == 27)
+				{
+				g_fTrap[i].m_cDirection = 0;
+				}
+				}
+				else if (i == 36 || i == 37)
+				{
+				if (g_fTrap[i].m_cLocation.Y == 28)
+				{
+				g_fTrap[i].m_cDirection = 0;
+				}
+				}
+				g_fTrap[i].m_cLocation.Y += g_fTrap[i].m_cDirection;
+				}
+				}
+				*/
 			}
 			//if (ChangesArrayOne[1] == 1)
 			//{
@@ -674,15 +715,26 @@ void renderMap()
 				mapStorage[16][2] = '.', mapStorage[16][5] = '.';
 				mapStorage[17][2] = '.';
 			}
-			if (ChangesArrayOne[10] == 1)
-			{
-				mapStorage[5][39] = ',', mapStorage[6][39] = ','; // opens 5th door between electric floors (room with row of falling traps) (double door)
-				// add 2nd falling trap
-				mapStorage[1][1] = ' ', mapStorage[1][2] = ' ', mapStorage[1][3] = ' ', mapStorage[1][4] = ' ', mapStorage[1][5] = ' ', mapStorage[1][6] = ' ', mapStorage[1][7]= ' ', mapStorage[1][8] = ' ', mapStorage[1][9] = ' ', mapStorage[1][10] = ' ';
-				mapStorage[1][11] = ' ', mapStorage[1][12] = ' ', mapStorage[1][13] = ' ', mapStorage[1][14] = ' ', mapStorage[1][15] = ' ', mapStorage[1][16] = ' ', mapStorage[1][17] = ' ', mapStorage[1][18] = ' ', mapStorage[1][19] = ' ', mapStorage[1][20] = ' ';
-				mapStorage[1][21] = ' ', mapStorage[1][22] = ' ', mapStorage[1][23] = ' ', mapStorage[1][24] = ' ', mapStorage[1][25] = ' ', mapStorage[1][26] = ' ', mapStorage[1][27] = ' ', mapStorage[1][28] = ' ', mapStorage[1][29] = ' ', mapStorage[1][30] = ' ';
-				mapStorage[1][31] = ' ', mapStorage[1][32] = ' ', mapStorage[1][33] = ' ', mapStorage[1][34] = ' ';
-			}
+			//if (ChangesArrayOne[10] == 1)
+			//{
+			//	mapStorage[5][39] = ',', mapStorage[6][39] = ','; // opens 5th door between electric floors (room with row of falling traps) (double door)
+			//	// add 2nd falling trap
+			//	/*for (int i = 0; i < 38; i++)
+			//	{
+
+			//	if (i >= 0 && i <= 33)
+			//	{
+			//	if (g_fTrap[i].m_cLocation.Y == 2) {
+			//	g_fTrap[i].m_cDirection = 1;
+			//	}
+
+			//	else if (g_fTrap[i].m_cLocation.Y == 11) {
+			//	g_fTrap[i].m_cDirection = 0;
+			//	}
+			//	g_fTrap[i].m_cLocation.Y += g_fTrap[i].m_cDirection;
+			//	}
+			//	}*/
+			//}
 			if (ChangesArrayOne[11] == 1)
 			{
 				mapStorage[9][54] = '.', mapStorage[9][55] = '.', mapStorage[9][56] = '.', mapStorage[9][57] = '.', mapStorage[9][58] = '.', mapStorage[9][59] = '.', mapStorage[9][60] = '.', mapStorage[9][61] = '.', mapStorage[9][62] = '.', mapStorage[9][63] = '.', mapStorage[9][64] = '.', mapStorage[9][65] = '.', mapStorage[9][66] = '.', mapStorage[9][67] = '.';
@@ -738,10 +790,6 @@ void renderMap()
 			{
 				g_Console.writeToBuffer(c, 'F', 0xE0);
 			}
-			else if (mapStorage[k][j] == 'T')
-			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x30);
-			}
 			else if (mapStorage[k][j] == 'W')
 			{
 				g_Console.writeToBuffer(c, mapStorage[k][j], 0x35);
@@ -770,6 +818,7 @@ void renderMap()
 		if (bGotTrapPos == false)
 		{
 			getMovingTrapPos(bGotTrapPos, mapStorage, g_sMovingTrap);
+			getFallingTrapPos(bGotTrapPos, mapStorage, g_fTrap);
 		}
 }
 
