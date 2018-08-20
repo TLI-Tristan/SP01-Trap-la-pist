@@ -1,8 +1,3 @@
-﻿  game.cpp
-<<<<<<< HEAD
-  SP1Framework.vcxproj -> C:\Users\Chew Hui Feng\Desktop\Studio Project sem 1\SP1Framework\New folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.exe
-  SP1Framework.vcxproj -> C:\Users\Chew Hui Feng\Desktop\Studio Project sem 1\SP1Framework\New folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.pdb (Full PDB)
-=======
-  SP1Framework.vcxproj -> C:\Users\ooiwe\Desktop\MOST NEW FOLDER\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.exe
-  SP1Framework.vcxproj -> C:\Users\ooiwe\Desktop\MOST NEW FOLDER\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.pdb (Full PDB)
->>>>>>> 5c026eb91ae3e27b928694575819db4b26f483e2
+﻿  GameAsset.cpp
+  SP1Framework.vcxproj -> C:\Users\HuiFeng\Desktop\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.exe
+  SP1Framework.vcxproj -> C:\Users\HuiFeng\Desktop\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.pdb (Full PDB)

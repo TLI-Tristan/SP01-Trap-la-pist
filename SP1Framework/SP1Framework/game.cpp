@@ -14,18 +14,20 @@ using namespace std;
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 double g_dTrapTime;
+
 bool    g_abKeyPressed[K_COUNT];
 int Choice;
 char mapStorage[100][100];
-int NewX = 1, NewY = 28;
 string NumberOfLives;
 int LevelSelected = 0;
 int ChangesArrayOne[50] = { 0, };
-int PauseCounter;
-bool bHitSomething;
-int test1, test2;
+
+bool bGotTrapPos;
+
 // Game specific variables here
 SGameChar   g_sChar;
+SGameTrap g_sMovingTrap[12];
+
 EGAMESTATES g_eGameState = S_GAMEMENU;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 int FanBlowLeftDelay = 0, FanBlowRightDelay = 0, FanBlowUpDelay = 0, FanBlowDownDelay = 0;
@@ -51,20 +53,19 @@ void init( void )
     // sets the initial state for the game
     g_eGameState = S_GAMEMENU;		
 
-    g_sChar.m_cLocation.X = 1;
-    g_sChar.m_cLocation.Y = 28;
+    g_sChar.m_cLocation.X = 13;
+    g_sChar.m_cLocation.Y = 13;
     g_sChar.m_bActive = true;
 	g_sChar.m_iLife = 3;
 	g_sChar.m_iRespawnX = 1;
 	g_sChar.m_iRespawnY = 28;
 
-	initGameAsset();
-
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
 	Choice = 1;
 
-	bHitSomething = false;
+	bGotTrapPos = false;
+	initMovingTrap(g_sMovingTrap);
 
 	string line;
 	ifstream myfile("maze.txt");
@@ -82,8 +83,8 @@ void init( void )
 		}
 		myfile.close();
 	}
-
 }
+
 
 //--------------------------------------------------------------
 // Purpose  : Reset before exiting the program
@@ -122,9 +123,8 @@ void getInput( void )
 	g_abKeyPressed[K_ENTER]  = isKeyPressed(VK_RETURN);
 	g_abKeyPressed[K_RESET] = isKeyPressed(0x52);
 	g_abKeyPressed[K_HOME] = isKeyPressed(0x48);
-	//g_abKeyPressed[K_PAUSE] = isKeyPressed(0x50);
+	g_abKeyPressed[K_PAUSE] = isKeyPressed(0x50);
 }
-
 //--------------------------------------------------------------
 // Purpose  : Update function
 //            This is the update function
@@ -173,12 +173,16 @@ void render()
             break;
 		case S_DEFEAT: renderDefeatScreen();
 			break;
+		case S_PAUSE: renderPauseScreen();
+			break;
+		case S_VICTORY: renderVictoryScreen();
+			break;
     }
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
     renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
 }
 
-void gameMenu()    // waits for user choice
+void gameMenu()
 {
 	g_eGameState = S_GAMEMENU;
 	bool bSelection = false;
@@ -206,23 +210,35 @@ void gameMenu()    // waits for user choice
 		switch (Choice) {
 		case 1: LevelSelected = 1; // set LevelSelected values (for hard-coding level assets)
 			g_eGameState = S_GAME;
+
+			g_sChar.m_iLife = 3;			// reset lives
+			g_sChar.m_cLocation.X = 1;		// reset coord x
+			g_sChar.m_cLocation.Y = 28;		// reset coord y
+			newRespawnLocation(g_sChar);	// reset spawn
+
+			for (int i = 0; i < 50; i++)	// reset array
+			{
+				ChangesArrayOne[i] = 0;
+			}
+			g_sChar.m_iLife = 3;
+			g_sChar.m_cLocation.X = 1;
+			g_sChar.m_cLocation.Y = 28;
+			ChangesArrayOne[14] = 0;
 			break;
 		case 3: g_bQuitGame = true;
 			break;
 		}
 	}
 }
-//moveTrap Global variable
-
-int direction = 1;
 
 void gameplay()            // gameplay logic
 {
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
     moveCharacter();    // moves the character, collision detection, physics, etc
-                        // sound can be played here too.
-	collisionChecker(g_sChar, mapStorage, bHitSomething);
-	movingTrap(direction, g_dTrapTime);
+	movingTrap(g_dTrapTime, g_sMovingTrap);
+	collisionChecker(g_sChar, mapStorage, g_sMovingTrap);
+	// sound can be played here too.
+	
 }
 
 void moveCharacter()
@@ -290,28 +306,23 @@ if (g_abKeyPressed[K_SPACE])
 	bSomethingHappened = true;
 }
 
-//if (g_abKeyPressed[K_PAUSE])
-//{
-//	PauseCounter++;
-//	if (PauseCounter == 1)
-//	{
-//		g_dElapsedTime = 0;
-//	}
-//	else if (PauseCounter == 2)
-//	{
-//
-//		PauseCounter = 0; //resets PauseCounter
-//	}
-//}
+if (g_abKeyPressed[K_PAUSE])
+{
+		g_eGameState = S_PAUSE;
+}
+
 if (g_abKeyPressed[K_RESET])
 {
+	g_sChar.m_iLife -= 1;
+	respawnAt(g_sChar);
 	bSomethingHappened = true;
 }
 
 if (g_abKeyPressed[K_HOME])
 {
 	gameMenu();
-	bSomethingHappened = true;
+	g_sChar.m_iLife = 3;
+	
 }
 
 if (/*mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 29] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 28] == 'N' ||
@@ -415,25 +426,6 @@ if (bSomethingHappened)
 	// set the bounce time to some time in the future to prevent accidental triggers
 	g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
 
-
-	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'S' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == '!') //TRAP "SPIKE" 'y-1'
-	{
-		playerKilled(g_sChar);
-		respawnAt(g_sChar);
-		playerKilled(g_sChar);
-	}
-
-	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'E') //TRAP "ELECTRIC FLOOR" 'y-1'
-	{
-		playerKilled(g_sChar);
-		respawnAt(g_sChar);
-	}
-
-	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'C') // CHECKPOINT
-	{
-		newRespawnLocation(g_sChar);
-	}
-
 	if (LevelSelected == 1) // FOR FIRST LEVEL
 	{
 		if ((int)g_sChar.m_cLocation.Y - 1 == 18 && (int)g_sChar.m_cLocation.X == 57) // for first falling trap
@@ -487,15 +479,24 @@ if (bSomethingHappened)
 		if ((int)g_sChar.m_cLocation.Y - 1 == 10 && (int)g_sChar.m_cLocation.X == 52) // for spike room leftmost pressure plate
 		{
 			ChangesArrayOne[12] = 1;
-		}		
+		}
+		if ((int)g_sChar.m_cLocation.Y - 1 == 27 && (int)g_sChar.m_cLocation.X == 26)
+		{
+			ChangesArrayOne[13] = 1;
+		}
+		if ((int)g_sChar.m_cLocation.Y - 1 == 1 && (int)g_sChar.m_cLocation.X == 79)
+		{
+			ChangesArrayOne[14] = 1;
+		}
 	}
 }
 }
-void processUserInput()
-{
+
+void processUserInput() {
 	// quits the game if player hits the escape key
-	if (g_abKeyPressed[K_ESCAPE])
+	if (g_abKeyPressed[K_ESCAPE]) {
 		g_bQuitGame = true;
+	}
 }
 
 void clearScreen()
@@ -528,6 +529,7 @@ void renderGameMenu()  // renders the game menu	//TODO: change this to game menu
 				{
 					g_Console.writeToBuffer(d, NameStorage[i][j], 0x33);
 				}
+
 				else
 				{
 					g_Console.writeToBuffer(d, NameStorage[i][j], 0x03);
@@ -552,45 +554,48 @@ void renderGameMenu()  // renders the game menu	//TODO: change this to game menu
 	g_Console.writeToBuffer(c, "->", 0x03);
 }
 
-//void renderPauseScreen()
-//{
-//	COORD c = g_Console.getConsoleSize();
-//	COORD d;
-//	string line;
-//	ifstream myfile("Pause.txt");
-//	char NameStorage[100][100];
-//	int i = 0, j = 0;
-//	int pos = 0;
-//	int p = 0;
-//	if (myfile.is_open())
-//	{
-//		while (getline(myfile, line))
-//		{
-//			d.Y = i;
-//			p = 0;
-//			for (j = 0; j < 120; j++)
-//			{
-//				NameStorage[i][j] = line[j]; // WHY IS IT Y,X
-//				d.X = p;
-//				if (NameStorage[i][j] == '#') {
-//					g_Console.writeToBuffer(d, NameStorage[i][j], 0x44);
-//				}
-//				else
-//				{
-//					g_Console.writeToBuffer(d, NameStorage[i][j], 0x04);
-//				}
-//				p++;
-//			}
-//			i++;
-//		}
-//		if (g_abKeyPressed[K_HOME])
-//		{
-//			gameMenu();
-//			NumberDIE = 0;
-//		}
-//		myfile.close();
-//	}
-//}
+void renderPauseScreen()
+{
+	COORD c = g_Console.getConsoleSize();
+	COORD d;
+	string line;
+	ifstream myfile("Pause.txt");
+	char NameStorage[100][100];
+	int i = 0, j = 0;
+	int pos = 0;
+	int p = 0;
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			d.Y = i;
+			p = 0;
+			for (j = 0; j < 120; j++)
+			{
+				NameStorage[i][j] = line[j]; // WHY IS IT Y,X
+				d.X = p;
+				if (NameStorage[i][j] == '#') {
+					g_Console.writeToBuffer(d, NameStorage[i][j], 0x44);
+				}
+				else
+				{
+					g_Console.writeToBuffer(d, NameStorage[i][j], 0x04);
+				}
+				p++;
+			}
+			i++;
+		}
+		if (g_abKeyPressed[K_HOME])
+		{
+			gameMenu();
+		}
+		myfile.close();
+	}
+	//if (g_abKeyPressed[K_PAUSE])
+	//{
+	//	gameMenu()
+	//}
+}
 
 void renderDefeatScreen()
 {
@@ -631,16 +636,54 @@ void renderDefeatScreen()
 	}
 }
 
+void renderVictoryScreen()
+{
+	COORD c = g_Console.getConsoleSize();
+	COORD d;
+	string line;
+	ifstream myfile("Victory.txt");
+	char NameStorage[100][100];
+	int i = 0, j = 0;
+	int pos = 0;
+	int p = 0;
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			d.Y = i;
+			p = 0;
+			for (j = 0; j < 120; j++)
+			{
+				NameStorage[i][j] = line[j]; // WHY IS IT Y,X
+				d.X = p;
+				if (NameStorage[i][j] == '#') {
+					g_Console.writeToBuffer(d, NameStorage[i][j], 0xEE);
+				}
+				else
+				{
+					g_Console.writeToBuffer(d, NameStorage[i][j], 0x0E);
+				}
+				p++;
+			}
+			i++;
+		}
+		if (g_abKeyPressed[K_HOME])
+		{
+			gameMenu();
+		}
+		myfile.close();
+	}
+}
+
 void renderGame()
 {
-	renderCollisionCheck();
+	renderCollisionCheck(g_Console);
 	renderMap();        // renders the map to the buffer first
-	renderCharacter();  // renders the character into the buffer
+	renderCharacter(g_Console, g_sChar);  // renders the character into the buffer
 
-	renderMovingTrap(g_Console);
-	renderLives();
-	renderUI();
-	
+	renderMovingTrap(g_Console, g_sMovingTrap);
+	renderLives(g_sChar, NumberOfLives, g_eGameState);
+	renderUI(g_Console, NumberOfLives, g_sChar);
 }
 
 void renderMap()
@@ -649,76 +692,107 @@ void renderMap()
 	COORD c;
 	int pos = 0;
 	string line;
-	
-	int i = 0;
-	if (LevelSelected == 1) // FOR LEVEL ONE
-	{
-		for (int i = 0; i < 50; i++) // FOR LEVEL ONE
+
+		for (int k = 0; k < 30; k++) // Reset Traps loop
 		{
+			for (int j = 0; j < 80; j++)
+			{
+				if (mapStorage[k][j] == ',')
+				{
+					mapStorage[k][j] = 'D';
+				}
+				else if (mapStorage[k][j] == '.')
+				{
+					mapStorage[k][j] = 'E';
+				}
+				else if (mapStorage[k][j] == 'b')
+				{
+					mapStorage[k][j] = 'S';
+				}
+			}
+		}
+
+	int i = 0;
+	if (LevelSelected == 1) // FOR LEVEL ONE					// LEGEND:
+	{															// ',' (Comma) = Deactivated Door
+		for (int i = 0; i < 50; i++) // FOR LEVEL ONE			// '.' (FullStop) = Deactivated Electric Floor
+		{														// 'b' (b) = Deactivated Spikes
 			if (ChangesArrayOne[0] == 1)
 			{
 				// add first falling traps
+				mapStorage[20][54] = ' ', mapStorage[21][57] = ' ', mapStorage[22][54] = ' ', mapStorage[23][57] = ' ';
 			}
 			if (ChangesArrayOne[1] == 1)
 			{
-				mapStorage[26][68] = ' '; // opens 1st door
+				mapStorage[26][68] = ','; // opens 1st door
 			}
 			if (ChangesArrayOne[2] == 1)
 			{
-				mapStorage[22][78] = ' '; // removes bottom right spike at 2nd checkpoint room
+				mapStorage[22][78] = 'b'; // removes bottom right spike at 2nd checkpoint room
 			}
 			if (ChangesArrayOne[3] == 1)
 			{
-				mapStorage[23][64] = ' ';// removes bottom left spike at 2nd checkpoint room
+				mapStorage[23][64] = 'b';// removes bottom left spike at 2nd checkpoint room
 			}
 			if (ChangesArrayOne[4] == 1)
 			{
-				mapStorage[20][71] = ' '; // removes top right spike at 2nd checkpoint room
+				mapStorage[20][71] = 'b'; // removes top right spike at 2nd checkpoint room
 			}
 			if (ChangesArrayOne[5] == 1)
 			{
-				mapStorage[17][59] = ' '; // opens 2nd door
+				mapStorage[17][59] = ','; // opens 2nd door
 			}
 			if (ChangesArrayOne[6] == 1)
 			{
-				mapStorage[12][58] = ' ', mapStorage[12][59] = ' ', mapStorage[12][60] = ' ', mapStorage[12][61] = ' ', mapStorage[12][62] = ' ', mapStorage[12][63] = ' ', mapStorage[12][64] = ' ', mapStorage[12][65] = ' ', mapStorage[12][66] = ' ', mapStorage[12][67] = ' ', mapStorage[12][68] = ' ', mapStorage[12][69] = ' ', mapStorage[12][70] = ' ', mapStorage[12][71] = ' ', mapStorage[12][72] = ' ';
-				mapStorage[13][58] = ' ';
-				mapStorage[14][58] = ' ', mapStorage[14][60] = ' ', mapStorage[14][61] = ' ', mapStorage[14][62] = ' ', mapStorage[14][63] = ' ', mapStorage[14][64] = ' ', mapStorage[14][65] = ' ', mapStorage[14][66] = ' ', mapStorage[14][67] = ' ', mapStorage[14][68] = ' ', mapStorage[14][69] = ' ', mapStorage[14][70] = ' ', mapStorage[14][71] = ' ', mapStorage[14][72] = ' ';
-				mapStorage[15][58] = ' ', mapStorage[15][60] = ' ';
-				mapStorage[16][58] = ' ', mapStorage[16][60] = ' '; // turns off rightmost electric floors (Coding order follows map display order)
+				mapStorage[12][58] = '.', mapStorage[12][59] = '.', mapStorage[12][60] = '.', mapStorage[12][61] = '.', mapStorage[12][62] = '.', mapStorage[12][63] = '.', mapStorage[12][64] = '.', mapStorage[12][65] = '.', mapStorage[12][66] = '.', mapStorage[12][67] = '.', mapStorage[12][68] = '.', mapStorage[12][69] = '.', mapStorage[12][70] = '.', mapStorage[12][71] = '.', mapStorage[12][72] = '.';
+				mapStorage[13][58] = '.';
+				mapStorage[14][58] = '.', mapStorage[14][60] = '.', mapStorage[14][61] = '.', mapStorage[14][62] = '.', mapStorage[14][63] = '.', mapStorage[14][64] = '.', mapStorage[14][65] = '.', mapStorage[14][66] = '.', mapStorage[14][67] = '.', mapStorage[14][68] = '.', mapStorage[14][69] = '.', mapStorage[14][70] = '.', mapStorage[14][71] = '.', mapStorage[14][72] = '.';
+				mapStorage[15][58] = '.', mapStorage[15][60] = '.';
+				mapStorage[16][58] = '.', mapStorage[16][60] = '.'; // turns off rightmost electric floors (Coding order follows map display order)
 			}
 			if (ChangesArrayOne[7] == 1)
 			{
-				mapStorage[14][43] = ' ', mapStorage[15][43] = ' '; // opens 3rd door (double door)
+				mapStorage[14][43] = ',', mapStorage[15][43] = ','; // opens 3rd door (double door)
 			}
 			if (ChangesArrayOne[8] == 1)
 			{
-				mapStorage[11][16] = ' ', mapStorage[11][17] = ' '; // opens 4th door (double door)
+				mapStorage[11][16] = ',', mapStorage[11][17] = ','; // opens 4th door (double door)
 			}
 			if (ChangesArrayOne[9] == 1)
 			{
-				mapStorage[12][2] = ' '; // removes electric floor behind moving traps
-				mapStorage[13][2] = ' ', mapStorage[13][5] = ' ';
-										mapStorage[14][5] = ' ';
-										mapStorage[15][5] = ' ';
-				mapStorage[16][2] = ' ', mapStorage[16][5] = ' ';
-				mapStorage[17][2] = ' ';
+				mapStorage[12][2] = '.'; // removes electric floor behind moving traps
+				mapStorage[13][2] = '.', mapStorage[13][5] = '.';
+										mapStorage[14][5] = '.';
+										mapStorage[15][5] = '.';
+				mapStorage[16][2] = '.', mapStorage[16][5] = '.';
+				mapStorage[17][2] = '.';
 			}
 			if (ChangesArrayOne[10] == 1)
 			{
-				mapStorage[5][39] = ' ', mapStorage[6][39] = ' '; // opens 5th door between electric floors (room with row of falling traps) (double door)
+				mapStorage[5][39] = ',', mapStorage[6][39] = ','; // opens 5th door between electric floors (room with row of falling traps) (double door)
 				// add 2nd falling trap
+				mapStorage[1][1] = ' ', mapStorage[1][2] = ' ', mapStorage[1][3] = ' ', mapStorage[1][4] = ' ', mapStorage[1][5] = ' ', mapStorage[1][6] = ' ', mapStorage[1][7]= ' ', mapStorage[1][8] = ' ', mapStorage[1][9] = ' ', mapStorage[1][10] = ' ';
+				mapStorage[1][11] = ' ', mapStorage[1][12] = ' ', mapStorage[1][13] = ' ', mapStorage[1][14] = ' ', mapStorage[1][15] = ' ', mapStorage[1][16] = ' ', mapStorage[1][17] = ' ', mapStorage[1][18] = ' ', mapStorage[1][19] = ' ', mapStorage[1][20] = ' ';
+				mapStorage[1][21] = ' ', mapStorage[1][22] = ' ', mapStorage[1][23] = ' ', mapStorage[1][24] = ' ', mapStorage[1][25] = ' ', mapStorage[1][26] = ' ', mapStorage[1][27] = ' ', mapStorage[1][28] = ' ', mapStorage[1][29] = ' ', mapStorage[1][30] = ' ';
+				mapStorage[1][31] = ' ', mapStorage[1][32] = ' ', mapStorage[1][33] = ' ', mapStorage[1][34] = ' ';
 			}
 			if (ChangesArrayOne[11] == 1)
 			{
-				mapStorage[9][54] = ' ', mapStorage[9][55] = ' ', mapStorage[9][56] = ' ', mapStorage[9][57] = ' ', mapStorage[9][58] = ' ', mapStorage[9][59] = ' ', mapStorage[9][60] = ' ', mapStorage[9][61] = ' ', mapStorage[9][62] = ' ', mapStorage[9][63] = ' ', mapStorage[9][64] = ' ', mapStorage[9][65] = ' ', mapStorage[9][66] = ' ', mapStorage[9][67] = ' ';
-				mapStorage[4][73] = ' ', mapStorage[4][74] = ' ', mapStorage[4][75] = ' '; // removes electric floor near row of pressure plates and infront of final door in 2nd last room
+				mapStorage[9][54] = '.', mapStorage[9][55] = '.', mapStorage[9][56] = '.', mapStorage[9][57] = '.', mapStorage[9][58] = '.', mapStorage[9][59] = '.', mapStorage[9][60] = '.', mapStorage[9][61] = '.', mapStorage[9][62] = '.', mapStorage[9][63] = '.', mapStorage[9][64] = '.', mapStorage[9][65] = '.', mapStorage[9][66] = '.', mapStorage[9][67] = '.';
+				mapStorage[4][73] = '.', mapStorage[4][74] = '.', mapStorage[4][75] = '.'; // removes electric floor near row of pressure plates and infront of final door in 2nd last room
 			}
 			if (ChangesArrayOne[12] == 1)
 			{
-				mapStorage[3][74] = ' ', mapStorage[3][75] = ' '; // opens last door (double door)
+				mapStorage[3][74] = ',', mapStorage[3][75] = ','; // opens last door (double door)
 			}
-
+			if (ChangesArrayOne[13] == 1)
+			{
+				mapStorage[19][33] = ' ', mapStorage[22][33] = ' ' ; //Fanswitch to disable first few fans
+			}
+			if (ChangesArrayOne[14] == 1)
+			{
+				g_eGameState = S_VICTORY;
+			}
 		}
 		
 
@@ -761,10 +835,6 @@ void renderMap()
 			{
 				g_Console.writeToBuffer(c, mapStorage[k][j], 0x30);
 			}
-			else if (mapStorage[k][j] == 'A')
-			{
-				g_Console.writeToBuffer(c, mapStorage[k][j], 0x90);
-			}
 			else if (mapStorage[k][j] == 'W')
 			{
 				g_Console.writeToBuffer(c, mapStorage[k][j], 0x35);
@@ -777,6 +847,10 @@ void renderMap()
 			{
 				g_Console.writeToBuffer(c, mapStorage[k][j], 0xE0);
 			}
+			else if (mapStorage[k][j] == '~')
+			{
+				g_Console.writeToBuffer(c, "WIN" , 0xE0);
+			}
 			else
 			{
 				g_Console.writeToBuffer(c, mapStorage[k][j], 0x00);
@@ -785,41 +859,11 @@ void renderMap()
 		}
 		pos++;
 	}
-}
 
-
-void renderCharacter()
-{
-    // Draw the location of the character
-    WORD charColor = 0x0C;
-    if(g_sChar.m_bActive)
-    {
-        charColor = 0x0A;
-    }
-    g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, charColor);
-}
-
-void renderLives()
-{
-	if (g_sChar.m_iLife == 3)
-	{
-		NumberOfLives = (char)3;
-		NumberOfLives += (char)3;
-		NumberOfLives += (char)3;
-	}
-	else if (g_sChar.m_iLife == 2)
-	{
-		NumberOfLives = (char)3;
-		NumberOfLives += (char)3;
-	}
-	else if (g_sChar.m_iLife == 1)
-	{
-		NumberOfLives = (char)3;
-	}
-	else
-	{
-		g_eGameState = S_DEFEAT;
-	}
+		if (bGotTrapPos == false)
+		{
+			getMovingTrapPos(bGotTrapPos, mapStorage, g_sMovingTrap);
+		}
 }
 
 void renderFramerate()
@@ -839,232 +883,6 @@ void renderFramerate()
 	c.X = 0;
 	c.Y = g_Console.getConsoleSize().Y - 2;
 	g_Console.writeToBuffer(c, ss.str());
-}
-
-void renderUI()
-{
-	COORD c;
-	std::ostringstream ss;
-	//Displays the Level at the Right
-	ss.str("");
-	ss << "Level: " << "<<" << "sth" << ">>"; //Change to Level with buttons
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 0;
-	g_Console.writeToBuffer(c, ss.str(), 0xC);
-
-	//Displays Lives at the Right
-	ss.str("");
-	ss << "Lives: " << NumberOfLives; //Change to Number of Lives
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 1;
-	g_Console.writeToBuffer(c, ss.str(), 0xC);
-
-	//Displays Difficulty at the Right
-	ss.str("");
-	ss << "Difficulty: " << "Hell"; //Change to Difficulty
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 2;
-	g_Console.writeToBuffer(c, ss.str(), 0xC);
-
-	//Displays Legend at the Right
-	ss.str("");
-	ss << "Legend:"; //Add boxes
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 4;
-	g_Console.writeToBuffer(c, ss.str(), 0xE0);
-
-	//Displays Legends1 at the Right
-	ss.str("");
-	ss << "#";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 5;
-	g_Console.writeToBuffer(c, ss.str(), 0x11);
-	ss.str(" - Walls");
-	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 5;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays Legends2 at the Right
-	ss.str("");
-	ss << (char)2 << " - Character";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 6;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays Legends3 at the Right
-	ss.str("");
-	ss << "F";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 7;
-	g_Console.writeToBuffer(c, ss.str(), 0xE0);
-	ss.str("");
-	ss << " - Fan";
-	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 7;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays Legends4 at the Right
-	ss.str("");
-	ss << "W";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 8;
-	g_Console.writeToBuffer(c, ss.str(), 0x35);
-	ss.str("");
-	ss << " - Fan Switch";
-	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 8;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays Legends5 at the Right
-	ss.str("");
-	ss << "S";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 9;
-	g_Console.writeToBuffer(c, ss.str(), 0x40);
-	ss.str("");
-	ss << " - Spike";
-	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 9;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays Legends6 at the Right
-	ss.str("");
-	ss << "A";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 10;
-	g_Console.writeToBuffer(c, ss.str(), 0x90);
-	ss.str("");
-	ss << " - Saw Trap";
-	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 10;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays Legends7 at the Right
-	ss.str("");
-	ss << "T";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 11;
-	g_Console.writeToBuffer(c, ss.str(), 0x30);
-	ss.str("");
-	ss << " - Falling Trap";
-	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 11;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays Legends8 at the Right
-	ss.str("");
-	ss << "G";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 12;
-	g_Console.writeToBuffer(c, ss.str(), 0xE0);
-	ss.str("");
-	ss << " - Generator";
-	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 12;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays Legends9 at the Right
-	ss.str("");
-	ss << "E";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 13;
-	g_Console.writeToBuffer(c, ss.str(), 0xC0);
-	ss.str("");
-	ss << " - Electric Floor";
-	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 13;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays Legends10 at the Right
-	ss.str("");
-	ss << "P";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 14;
-	g_Console.writeToBuffer(c, ss.str(), 0x21);
-	ss.str("");
-	ss << " - Pressure Plate";
-	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 14;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays Legends11 at the Right
-	ss.str("");
-	ss << "D";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 15;
-	g_Console.writeToBuffer(c, ss.str(), 0xF0);
-	ss.str("");
-	ss << " - Door";
-	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 15;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays Legends12 at the Right
-	ss.str("");
-	ss << "C";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 16;
-	g_Console.writeToBuffer(c, ss.str(), 0xB0);
-	ss.str("");
-	ss << " - Checkpoint";
-	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 16;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays Reset and Home Button at the Right
-	ss.str("");
-	ss << "Reset"; //Program in the buttons
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 18;
-	g_Console.writeToBuffer(c, ss.str(), 0xE0);
-
-	ss.str("");
-	ss << "Home"; //Program in the buttons
-	c.X = g_Console.getConsoleSize().X + 115;
-	c.Y = 18;
-	g_Console.writeToBuffer(c, ss.str(), 0xE0);
-
-	//Displays instructions1 at the Bottom
-	ss.str("");
-	ss << "WASD and arrowkeys - Move";
-	c.X = 50;
-	c.Y = g_Console.getConsoleSize().Y - 2;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays instructions2 at the Bottom
-	ss.str("");
-	ss << "R - Reset(lose a life)";
-	c.X = 50;
-	c.Y = g_Console.getConsoleSize().Y - 1;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays instructions3 at the Bottom
-	ss.str("");
-	ss << "ESC - Quit game";
-	c.X = 80;
-	c.Y = g_Console.getConsoleSize().Y - 2;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays instructions4 at the Bottom
-	ss.str("");
-	ss << "H - Exit to Home Screen";
-	c.X = 80;
-	c.Y = g_Console.getConsoleSize().Y - 1;
-	g_Console.writeToBuffer(c, ss.str());
-
-	std::ostringstream cd, ra;
-	cd << "(" << g_sChar.m_cLocation.X << ", " << g_sChar.m_cLocation.Y << ")"; //coord
-	c.X = g_Console.getConsoleSize().X - 20;
-	c.Y = 25;
-	g_Console.writeToBuffer(c, cd.str(), 0x0f);
-
-	//ra << "Respawn at: (" << NewX << ", " << NewY << ")"; //coord
-	//c.X = g_Console.getConsoleSize().X - 25;
-	//c.Y = 29;
-	//g_Console.writeToBuffer(c, ra.str(), 0x0f);
-
-} // added coord display (for testing purposes)
-
-void renderCollisionCheck() {
-
-	COORD c;
-	c.X = g_Console.getConsoleSize().X + 80;
-	c.Y = 0;
-
-	if (bHitSomething == false) {
-		g_Console.writeToBuffer(c, "No collision", 0xC);
-	}
-	if (bHitSomething == true) {
-	
-		g_Console.writeToBuffer(c, "COLLISION DETECTED", 0xC);
-		bHitSomething = false;
-		
-	}
 }
 
 void renderToScreen()
