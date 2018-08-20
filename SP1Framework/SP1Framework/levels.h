@@ -8,7 +8,7 @@ using namespace std;
 
 void levelSelect();
 
-void resetGame(struct SGameChar &playerInfo, int ChangesArrayOne[50]);
+void resetGame(struct SGameChar &playerInfo, int ChangesArrayOne[50], struct SFallingTrap fTrap[38]);
 
 
 
