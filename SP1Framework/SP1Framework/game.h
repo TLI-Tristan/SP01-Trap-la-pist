@@ -75,5 +75,4 @@ void renderDefeatScreen();  // Changes to defeat screen when die
 void renderVictoryScreen(); // Changes to victory screen when win
 void renderPauseScreen(); // Changes to pause screen when paused
 
-
 #endif // _GAME_H

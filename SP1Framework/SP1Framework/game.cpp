@@ -30,8 +30,6 @@ SGameTrap g_sMovingTrap[12];
 
 EGAMESTATES g_eGameState = S_GAMEMENU;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
-int FanBlowLeftDelay = 0, FanBlowRightDelay = 0, FanBlowUpDelay = 0, FanBlowDownDelay = 0;
-int AllowedMaxFanDelay = 3; // maximum frames allowed for delay CAN BE EDITED
 
 // Console object
 Console g_Console(120, 35, "SP1 Framework");
@@ -325,101 +323,7 @@ if (g_abKeyPressed[K_HOME])
 	
 }
 
-if (/*mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 29] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 28] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 27] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 26] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 25] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 24] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 23] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 22] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 21] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 20] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 19] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 18] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 17] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 16] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 15] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 14] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 13] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 12] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 11] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 10] == 'N' ||*/
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 9] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 8] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 7] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 6] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 5] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 4] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 3] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 2] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 1] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'N')
-{
-	if (FanBlowLeftDelay < AllowedMaxFanDelay) // left fan
-	{
-		FanBlowLeftDelay++;
-	}
-	else if (FanBlowLeftDelay == AllowedMaxFanDelay && mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 1] != '#' && mapStorage[(int)g_sChar.m_cLocation.Y - 2][(int)g_sChar.m_cLocation.X] != 'D')
-	{
-		if (g_sChar.m_cLocation.X > 0 && g_sChar.m_cLocation.X < 79)
-		{
-			g_sChar.m_cLocation.X--;
-		}
-		FanBlowLeftDelay = 0;
-	}
-
-}
-
-if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 9] == 'M' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 8] == 'M' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 7] == 'M' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 6] == 'M' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 5] == 'M' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 4] == 'M' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 3] == 'M' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 2] == 'M' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 1] == 'M' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'M')
-{
-	if (FanBlowRightDelay < AllowedMaxFanDelay) // right fan
-	{
-		FanBlowRightDelay++;
-	}
-	else if (FanBlowRightDelay == AllowedMaxFanDelay)
-	{
-		if (g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 41 && mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 1] != '#' && mapStorage[(int)g_sChar.m_cLocation.Y - 2][(int)g_sChar.m_cLocation.X] != 'D')
-		{
-			g_sChar.m_cLocation.X++;
-		}
-		FanBlowRightDelay = 0;
-	}
-
-}
-
-if (mapStorage[(int)g_sChar.m_cLocation.Y + 9][(int)g_sChar.m_cLocation.X] == 'Z' || mapStorage[(int)g_sChar.m_cLocation.Y + 8][(int)g_sChar.m_cLocation.X] == 'Z' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y + 7][(int)g_sChar.m_cLocation.X] == 'Z' || mapStorage[(int)g_sChar.m_cLocation.Y + 6][(int)g_sChar.m_cLocation.X] == 'Z' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y + 5][(int)g_sChar.m_cLocation.X] == 'Z' || mapStorage[(int)g_sChar.m_cLocation.Y + 4][(int)g_sChar.m_cLocation.X] == 'Z' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y + 3][(int)g_sChar.m_cLocation.X] == 'Z' || mapStorage[(int)g_sChar.m_cLocation.Y + 2][(int)g_sChar.m_cLocation.X] == 'Z' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y + 1][(int)g_sChar.m_cLocation.X] == 'Z' || mapStorage[(int)g_sChar.m_cLocation.Y][(int)g_sChar.m_cLocation.X] == 'Z')
-{
-	if (FanBlowUpDelay < AllowedMaxFanDelay) // up fan // unable to push player if player is IN UP fan
-	{
-		FanBlowUpDelay++;
-	}
-	else if (FanBlowUpDelay == AllowedMaxFanDelay)
-	{
-		if (g_sChar.m_cLocation.Y > 2 && mapStorage[(int)g_sChar.m_cLocation.Y - 2][(int)g_sChar.m_cLocation.X] != '#' && mapStorage[(int)g_sChar.m_cLocation.Y - 2][(int)g_sChar.m_cLocation.X] != 'D')
-		{
-			g_sChar.m_cLocation.Y--;
-		}
-		FanBlowUpDelay = 0;
-	}
-
-}
-
-if (mapStorage[(int)g_sChar.m_cLocation.Y - 9][(int)g_sChar.m_cLocation.X] == 'X' || mapStorage[(int)g_sChar.m_cLocation.Y - 8][(int)g_sChar.m_cLocation.X] == 'X' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 7][(int)g_sChar.m_cLocation.X] == 'X' || mapStorage[(int)g_sChar.m_cLocation.Y - 6][(int)g_sChar.m_cLocation.X] == 'X' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 5][(int)g_sChar.m_cLocation.X] == 'X' || mapStorage[(int)g_sChar.m_cLocation.Y - 4][(int)g_sChar.m_cLocation.X] == 'X' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 3][(int)g_sChar.m_cLocation.X] == 'X' || mapStorage[(int)g_sChar.m_cLocation.Y - 2][(int)g_sChar.m_cLocation.X] == 'X' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'X' || mapStorage[(int)g_sChar.m_cLocation.Y][(int)g_sChar.m_cLocation.X] == 'X')
-{
-	if (FanBlowDownDelay < AllowedMaxFanDelay) // down fan
-	{
-		FanBlowDownDelay++;
-	}
-	else if (FanBlowDownDelay == AllowedMaxFanDelay)
-	{
-		if (g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 7 && mapStorage[(int)g_sChar.m_cLocation.Y][(int)g_sChar.m_cLocation.X] != '#' && mapStorage[(int)g_sChar.m_cLocation.Y - 2][(int)g_sChar.m_cLocation.X] != 'D')
-		{
-			g_sChar.m_cLocation.Y++;
-		}
-		FanBlowDownDelay = 0;
-	}
-
-}
-
-
+FanFunctionMain(g_sChar, mapStorage, g_Console); // calls main fan function
 
 if (bSomethingHappened)
 {
