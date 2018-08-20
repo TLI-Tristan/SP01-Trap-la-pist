@@ -15,23 +15,21 @@ double  g_dElapsedTime;
 double  g_dDeltaTime;
 double g_dTrapTime;
 
-bool    g_abKeyPressed[K_COUNT];
+bool g_abKeyPressed[K_COUNT];
 int Choice;
 char mapStorage[100][100];
 string NumberOfLives;
 int LevelSelected = 0;
-int ChangesArrayOne[50] = { 0, };
 
 bool bGotTrapPos;
 
 // Game specific variables here
 SGameChar   g_sChar;
 SGameTrap g_sMovingTrap[12];
+int ChangesArrayOne[50];
 
 EGAMESTATES g_eGameState = S_GAMEMENU;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
-int FanBlowLeftDelay = 0, FanBlowRightDelay = 0, FanBlowUpDelay = 0, FanBlowDownDelay = 0;
-int AllowedMaxFanDelay = 3; // maximum frames allowed for delay CAN BE EDITED
 
 // Console object
 Console g_Console(120, 35, "SP1 Framework");
@@ -53,8 +51,8 @@ void init( void )
     // sets the initial state for the game
     g_eGameState = S_GAMEMENU;		
 
-    g_sChar.m_cLocation.X = 13;
-    g_sChar.m_cLocation.Y = 13;
+    g_sChar.m_cLocation.X = 1;
+    g_sChar.m_cLocation.Y = 28;
     g_sChar.m_bActive = true;
 	g_sChar.m_iLife = 3;
 	g_sChar.m_iRespawnX = 1;
@@ -66,6 +64,7 @@ void init( void )
 
 	bGotTrapPos = false;
 	initMovingTrap(g_sMovingTrap);
+	ChangesArrayOne[50] = { 0, };
 
 	string line;
 	ifstream myfile("maze.txt");
@@ -210,20 +209,7 @@ void gameMenu()
 		switch (Choice) {
 		case 1: LevelSelected = 1; // set LevelSelected values (for hard-coding level assets)
 			g_eGameState = S_GAME;
-
-			g_sChar.m_iLife = 3;			// reset lives
-			g_sChar.m_cLocation.X = 1;		// reset coord x
-			g_sChar.m_cLocation.Y = 28;		// reset coord y
-			newRespawnLocation(g_sChar);	// reset spawn
-
-			for (int i = 0; i < 50; i++)	// reset array
-			{
-				ChangesArrayOne[i] = 0;
-			}
-			g_sChar.m_iLife = 3;
-			g_sChar.m_cLocation.X = 1;
-			g_sChar.m_cLocation.Y = 28;
-			ChangesArrayOne[14] = 0;
+			resetGame(g_sChar, ChangesArrayOne);
 			break;
 		case 3: g_bQuitGame = true;
 			break;
@@ -240,6 +226,8 @@ void gameplay()            // gameplay logic
 	// sound can be played here too.
 	
 }
+
+
 
 void moveCharacter()
 {
@@ -314,112 +302,18 @@ if (g_abKeyPressed[K_PAUSE])
 if (g_abKeyPressed[K_RESET])
 {
 	g_sChar.m_iLife -= 1;
-	respawnAt(g_sChar);
+	playerKilled(g_sChar);
 	bSomethingHappened = true;
 }
 
 if (g_abKeyPressed[K_HOME])
 {
+	//resetGame();
 	gameMenu();
-	g_sChar.m_iLife = 3;
 	
 }
 
-if (/*mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 29] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 28] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 27] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 26] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 25] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 24] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 23] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 22] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 21] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 20] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 19] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 18] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 17] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 16] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 15] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 14] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 13] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 12] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 11] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 10] == 'N' ||*/
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 9] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 8] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 7] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 6] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 5] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 4] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 3] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 2] == 'N' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 1] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'N')
-{
-	if (FanBlowLeftDelay < AllowedMaxFanDelay) // left fan
-	{
-		FanBlowLeftDelay++;
-	}
-	else if (FanBlowLeftDelay == AllowedMaxFanDelay && mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 1] != '#' && mapStorage[(int)g_sChar.m_cLocation.Y - 2][(int)g_sChar.m_cLocation.X] != 'D')
-	{
-		if (g_sChar.m_cLocation.X > 0 && g_sChar.m_cLocation.X < 79)
-		{
-			g_sChar.m_cLocation.X--;
-		}
-		FanBlowLeftDelay = 0;
-	}
-
-}
-
-if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 9] == 'M' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 8] == 'M' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 7] == 'M' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 6] == 'M' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 5] == 'M' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 4] == 'M' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 3] == 'M' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 2] == 'M' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 1] == 'M' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'M')
-{
-	if (FanBlowRightDelay < AllowedMaxFanDelay) // right fan
-	{
-		FanBlowRightDelay++;
-	}
-	else if (FanBlowRightDelay == AllowedMaxFanDelay)
-	{
-		if (g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 41 && mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 1] != '#' && mapStorage[(int)g_sChar.m_cLocation.Y - 2][(int)g_sChar.m_cLocation.X] != 'D')
-		{
-			g_sChar.m_cLocation.X++;
-		}
-		FanBlowRightDelay = 0;
-	}
-
-}
-
-if (mapStorage[(int)g_sChar.m_cLocation.Y + 9][(int)g_sChar.m_cLocation.X] == 'Z' || mapStorage[(int)g_sChar.m_cLocation.Y + 8][(int)g_sChar.m_cLocation.X] == 'Z' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y + 7][(int)g_sChar.m_cLocation.X] == 'Z' || mapStorage[(int)g_sChar.m_cLocation.Y + 6][(int)g_sChar.m_cLocation.X] == 'Z' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y + 5][(int)g_sChar.m_cLocation.X] == 'Z' || mapStorage[(int)g_sChar.m_cLocation.Y + 4][(int)g_sChar.m_cLocation.X] == 'Z' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y + 3][(int)g_sChar.m_cLocation.X] == 'Z' || mapStorage[(int)g_sChar.m_cLocation.Y + 2][(int)g_sChar.m_cLocation.X] == 'Z' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y + 1][(int)g_sChar.m_cLocation.X] == 'Z' || mapStorage[(int)g_sChar.m_cLocation.Y][(int)g_sChar.m_cLocation.X] == 'Z')
-{
-	if (FanBlowUpDelay < AllowedMaxFanDelay) // up fan // unable to push player if player is IN UP fan
-	{
-		FanBlowUpDelay++;
-	}
-	else if (FanBlowUpDelay == AllowedMaxFanDelay)
-	{
-		if (g_sChar.m_cLocation.Y > 2 && mapStorage[(int)g_sChar.m_cLocation.Y - 2][(int)g_sChar.m_cLocation.X] != '#' && mapStorage[(int)g_sChar.m_cLocation.Y - 2][(int)g_sChar.m_cLocation.X] != 'D')
-		{
-			g_sChar.m_cLocation.Y--;
-		}
-		FanBlowUpDelay = 0;
-	}
-
-}
-
-if (mapStorage[(int)g_sChar.m_cLocation.Y - 9][(int)g_sChar.m_cLocation.X] == 'X' || mapStorage[(int)g_sChar.m_cLocation.Y - 8][(int)g_sChar.m_cLocation.X] == 'X' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 7][(int)g_sChar.m_cLocation.X] == 'X' || mapStorage[(int)g_sChar.m_cLocation.Y - 6][(int)g_sChar.m_cLocation.X] == 'X' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 5][(int)g_sChar.m_cLocation.X] == 'X' || mapStorage[(int)g_sChar.m_cLocation.Y - 4][(int)g_sChar.m_cLocation.X] == 'X' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 3][(int)g_sChar.m_cLocation.X] == 'X' || mapStorage[(int)g_sChar.m_cLocation.Y - 2][(int)g_sChar.m_cLocation.X] == 'X' ||
-	mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X] == 'X' || mapStorage[(int)g_sChar.m_cLocation.Y][(int)g_sChar.m_cLocation.X] == 'X')
-{
-	if (FanBlowDownDelay < AllowedMaxFanDelay) // down fan
-	{
-		FanBlowDownDelay++;
-	}
-	else if (FanBlowDownDelay == AllowedMaxFanDelay)
-	{
-		if (g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 7 && mapStorage[(int)g_sChar.m_cLocation.Y][(int)g_sChar.m_cLocation.X] != '#' && mapStorage[(int)g_sChar.m_cLocation.Y - 2][(int)g_sChar.m_cLocation.X] != 'D')
-		{
-			g_sChar.m_cLocation.Y++;
-		}
-		FanBlowDownDelay = 0;
-	}
-
-}
-
-
+FanFunctionMain(g_sChar, mapStorage, g_Console); // calls main fan function
 
 if (bSomethingHappened)
 {
@@ -428,14 +322,20 @@ if (bSomethingHappened)
 
 	if (LevelSelected == 1) // FOR FIRST LEVEL
 	{
+		//================
+		//====  WIP  =====
+		//================
+		 ArrayLevelOneDetect(g_sChar, ChangesArrayOne); // WIP (currently for ChangesArrayOne[1] ONLY)
+
+
 		if ((int)g_sChar.m_cLocation.Y - 1 == 18 && (int)g_sChar.m_cLocation.X == 57) // for first falling trap
 		{
 			ChangesArrayOne[0] = 1;
 		}
-		if ( ( (int)g_sChar.m_cLocation.Y - 1 == 27 && (int)g_sChar.m_cLocation.X == 28 ) || ( (int)g_sChar.m_cLocation.Y - 1 == 25 && (int)g_sChar.m_cLocation.X == 28) )
-		{
-			ChangesArrayOne[1] = 1; // for second 2 pressure plates
-		}
+		//if ( ( (int)g_sChar.m_cLocation.Y - 1 == 27 && (int)g_sChar.m_cLocation.X == 28 ) || ( (int)g_sChar.m_cLocation.Y - 1 == 25 && (int)g_sChar.m_cLocation.X == 28) )
+		//{
+		//	ChangesArrayOne[1] = 1; // for second 2 pressure plates
+		//}
 		if ( (int)g_sChar.m_cLocation.Y - 1 == 23 && (int)g_sChar.m_cLocation.X == 70) // for pressure plate after "2 fake pressure plate"
 		{
 			ChangesArrayOne[2] = 1;
@@ -717,15 +617,22 @@ void renderMap()
 	{															// ',' (Comma) = Deactivated Door
 		for (int i = 0; i < 50; i++) // FOR LEVEL ONE			// '.' (FullStop) = Deactivated Electric Floor
 		{														// 'b' (b) = Deactivated Spikes
+
+
+			//================
+			//====  WIP  =====
+			//================
+			ArrayLevelOneActivate(g_sChar, ChangesArrayOne, mapStorage); // WIP (currently for ChangesArrayOne[1] ONLY)
+
 			if (ChangesArrayOne[0] == 1)
 			{
 				// add first falling traps
 				mapStorage[20][54] = ' ', mapStorage[21][57] = ' ', mapStorage[22][54] = ' ', mapStorage[23][57] = ' ';
 			}
-			if (ChangesArrayOne[1] == 1)
-			{
-				mapStorage[26][68] = ','; // opens 1st door
-			}
+			//if (ChangesArrayOne[1] == 1)
+			//{
+			//	mapStorage[26][68] = ','; // opens 1st door
+			//}
 			if (ChangesArrayOne[2] == 1)
 			{
 				mapStorage[22][78] = 'b'; // removes bottom right spike at 2nd checkpoint room

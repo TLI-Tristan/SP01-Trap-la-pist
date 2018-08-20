@@ -5,6 +5,7 @@
 #include "collision.h"
 #include "GameAsset.h"
 #include "user_interface.h"
+#include "levels.h"
 
 extern CStopWatch g_swTimer;
 extern bool g_bQuitGame;
@@ -67,13 +68,10 @@ void clearScreen();         // clears the current screen and draw from scratch
 void renderGameMenu();  // renders the splash screen
 void renderGame();          // renders the game stuff
 void renderMap();           // renders the map to the buffer first
-void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
-void renderLives();			// Changes number of lives displayed
 void renderDefeatScreen();  // Changes to defeat screen when die
 void renderVictoryScreen(); // Changes to victory screen when win
 void renderPauseScreen(); // Changes to pause screen when paused
-
 
 #endif // _GAME_H

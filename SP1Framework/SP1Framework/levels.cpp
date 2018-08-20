@@ -28,6 +28,18 @@ void levelSelect() {
 
 }
 
-void resetGame() {
+void resetGame(struct SGameChar &playerInfo, int ChangesArrayOne[50]) {
+
+	//for (int i = 0; i < 50; i++)	// reset array
+	//{
+	//	ChangesArrayOne[i] = 0;
+	//}
+	//ChangesArrayOne[14] = 0;
+
+
+	playerInfo.m_iLife = 3;			// reset lives
+	playerInfo.m_cLocation.X = 1;		// reset coord x
+	playerInfo.m_cLocation.Y = 28;		// reset coord y
+	// reset spawn
 
 }
