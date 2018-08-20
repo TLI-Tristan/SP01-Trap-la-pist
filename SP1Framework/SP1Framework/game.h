@@ -4,6 +4,7 @@
 #include "Framework\timer.h"
 #include "collision.h"
 #include "GameAsset.h"
+#include "user_interface.h"
 
 extern CStopWatch g_swTimer;
 extern bool g_bQuitGame;
@@ -49,7 +50,7 @@ struct SGameTrap
 {
 	COORD m_cLocation;
 	bool  m_bActive;
-	bool m_cDirection;
+	int m_cDirection;
 };
 
 void init        ( void );      // initialize your variables, allocate memory, etc
@@ -69,9 +70,7 @@ void renderMap();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
-void renderUI();			// Defines where to spawn at
 void renderLives();			// Changes number of lives displayed
-void renderCollisionCheck();
 void renderDefeatScreen();  // Changes to defeat screen when die
 void renderVictoryScreen(); // Changes to victory screen when win
 void renderPauseScreen(); // Changes to pause screen when paused
