@@ -322,14 +322,20 @@ if (bSomethingHappened)
 
 	if (LevelSelected == 1) // FOR FIRST LEVEL
 	{
+		//================
+		//====  WIP  =====
+		//================
+		 ArrayLevelOneDetect(g_sChar, ChangesArrayOne); // WIP (currently for ChangesArrayOne[1] ONLY)
+
+
 		if ((int)g_sChar.m_cLocation.Y - 1 == 18 && (int)g_sChar.m_cLocation.X == 57) // for first falling trap
 		{
 			ChangesArrayOne[0] = 1;
 		}
-		if ( ( (int)g_sChar.m_cLocation.Y - 1 == 27 && (int)g_sChar.m_cLocation.X == 28 ) || ( (int)g_sChar.m_cLocation.Y - 1 == 25 && (int)g_sChar.m_cLocation.X == 28) )
-		{
-			ChangesArrayOne[1] = 1; // for second 2 pressure plates
-		}
+		//if ( ( (int)g_sChar.m_cLocation.Y - 1 == 27 && (int)g_sChar.m_cLocation.X == 28 ) || ( (int)g_sChar.m_cLocation.Y - 1 == 25 && (int)g_sChar.m_cLocation.X == 28) )
+		//{
+		//	ChangesArrayOne[1] = 1; // for second 2 pressure plates
+		//}
 		if ( (int)g_sChar.m_cLocation.Y - 1 == 23 && (int)g_sChar.m_cLocation.X == 70) // for pressure plate after "2 fake pressure plate"
 		{
 			ChangesArrayOne[2] = 1;
@@ -611,15 +617,22 @@ void renderMap()
 	{															// ',' (Comma) = Deactivated Door
 		for (int i = 0; i < 50; i++) // FOR LEVEL ONE			// '.' (FullStop) = Deactivated Electric Floor
 		{														// 'b' (b) = Deactivated Spikes
+
+
+			//================
+			//====  WIP  =====
+			//================
+			ArrayLevelOneActivate(g_sChar, ChangesArrayOne, mapStorage); // WIP (currently for ChangesArrayOne[1] ONLY)
+
 			if (ChangesArrayOne[0] == 1)
 			{
 				// add first falling traps
 				mapStorage[20][54] = ' ', mapStorage[21][57] = ' ', mapStorage[22][54] = ' ', mapStorage[23][57] = ' ';
 			}
-			if (ChangesArrayOne[1] == 1)
-			{
-				mapStorage[26][68] = ','; // opens 1st door
-			}
+			//if (ChangesArrayOne[1] == 1)
+			//{
+			//	mapStorage[26][68] = ','; // opens 1st door
+			//}
 			if (ChangesArrayOne[2] == 1)
 			{
 				mapStorage[22][78] = 'b'; // removes bottom right spike at 2nd checkpoint room

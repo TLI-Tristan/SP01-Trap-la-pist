@@ -207,3 +207,29 @@ void FanFunctionDown(struct SGameChar &playerInfo, char mapStorage[100][100], Co
 	}
 }
 // END FAN FUNCTION //
+
+
+
+//================
+//====  WIP  =====
+//================
+
+// hell again "framework for changes array" <<WIP>>
+void ArrayLevelOneDetect(struct SGameChar &playerInfo, int ChangesArrayOne[50])
+{
+	if (((int)playerInfo.m_cLocation.Y - 1 == 27 && (int)playerInfo.m_cLocation.X == 28) || ((int)playerInfo.m_cLocation.Y - 1 == 25 && (int)playerInfo.m_cLocation.X == 28))
+	{
+		ChangesArrayOne[1] = 1; // for second 2 pressure plates
+	}
+	// etc etc
+}
+
+// "framework for changes array RESET" <<WIP>>
+void ArrayLevelOneActivate(struct SGameChar &playerInfo, int ChangesArrayOne[50], char mapStorage[100][100])
+{
+	if (ChangesArrayOne[1] == 1)
+	{
+		mapStorage[26][68] = ','; // opens 1st door
+	}
+	// etc etc
+}
