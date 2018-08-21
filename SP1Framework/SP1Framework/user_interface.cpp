@@ -37,7 +37,7 @@ void renderUI(Console &g_Console, string NumberOfLives, struct SGameChar &player
 	ss << "#";
 	c.X = g_Console.getConsoleSize().X + 100;
 	c.Y = 5;
-	g_Console.writeToBuffer(c, ss.str(), 0x11);
+	g_Console.writeToBuffer(c, ss.str(), 0x88);
 	ss.str(" - Walls");
 	c.X = g_Console.getConsoleSize().X + 101;
 	c.Y = 5;
@@ -86,7 +86,7 @@ void renderUI(Console &g_Console, string NumberOfLives, struct SGameChar &player
 	ss << "A";
 	c.X = g_Console.getConsoleSize().X + 100;
 	c.Y = 10;
-	g_Console.writeToBuffer(c, ss.str(), 0x90);
+	g_Console.writeToBuffer(c, ss.str(), 0x02);
 	ss.str("");
 	ss << " - Saw Trap";
 	c.X = g_Console.getConsoleSize().X + 101;
