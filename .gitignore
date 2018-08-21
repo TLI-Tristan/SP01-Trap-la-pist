@@ -340,3 +340,7 @@ SP1Framework/SP1Framework.VC.db
 *.tlog
 *.pdb
 *.db
+*.pdb
+*.log
+*.lastbuildstate
+*.idb
