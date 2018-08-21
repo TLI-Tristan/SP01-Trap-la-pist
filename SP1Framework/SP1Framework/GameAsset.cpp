@@ -2,7 +2,8 @@
 
 int FanBlowLeftDelay = 0, FanBlowRightDelay = 0, FanBlowUpDelay = 0, FanBlowDownDelay = 0;
 int AllowedMaxFanDelay = 3; // maximum frames allowed for delay CAN BE EDITED
-bool trap = false;
+
+bool bTriggerFallTrap = false;
 
 void getMovingTrapPos(bool &bGotTrapPos, char map[100][100], struct SGameTrap g_sMovingTrap[8]) {
 
@@ -51,12 +52,14 @@ void initFallingTrap(struct SFallingTrap g_fTrap[38]) {
 	for (int i = 0; i < 38; i++) {
 
 		g_fTrap[i].m_bActive = true;
+
 	}
 }
 
 
 
 void movingTrap(double &trapTime, struct SGameTrap g_sMovingTrap[8]) {
+
 
 	if (trapTime >= 0.1) {
 
@@ -86,25 +89,40 @@ void movingTrap(double &trapTime, struct SGameTrap g_sMovingTrap[8]) {
 
 void FallingTrap(double &ftrapTime, struct SFallingTrap g_fTrap[38])
 {
-	if (trap == true)
-	{
-		if (ftrapTime >= 0.5) {
+		if (ftrapTime >= 0.5 && bTriggerFallTrap == true)
+		{
 
-			for (int i = 0; i < 38; i++) {
+			for (int i = 0; i < 38; i++)
+			{
 
 
 				if (g_fTrap[i].m_cLocation.Y == 11) {
-					for (int i = 0; i < 38; i++) {
-						g_fTrap[i].m_bActive = false;
-					}
+					g_fTrap[i].m_bActive = false;
 				}
 				else {
-
 					g_fTrap[i].m_cLocation.Y += 1;
 				}
+
+
+				if (g_fTrap[i].m_bActive == false) {
+					g_fTrap[i].m_cLocation.X = 1;
+					g_fTrap[i].m_cLocation.Y = 1;
+				}
+
 			}
 			ftrapTime = 0.0;
-		}
+		
+	}
+
+
+}
+
+void resetTrap(bool &bGotTrapPos, SFallingTrap g_fTrap[38]) {
+
+	bTriggerFallTrap = false;
+	bGotTrapPos = false;
+	for (int i = 0; i < 38; i++) {
+		g_fTrap[i].m_bActive = true;
 	}
 }
 
@@ -284,7 +302,7 @@ void ArrayLevelOneDetect(struct SGameChar &playerInfo, int ChangesArrayOne[50])
 }
 
 // "framework for changes array RESET" <<WIP>>
-void ArrayLevelOneActivate(struct SGameChar &playerInfo, int ChangesArrayOne[50], char mapStorage[100][100])
+void ArrayLevelOneActivate(struct SGameChar &playerInfo, int ChangesArrayOne[50], char mapStorage[100][100], struct SFallingTrap g_fTrap[38])
 {
 	if (ChangesArrayOne[1] == 1)
 	{
@@ -293,7 +311,9 @@ void ArrayLevelOneActivate(struct SGameChar &playerInfo, int ChangesArrayOne[50]
 	if (ChangesArrayOne[10] == 1)
 	{
 		mapStorage[5][39] = ',', mapStorage[6][39] = ','; // opens 5th door between electric floors (room with row of falling traps) (double door)
-		trap = true;
+		for (int i = 0; i < 38; i++) {
+			bTriggerFallTrap = true;
+		}
 	}
 	// etc etc
 }

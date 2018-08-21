@@ -28,18 +28,18 @@ void levelSelect() {
 
 }
 
-void resetGame(struct SGameChar &playerInfo, int ChangesArrayOne[50], struct SFallingTrap fTrap[38]) {
+void resetGame(struct SGameChar &playerInfo, int ChangesArrayOne[50], struct SFallingTrap g_fTrap[38], bool &bGotTrapPos) {
 
-	//for (int i = 0; i < 50; i++)	// reset array
-	//{
-	//	ChangesArrayOne[i] = 0;
-	//}
-	//ChangesArrayOne[14] = 0;
+	for (int i = 0; i < 50; i++)	// reset array
+	{
+		ChangesArrayOne[i] = 0;
+	}
+	ChangesArrayOne[14] = 0;
 
 //	trap = false;
 	playerInfo.m_iLife = 3;			// reset lives
 	playerInfo.m_cLocation.X = 1;		// reset coord x
 	playerInfo.m_cLocation.Y = 10;		// reset coord y
-	// reset spawn
+	resetTrap(bGotTrapPos,  g_fTrap);
 
 }

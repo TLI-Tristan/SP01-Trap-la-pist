@@ -59,7 +59,6 @@ struct SFallingTrap
 {
 	COORD m_cLocation;
 	bool  m_bActive;
-	bool m_bTriggered;
 };
 
 void init        ( void );      // initialize your variables, allocate memory, etc
