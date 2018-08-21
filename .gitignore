@@ -344,3 +344,6 @@ SP1Framework/SP1Framework.VC.db
 *.log
 *.lastbuildstate
 *.idb
+*.obj
+*.tlog
+*.lastbuildstate
