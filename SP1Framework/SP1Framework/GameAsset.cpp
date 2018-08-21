@@ -22,7 +22,7 @@ void getMovingTrapPos(bool &bGotTrapPos, char map[100][100], struct SGameTrap g_
 	bGotTrapPos = true;
 }
 
-void getFallingTrapPos(bool &bGotTrapPos, char map[100][100], struct SFallingTrap g_fTrap[38]) {
+void getFallingTrapPos(bool &bGotTrapPos, char map[100][100], struct SFallingTrap g_fTrap[34]) {
 
 	int i = 0;
 	for (int k = 0; k < 30; k++) {
@@ -47,9 +47,9 @@ void initMovingTrap(struct SGameTrap g_sMovingTrap[8]) {
 	}
 }
 
-void initFallingTrap(struct SFallingTrap g_fTrap[38]) {
+void initFallingTrap(struct SFallingTrap g_fTrap[34]) {
 
-	for (int i = 0; i < 38; i++) {
+	for (int i = 0; i < 34; i++) {
 
 		g_fTrap[i].m_bActive = true;
 
@@ -87,12 +87,12 @@ void movingTrap(double &trapTime, struct SGameTrap g_sMovingTrap[8]) {
 	}
 }
 
-void FallingTrap(double &ftrapTime, struct SFallingTrap g_fTrap[38])
+void FallingTrap(double &ftrapTime, struct SFallingTrap g_fTrap[34])
 {
 		if (ftrapTime >= 0.5 && bTriggerFallTrap == true)
 		{
 
-			for (int i = 0; i < 38; i++)
+			for (int i = 0; i < 34; i++)
 			{
 
 
@@ -117,11 +117,11 @@ void FallingTrap(double &ftrapTime, struct SFallingTrap g_fTrap[38])
 
 }
 
-void resetTrap(bool &bGotTrapPos, SFallingTrap g_fTrap[38]) {
+void resetTrap(bool &bGotTrapPos, SFallingTrap g_fTrap[34]) {
 
 	bTriggerFallTrap = false;
 	bGotTrapPos = false;
-	for (int i = 0; i < 38; i++) {
+	for (int i = 0; i < 34; i++) {
 		g_fTrap[i].m_bActive = true;
 	}
 }
@@ -138,14 +138,14 @@ void renderMovingTrap(Console &g_Console, struct SGameTrap g_sMovingTrap[8]) {
 }
 
 
-void renderFallingTrap(Console & g_Console, SFallingTrap g_fTrap[38])
+void renderFallingTrap(Console & g_Console, SFallingTrap g_fTrap[34])
 {
 	WORD trapColor = 0x0C;
 	{
 		trapColor = 0x30;
 	}
 	
-	for (int i = 0; i < 38; i++) {
+	for (int i = 0; i < 34; i++) {
 		if (g_fTrap[i].m_bActive == true) {
 			g_Console.writeToBuffer(g_fTrap[i].m_cLocation, "T", trapColor);
 		}
@@ -302,7 +302,7 @@ void ArrayLevelOneDetect(struct SGameChar &playerInfo, int ChangesArrayOne[50])
 }
 
 // "framework for changes array RESET" <<WIP>>
-void ArrayLevelOneActivate(struct SGameChar &playerInfo, int ChangesArrayOne[50], char mapStorage[100][100], struct SFallingTrap g_fTrap[38])
+void ArrayLevelOneActivate(struct SGameChar &playerInfo, int ChangesArrayOne[50], char mapStorage[100][100], struct SFallingTrap g_fTrap[34])
 {
 	if (ChangesArrayOne[1] == 1)
 	{
@@ -311,7 +311,7 @@ void ArrayLevelOneActivate(struct SGameChar &playerInfo, int ChangesArrayOne[50]
 	if (ChangesArrayOne[10] == 1)
 	{
 		mapStorage[5][39] = ',', mapStorage[6][39] = ','; // opens 5th door between electric floors (room with row of falling traps) (double door)
-		for (int i = 0; i < 38; i++) {
+		for (int i = 0; i < 34; i++) {
 			bTriggerFallTrap = true;
 		}
 	}
