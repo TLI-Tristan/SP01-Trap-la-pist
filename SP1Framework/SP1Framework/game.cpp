@@ -308,7 +308,6 @@ if (g_abKeyPressed[K_PAUSE])
 
 if (g_abKeyPressed[K_RESET])
 {
-	g_sChar.m_iLife -= 1;
 	playerKilled(g_sChar);
 	bSomethingHappened = true;
 }
