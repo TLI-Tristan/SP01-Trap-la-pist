@@ -26,8 +26,8 @@ bool bGotTrapPos;
 
 // Game specific variables here
 SGameChar   g_sChar;
-SGameTrap g_sMovingTrap[12];
-SFallingTrap g_fTrap[38];
+SGameTrap g_sMovingTrap[8];
+SFallingTrap g_fTrap[34];
 int ChangesArrayOne[50];
 
 EGAMESTATES g_eGameState = S_GAMEMENU;
@@ -634,41 +634,6 @@ void renderMap()
 			//================
 			ArrayLevelOneActivate(g_sChar, ChangesArrayOne, mapStorage, g_fTrap); // WIP (currently for ChangesArrayOne[1] ONLY)
 
-			if (ChangesArrayOne[0] == 1)
-			{
-				// add first falling traps
-				/*for (int i = 0; i < 38; i++)
-				{
-				if (i >= 34 && i <= 37)
-				{
-				if (g_fTrap[i].m_cLocation.Y >= 14 && g_fTrap[i].m_cLocation.Y <= 17)
-				{
-				g_fTrap[i].m_cDirection = 1;
-				if (g_fTrap[i].m_cDirection = 0)
-				{
-				ChangesArrayOne[0] = 0;
-				}
-				}
-
-				if (i == 34 || i == 35)
-				{
-				if (g_fTrap[i].m_cLocation.Y == 27)
-				{
-				g_fTrap[i].m_cDirection = 0;
-				}
-				}
-				else if (i == 36 || i == 37)
-				{
-				if (g_fTrap[i].m_cLocation.Y == 28)
-				{
-				g_fTrap[i].m_cDirection = 0;
-				}
-				}
-				g_fTrap[i].m_cLocation.Y += g_fTrap[i].m_cDirection;
-				}
-				}
-				*/
-			}
 			//if (ChangesArrayOne[1] == 1)
 			//{
 			//	mapStorage[26][68] = ','; // opens 1st door
@@ -714,26 +679,6 @@ void renderMap()
 				mapStorage[16][2] = '.', mapStorage[16][5] = '.';
 				mapStorage[17][2] = '.';
 			}
-			//if (ChangesArrayOne[10] == 1)
-			//{
-			//	mapStorage[5][39] = ',', mapStorage[6][39] = ','; // opens 5th door between electric floors (room with row of falling traps) (double door)
-			//	// add 2nd falling trap
-			//	/*for (int i = 0; i < 38; i++)
-			//	{
-
-			//	if (i >= 0 && i <= 33)
-			//	{
-			//	if (g_fTrap[i].m_cLocation.Y == 2) {
-			//	g_fTrap[i].m_cDirection = 1;
-			//	}
-
-			//	else if (g_fTrap[i].m_cLocation.Y == 11) {
-			//	g_fTrap[i].m_cDirection = 0;
-			//	}
-			//	g_fTrap[i].m_cLocation.Y += g_fTrap[i].m_cDirection;
-			//	}
-			//	}*/
-			//}
 			if (ChangesArrayOne[11] == 1)
 			{
 				mapStorage[9][54] = '.', mapStorage[9][55] = '.', mapStorage[9][56] = '.', mapStorage[9][57] = '.', mapStorage[9][58] = '.', mapStorage[9][59] = '.', mapStorage[9][60] = '.', mapStorage[9][61] = '.', mapStorage[9][62] = '.', mapStorage[9][63] = '.', mapStorage[9][64] = '.', mapStorage[9][65] = '.', mapStorage[9][66] = '.', mapStorage[9][67] = '.';
@@ -745,7 +690,7 @@ void renderMap()
 			}
 			if (ChangesArrayOne[13] == 1)
 			{
-				mapStorage[19][33] = ' ', mapStorage[22][33] = ' ' ; //Fanswitch to disable first few fans
+				mapStorage[19][33] = 'l', mapStorage[22][33] = 'l' ; //Fanswitch to disable first few fans
 			}
 			if (ChangesArrayOne[14] == 1)
 			{
