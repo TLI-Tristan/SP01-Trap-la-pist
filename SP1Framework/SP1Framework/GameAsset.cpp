@@ -283,30 +283,120 @@ void FanFunctionDown(struct SGameChar &playerInfo, char mapStorage[100][100], Co
 
 
 
-//================
-//====  WIP  =====
-//================
+// LEGEND:
+// ',' (Comma) = Deactivated Door
+// '.' (FullStop) = Deactivated Electric Floor
+// 'b' (b) = Deactivated Spikes
+// 'l' (l) = Deactivated Fans
 
-// hell again "framework for changes array" <<WIP>>
+// Detect pressure plates etc presses (Level One)
 void ArrayLevelOneDetect(struct SGameChar &playerInfo, int ChangesArrayOne[50])
 {
 	if (((int)playerInfo.m_cLocation.Y - 1 == 27 && (int)playerInfo.m_cLocation.X == 28) || ((int)playerInfo.m_cLocation.Y - 1 == 25 && (int)playerInfo.m_cLocation.X == 28))
 	{
 		ChangesArrayOne[1] = 1; // for second 2 pressure plates
 	}
+	if ((int)playerInfo.m_cLocation.Y - 1 == 23 && (int)playerInfo.m_cLocation.X == 70) // for pressure plate after "2 fake pressure plate"
+	{
+		ChangesArrayOne[2] = 1;
+	}
+	if ((int)playerInfo.m_cLocation.Y - 1 == 19 && (int)playerInfo.m_cLocation.X == 64) // for top left at room with 2nd checkpoint
+	{
+		ChangesArrayOne[3] = 1;
+	}
+	if ((int)playerInfo.m_cLocation.Y - 1 == 23 && (int)playerInfo.m_cLocation.X == 59) // for bottome left at room with 2nd checkpoint
+	{
+		ChangesArrayOne[4] = 1;
+	}
+	if ((int)playerInfo.m_cLocation.Y - 1 == 18 && (int)playerInfo.m_cLocation.X == 78) // for top right at room with 2nd checkpoint
+	{
+		ChangesArrayOne[5] = 1;
+	}
+	if ((int)playerInfo.m_cLocation.Y - 1 == 13 && (int)playerInfo.m_cLocation.X == 78) // for rightmost generator
+	{
+		ChangesArrayOne[6] = 1;
+	}
+	if ((int)playerInfo.m_cLocation.Y - 1 == 16 && (int)playerInfo.m_cLocation.X == 71) // for pressure plate between spikes
+	{
+		ChangesArrayOne[7] = 1;
+	}
+	if ((int)playerInfo.m_cLocation.Y - 1 == 14 && (int)playerInfo.m_cLocation.X == 1) // for leftmost pressure plate
+	{
+		ChangesArrayOne[8] = 1;
+	}
+	if ((int)playerInfo.m_cLocation.Y - 1 == 15 && (int)playerInfo.m_cLocation.X == 1) // for leftmost generator
+	{
+		ChangesArrayOne[9] = 1;
+	}
 	if ((int)playerInfo.m_cLocation.Y - 1 == 10 && (int)playerInfo.m_cLocation.X == 16 || (int)playerInfo.m_cLocation.Y - 1 == 10 && (int)playerInfo.m_cLocation.X == 17) // for falling trap row room pressure plate
 	{
 		ChangesArrayOne[10] = 1;
 	}
-	// etc etc
+	if ((int)playerInfo.m_cLocation.Y - 1 == 10 && (int)playerInfo.m_cLocation.X == 49) // for spike room generator
+	{
+		ChangesArrayOne[11] = 1;
+	}
+	if ((int)playerInfo.m_cLocation.Y - 1 == 10 && (int)playerInfo.m_cLocation.X == 52) // for spike room leftmost pressure plate
+	{
+		ChangesArrayOne[12] = 1;
+	}
+	if ((int)playerInfo.m_cLocation.Y - 1 == 27 && (int)playerInfo.m_cLocation.X == 26) // Fans
+	{
+		ChangesArrayOne[13] = 1;
+	}
+	if ((int)playerInfo.m_cLocation.Y - 1 == 1 && (int)playerInfo.m_cLocation.X == 79) // Victory
+	{
+		ChangesArrayOne[14] = 1;
+	}
 }
 
-// "framework for changes array RESET" <<WIP>>
-void ArrayLevelOneActivate(struct SGameChar &playerInfo, int ChangesArrayOne[50], char mapStorage[100][100], struct SFallingTrap g_fTrap[34])
+// Activate traps function (Level One)
+void ArrayLevelOneActivate(struct SGameChar &playerInfo, int ChangesArrayOne[50], char mapStorage[100][100], struct SFallingTrap g_fTrap[34], enum EGAMESTATES &g_eGameState)
 {
 	if (ChangesArrayOne[1] == 1)
 	{
 		mapStorage[26][68] = ','; // opens 1st door
+	}
+	if (ChangesArrayOne[2] == 1)
+	{
+		mapStorage[22][78] = 'b'; // removes bottom right spike at 2nd checkpoint room
+	}
+	if (ChangesArrayOne[3] == 1)
+	{
+		mapStorage[23][64] = 'b';// removes bottom left spike at 2nd checkpoint room
+	}
+	if (ChangesArrayOne[4] == 1)
+	{
+		mapStorage[20][71] = 'b'; // removes top right spike at 2nd checkpoint room
+	}
+	if (ChangesArrayOne[5] == 1)
+	{
+		mapStorage[17][59] = ','; // opens 2nd door
+	}
+	if (ChangesArrayOne[6] == 1)
+	{
+		mapStorage[12][58] = '.', mapStorage[12][59] = '.', mapStorage[12][60] = '.', mapStorage[12][61] = '.', mapStorage[12][62] = '.', mapStorage[12][63] = '.', mapStorage[12][64] = '.', mapStorage[12][65] = '.', mapStorage[12][66] = '.', mapStorage[12][67] = '.', mapStorage[12][68] = '.', mapStorage[12][69] = '.', mapStorage[12][70] = '.', mapStorage[12][71] = '.', mapStorage[12][72] = '.';
+		mapStorage[13][58] = '.';
+		mapStorage[14][58] = '.', mapStorage[14][60] = '.', mapStorage[14][61] = '.', mapStorage[14][62] = '.', mapStorage[14][63] = '.', mapStorage[14][64] = '.', mapStorage[14][65] = '.', mapStorage[14][66] = '.', mapStorage[14][67] = '.', mapStorage[14][68] = '.', mapStorage[14][69] = '.', mapStorage[14][70] = '.', mapStorage[14][71] = '.', mapStorage[14][72] = '.';
+		mapStorage[15][58] = '.', mapStorage[15][60] = '.';
+		mapStorage[16][58] = '.', mapStorage[16][60] = '.'; // turns off rightmost electric floors (Coding order follows map display order)
+	}
+	if (ChangesArrayOne[7] == 1)
+	{
+		mapStorage[14][43] = ',', mapStorage[15][43] = ','; // opens 3rd door (double door)
+	}
+	if (ChangesArrayOne[8] == 1)
+	{
+		mapStorage[11][16] = ',', mapStorage[11][17] = ','; // opens 4th door (double door)
+	}
+	if (ChangesArrayOne[9] == 1)
+	{
+		mapStorage[12][2] = '.'; // removes electric floor behind moving traps
+		mapStorage[13][2] = '.', mapStorage[13][5] = '.';
+		mapStorage[14][5] = '.';
+		mapStorage[15][5] = '.';
+		mapStorage[16][2] = '.', mapStorage[16][5] = '.';
+		mapStorage[17][2] = '.';
 	}
 	if (ChangesArrayOne[10] == 1)
 	{
@@ -315,5 +405,21 @@ void ArrayLevelOneActivate(struct SGameChar &playerInfo, int ChangesArrayOne[50]
 			bTriggerFallTrap = true;
 		}
 	}
-	// etc etc
+	if (ChangesArrayOne[11] == 1)
+	{
+		mapStorage[9][54] = '.', mapStorage[9][55] = '.', mapStorage[9][56] = '.', mapStorage[9][57] = '.', mapStorage[9][58] = '.', mapStorage[9][59] = '.', mapStorage[9][60] = '.', mapStorage[9][61] = '.', mapStorage[9][62] = '.', mapStorage[9][63] = '.', mapStorage[9][64] = '.', mapStorage[9][65] = '.', mapStorage[9][66] = '.', mapStorage[9][67] = '.';
+		mapStorage[4][73] = '.', mapStorage[4][74] = '.', mapStorage[4][75] = '.'; // removes electric floor near row of pressure plates and infront of final door in 2nd last room
+	}
+	if (ChangesArrayOne[12] == 1)
+	{
+		mapStorage[3][74] = ',', mapStorage[3][75] = ','; // opens last door (double door)
+	}
+	if (ChangesArrayOne[13] == 1)
+	{
+		mapStorage[19][33] = 'l', mapStorage[22][33] = 'l'; //Fanswitch to disable first few fans
+	}
+	if (ChangesArrayOne[14] == 1)
+	{
+		g_eGameState = S_VICTORY;
+	}
 }

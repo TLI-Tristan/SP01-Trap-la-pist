@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-﻿  levels.cpp
-  SP1Framework.vcxproj -> C:\Users\Chew Hui Feng\Desktop\Studio Project sem 1\SP1Framework\New folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.exe
-  SP1Framework.vcxproj -> C:\Users\Chew Hui Feng\Desktop\Studio Project sem 1\SP1Framework\New folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.pdb (Full PDB)
-=======
-﻿  user_interface.cpp
-  SP1Framework.vcxproj -> C:\Users\ooiwe\Desktop\MOST NEW FOLDER\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.exe
-  SP1Framework.vcxproj -> C:\Users\ooiwe\Desktop\MOST NEW FOLDER\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.pdb (Full PDB)
->>>>>>> pr/27
+﻿  game.cpp
+  GameAsset.cpp
+  Generating Code...
+  SP1Framework.vcxproj -> D:\Users\l533\Desktop\21.8 New Folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.exe
+  SP1Framework.vcxproj -> D:\Users\l533\Desktop\21.8 New Folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.pdb (Full PDB)
