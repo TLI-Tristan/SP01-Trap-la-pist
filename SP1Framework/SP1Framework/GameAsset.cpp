@@ -1,97 +1,9 @@
-//#include "GameAsset.h"
-//
-//SGameTrap g_fTrap;
-//
-//void getMovingTrapPos(bool &bGotTrapPos, char map[100][100], struct SGameTrap g_sMovingTrap[8]) {
-//
-//	int i = 0;
-//	for (int k = 0; k < 30; k++) {
-//
-//		for (int j = 0; j < 80; j++) {
-//			if (map[k][j] == 'A') {
-//				g_sMovingTrap[i].m_cLocation.X = j;
-//				//else {
-//					g_sMovingTrap[i].m_cLocation.Y = k + 1;
-//				//}
-//				i++;
-//
-//			}
-//		}
-//	}
-//	bGotTrapPos = true;
-//}
-//
-//void initMovingTrap(struct SGameTrap g_sMovingTrap[8]) {
-//	for (int i = 0; i < 8; i++) {
-//		if(i >= 2 && i <= 4){
-//			g_sMovingTrap[i].m_cDirection = 1;
-//		}
-//	}
-//}
-//
-//void movingTrap(double &trapTime, struct SGameTrap g_sMovingTrap[8]) {
-//
-//	if (trapTime >= 0.6) {
-//
-//		for (int i = 0; i < 8; i++) {
-//
-//			if (g_sMovingTrap[i].m_cLocation.Y == 13) {
-//				g_sMovingTrap[i].m_cDirection = 1;
-//			}
-//
-//
-//
-//			if (i >= 2 && i <= 4) {
-//				if (g_sMovingTrap[i].m_cLocation.Y == 17) {
-//					g_sMovingTrap[i].m_cDirection = -1;
-//				}
-//			}
-//			else if (g_sMovingTrap[i].m_cLocation.Y == 18) {
-//				g_sMovingTrap[i].m_cDirection = -1;
-//			}
-//			g_sMovingTrap[i].m_cLocation.Y += g_sMovingTrap[i].m_cDirection;
-//
-//
-//		}
-//		trapTime = 0.0;
-//	}
-//}
-//
-//void renderMovingTrap(Console &g_Console, struct SGameTrap g_sMovingTrap[8]) {
-//
-//	WORD trapColor = 0x0C;
-//	{
-//		trapColor = 0x0A;
-//	}
-//	for (int i = 0; i < 8; i++) {
-//		g_Console.writeToBuffer(g_sMovingTrap[i].m_cLocation, "A", trapColor);
-//	}
-//}
-//
-////void renderFallingTrap(Console &g_console)
-////{
-////	WORD trapColor = 0x0C;
-////	{
-////		trapColor = 0x0A;
-////	}
-////	g_console.writeToBuffer(g_fTrap01.m_cLocation, (char)4 , trapColor);
-////}
-//
-//void renderCharacter(Console &g_Console, struct SGameChar playerInfo)
-//{
-//	// Draw the location of the character
-//	WORD charColor = 0x0C;
-//	if (playerInfo.m_bActive)
-//	{
-//		charColor = 0x0A;
-//	}
-//	g_Console.writeToBuffer(playerInfo.m_cLocation, (char)1, charColor);
-//}
 #include "GameAsset.h"
 
-SGameTrap g_fTrap01;
 int FanBlowLeftDelay = 0, FanBlowRightDelay = 0, FanBlowUpDelay = 0, FanBlowDownDelay = 0;
 int AllowedMaxFanDelay = 3; // maximum frames allowed for delay CAN BE EDITED
+
+bool bTriggerFallTrap = false;
 
 void getMovingTrapPos(bool &bGotTrapPos, char map[100][100], struct SGameTrap g_sMovingTrap[8]) {
 
@@ -110,6 +22,22 @@ void getMovingTrapPos(bool &bGotTrapPos, char map[100][100], struct SGameTrap g_
 	bGotTrapPos = true;
 }
 
+void getFallingTrapPos(bool &bGotTrapPos, char map[100][100], struct SFallingTrap g_fTrap[38]) {
+
+	int i = 0;
+	for (int k = 0; k < 30; k++) {
+
+		for (int j = 0; j < 80; j++) {
+			if (map[k][j] == 'T') {
+				g_fTrap[i].m_cLocation.X = j;
+				g_fTrap[i].m_cLocation.Y = k + 1;
+				i++;
+
+			}
+		}
+	}
+	bGotTrapPos = true;
+}
 
 void initMovingTrap(struct SGameTrap g_sMovingTrap[8]) {
 
@@ -119,8 +47,19 @@ void initMovingTrap(struct SGameTrap g_sMovingTrap[8]) {
 	}
 }
 
+void initFallingTrap(struct SFallingTrap g_fTrap[38]) {
+
+	for (int i = 0; i < 38; i++) {
+
+		g_fTrap[i].m_bActive = true;
+
+	}
+}
+
+
 
 void movingTrap(double &trapTime, struct SGameTrap g_sMovingTrap[8]) {
+
 
 	if (trapTime >= 0.1) {
 
@@ -148,6 +87,45 @@ void movingTrap(double &trapTime, struct SGameTrap g_sMovingTrap[8]) {
 	}
 }
 
+void FallingTrap(double &ftrapTime, struct SFallingTrap g_fTrap[38])
+{
+		if (ftrapTime >= 0.5 && bTriggerFallTrap == true)
+		{
+
+			for (int i = 0; i < 38; i++)
+			{
+
+
+				if (g_fTrap[i].m_cLocation.Y == 11) {
+					g_fTrap[i].m_bActive = false;
+				}
+				else {
+					g_fTrap[i].m_cLocation.Y += 1;
+				}
+
+
+				if (g_fTrap[i].m_bActive == false) {
+					g_fTrap[i].m_cLocation.X = 1;
+					g_fTrap[i].m_cLocation.Y = 1;
+				}
+
+			}
+			ftrapTime = 0.0;
+		
+	}
+
+
+}
+
+void resetTrap(bool &bGotTrapPos, SFallingTrap g_fTrap[38]) {
+
+	bTriggerFallTrap = false;
+	bGotTrapPos = false;
+	for (int i = 0; i < 38; i++) {
+		g_fTrap[i].m_bActive = true;
+	}
+}
+
 void renderMovingTrap(Console &g_Console, struct SGameTrap g_sMovingTrap[8]) {
 
 	WORD trapColor = 0x0C;
@@ -159,13 +137,19 @@ void renderMovingTrap(Console &g_Console, struct SGameTrap g_sMovingTrap[8]) {
 	}
 }
 
-void renderFallingTrap(Console &g_console)
+
+void renderFallingTrap(Console & g_Console, SFallingTrap g_fTrap[38])
 {
 	WORD trapColor = 0x0C;
 	{
-		trapColor = 0x0A;
+		trapColor = 0x30;
 	}
-	g_console.writeToBuffer(g_fTrap01.m_cLocation, (char)4, trapColor);
+	
+	for (int i = 0; i < 38; i++) {
+		if (g_fTrap[i].m_bActive == true) {
+			g_Console.writeToBuffer(g_fTrap[i].m_cLocation, "T", trapColor);
+		}
+	}
 }
 
 void renderCharacter(Console &g_Console, struct SGameChar playerInfo)
@@ -310,15 +294,26 @@ void ArrayLevelOneDetect(struct SGameChar &playerInfo, int ChangesArrayOne[50])
 	{
 		ChangesArrayOne[1] = 1; // for second 2 pressure plates
 	}
+	if ((int)playerInfo.m_cLocation.Y - 1 == 10 && (int)playerInfo.m_cLocation.X == 16 || (int)playerInfo.m_cLocation.Y - 1 == 10 && (int)playerInfo.m_cLocation.X == 17) // for falling trap row room pressure plate
+	{
+		ChangesArrayOne[10] = 1;
+	}
 	// etc etc
 }
 
 // "framework for changes array RESET" <<WIP>>
-void ArrayLevelOneActivate(struct SGameChar &playerInfo, int ChangesArrayOne[50], char mapStorage[100][100])
+void ArrayLevelOneActivate(struct SGameChar &playerInfo, int ChangesArrayOne[50], char mapStorage[100][100], struct SFallingTrap g_fTrap[38])
 {
 	if (ChangesArrayOne[1] == 1)
 	{
 		mapStorage[26][68] = ','; // opens 1st door
+	}
+	if (ChangesArrayOne[10] == 1)
+	{
+		mapStorage[5][39] = ',', mapStorage[6][39] = ','; // opens 5th door between electric floors (room with row of falling traps) (double door)
+		for (int i = 0; i < 38; i++) {
+			bTriggerFallTrap = true;
+		}
 	}
 	// etc etc
 }

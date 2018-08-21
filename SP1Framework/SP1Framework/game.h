@@ -5,6 +5,7 @@
 #include "collision.h"
 #include "GameAsset.h"
 #include "user_interface.h"
+#include "levels.h"
 
 extern CStopWatch g_swTimer;
 extern bool g_bQuitGame;
@@ -21,6 +22,7 @@ enum EKEYS
 	K_RESET,
 	K_HOME,
 	K_PAUSE,
+	K_RESUME,
 	K_ENTER,
 	K_COUNT
 };
@@ -53,6 +55,12 @@ struct SGameTrap
 	int m_cDirection;
 };
 
+struct SFallingTrap
+{
+	COORD m_cLocation;
+	bool  m_bActive;
+};
+
 void init        ( void );      // initialize your variables, allocate memory, etc
 void getInput    ( void );      // get input from player
 void update      ( double dt ); // update the game and the state of the game
@@ -67,10 +75,8 @@ void clearScreen();         // clears the current screen and draw from scratch
 void renderGameMenu();  // renders the splash screen
 void renderGame();          // renders the game stuff
 void renderMap();           // renders the map to the buffer first
-void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
-void renderLives();			// Changes number of lives displayed
 void renderDefeatScreen();  // Changes to defeat screen when die
 void renderVictoryScreen(); // Changes to victory screen when win
 void renderPauseScreen(); // Changes to pause screen when paused
