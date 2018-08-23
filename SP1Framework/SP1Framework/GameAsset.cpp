@@ -53,6 +53,24 @@ void getDoublePiovtTrapPos(char map[100][100], struct SGameTrap &g_sDoublePiovtT
 
 }
 
+void getStalkerTrapPos(char map[100][100], struct SGameTrap g_sStalkerTrap[7])
+{
+	int i = 0;
+	for (int k = 0; k < 30; k++)
+	{
+		for (int j = 0; j < 80; j++)
+		{
+			if (map[k][j] == 'U')
+			{
+				g_sStalkerTrap[i].m_cLocation.X = j;
+				g_sStalkerTrap[i].m_cLocation.Y = k + 1;
+				i++;
+			}
+		}
+	}
+}
+
+
 void initMovingTrap(struct SGameMovingTrap g_sMovingTrap[8]) {
 
 	for (int i = 0; i < 8; i++) {
@@ -257,6 +275,23 @@ void renderDoublePiovtTrap(Console &g_Console, struct SGameTrap g_sDoublePiovtTr
 		g_Console.writeToBuffer(g_sDoublePiovtTrap.m_cLocation, "Q", trapColor);
 }
 
+void renderStalkerTrap(Console &g_Console, struct SGameTrap g_sStalkerTrap[7]) {
+
+	WORD trapColor = 0x0C;
+	{
+		trapColor = 0x0D;
+	}
+	for (int i = 0; i < 7; i++) {
+		
+		if (g_sStalkerTrap[i].m_bActive == true) {
+			g_Console.writeToBuffer(g_sStalkerTrap[i].m_cLocation, "U", 0x0F);
+		}
+		else {
+			g_Console.writeToBuffer(g_sStalkerTrap[i].m_cLocation, "U", trapColor);
+		}
+	}
+}
+
 void renderCharacter(Console &g_Console, struct SGameChar playerInfo)
 {
 	// Draw the location of the character
@@ -386,6 +421,85 @@ void FanFunctionDown(struct SGameChar &playerInfo, char mapStorage[100][100], Co
 }
 // END FAN FUNCTION //
 
+
+int StalkerRange = 7;
+void StalkerFunctionMain(struct SGameChar &playerInfo, char mapStorage[100][100], SGameTrap g_sStalkerTrap[7])
+{
+	for (int i = 0; i < 7; i++)
+	{
+		g_sStalkerTrap[i].m_bActive = false; // reset trap to not active
+
+		for (int m = 0; m < StalkerRange; m++)
+		{
+			if (g_sStalkerTrap[i].m_bActive != true)
+			{
+				if ((int)playerInfo.m_cLocation.X == g_sStalkerTrap[i].m_cLocation.X - m) // check if player is left of trap by 9 chars range
+				{
+					for (int n = 0; n < StalkerRange; n++)
+					{
+						if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y - n) // check if player is up of trap in 9 chars range
+						{
+							g_sStalkerTrap[i].m_bActive = true;
+						}
+						else if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y + n) // check if player is down of trap in 9 chars range
+						{
+							g_sStalkerTrap[i].m_bActive = true;
+						}
+					}
+				}
+				else if ((int)playerInfo.m_cLocation.X == g_sStalkerTrap[i].m_cLocation.X + m) // check if player is right of trap by 9 chars range
+				{
+					for (int n = 0; n < StalkerRange; n++)
+					{
+						if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y - n) // check if player is up of trap in 9 chars range
+						{
+							g_sStalkerTrap[i].m_bActive = true;
+						}
+						else if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y + n) // check if player is down of trap in 9 chars range
+						{
+							g_sStalkerTrap[i].m_bActive = true;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+void StalkerFunctionMovement(double &sTrapTime, struct SGameChar &playerInfo, char mapStorage[100][100], SGameTrap g_sStalkerTrap[7])
+{
+	if (sTrapTime >= 0.7) // adjust speed of trap movement 
+	{
+			for (int i = 0; i < 7; i++)
+			{
+				if (g_sStalkerTrap[i].m_bActive == true && (int)playerInfo.m_cLocation.Y != g_sStalkerTrap[i].m_cLocation.Y)  // move in y-axis first
+				{
+					if ((int)playerInfo.m_cLocation.Y < g_sStalkerTrap[i].m_cLocation.Y) // Player up of trap
+					{
+						g_sStalkerTrap[i].m_cLocation.Y--;
+					}
+					else if ((int)playerInfo.m_cLocation.Y > g_sStalkerTrap[i].m_cLocation.Y) // Player down of trap
+					{
+						g_sStalkerTrap[i].m_cLocation.Y++;
+					}
+				}
+
+				else if (g_sStalkerTrap[i].m_bActive == true && (int)playerInfo.m_cLocation.X != g_sStalkerTrap[i].m_cLocation.X) // then if y-axis is same as player, move in x-axis
+				{
+					if ((int)playerInfo.m_cLocation.X < g_sStalkerTrap[i].m_cLocation.X) // Player left of trap
+					{
+						g_sStalkerTrap[i].m_cLocation.X--;
+					}
+					if ((int)playerInfo.m_cLocation.X > g_sStalkerTrap[i].m_cLocation.X) // Player right of trap
+					{
+						g_sStalkerTrap[i].m_cLocation.X++;
+					}
+				}
+			}
+			sTrapTime = 0.0;
+	}		
+}
+	
 
 
 // LEGEND:

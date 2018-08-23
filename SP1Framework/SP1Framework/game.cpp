@@ -17,6 +17,8 @@ double g_dTrapTime;
 double g_fTrapTime;
 double g_dTrapTime2;
 
+double g_sTrapTime;
+
 
 bool g_abKeyPressed[K_COUNT];
 int Choice;
@@ -32,6 +34,8 @@ SGameChar   g_sChar;
 SGameMovingTrap g_sMovingTrap[8];
 SGameTrap g_fTrap[34];
 SGameTrap g_sDoublePivotTrap;
+
+SGameTrap g_sStalkerTrap[7];
 
 int ChangesArrayOne[50];
 
@@ -56,6 +60,9 @@ void init( void )
 	g_dTrapTime = 0.0;
 	g_fTrapTime = 0.0;
 	g_dTrapTime2 = 0.0;
+
+	g_sTrapTime = 0.0;
+
     // sets the initial state for the game
     g_eGameState = S_GAMEMENU;		
 
@@ -139,6 +146,8 @@ void update(double dt)
 	g_dTrapTime += dt;
 	g_fTrapTime += dt;
 	g_dTrapTime2 += dt;
+
+	g_sTrapTime += dt;
 
     switch (g_eGameState)
     {
@@ -245,7 +254,7 @@ void changeMapStorageLevel2() {
 	if (LevelSelected != 2) {
 
 		string line;
-		ifstream myfile("test.txt");
+		ifstream myfile("HELLMODEoWo.txt");
 		int i = 0;
 		int pos = 0;
 		if (myfile.is_open())
@@ -276,6 +285,8 @@ void gameplay()            // gameplay logic
 	}
 	else if (LevelSelected == 2) {
 		DoublePivotTrap(g_dTrapTime, g_sDoublePivotTrap, g_dTrapTime2);
+		StalkerFunctionMain(g_sChar, mapStorage, g_sStalkerTrap);
+		StalkerFunctionMovement(g_sTrapTime, g_sChar, mapStorage, g_sStalkerTrap);
 	}
 
 	collisionChecker(LevelSelected, g_sChar, mapStorage, g_sMovingTrap, g_fTrap);
@@ -370,7 +381,15 @@ void moveCharacter()
 			ArrayLevelOneDetect(g_sChar, ChangesArrayOne); // Detect pressure plates etc presses
 		}
 	}
+	if (LevelSelected == 2) {
+		FanFunctionMain(g_sChar, mapStorage, g_Console); // calls main fan function
+		if (bSomethingHappened)
+		{
+			// set the bounce time to some time in the future to prevent accidental triggers
+			g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
+		}
 
+	}
 }
 
 void processUserInput() {
@@ -524,6 +543,7 @@ void renderGame()
 	}
 	else if (LevelSelected == 2) {
 		renderDoublePiovtTrap(g_Console, g_sDoublePivotTrap);
+		renderStalkerTrap(g_Console, g_sStalkerTrap);
 	}
 	
 
@@ -636,6 +656,7 @@ void renderMap()
 
 		getDoublePiovtTrapPos(mapStorage, g_sDoublePivotTrap);
 		bGotTrapPos2 = true;
+		getStalkerTrapPos(mapStorage, g_sStalkerTrap);
 	}
 		
 }
