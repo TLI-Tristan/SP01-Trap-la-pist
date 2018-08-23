@@ -11,11 +11,12 @@
 
 using namespace std;
 
-double  g_dElapsedTime;
-double  g_dDeltaTime;
+double g_dElapsedTime;
+double g_dDeltaTime;
 double g_dTrapTime;
 double g_fTrapTime;
 double g_dTrapTime2;
+double g_dBouncingTrap;
 
 
 bool g_abKeyPressed[K_COUNT];
@@ -32,6 +33,7 @@ SGameChar   g_sChar;
 SGameMovingTrap g_sMovingTrap[8];
 SGameTrap g_fTrap[34];
 SGameTrap g_sDoublePivotTrap;
+SGameTrap g_sBouncingTrap;
 
 int ChangesArrayOne[50];
 
@@ -56,6 +58,7 @@ void init( void )
 	g_dTrapTime = 0.0;
 	g_fTrapTime = 0.0;
 	g_dTrapTime2 = 0.0;
+	g_dBouncingTrap = 0.0;
     // sets the initial state for the game
     g_eGameState = S_GAMEMENU;		
 
@@ -65,6 +68,9 @@ void init( void )
 	g_sChar.m_iLife = 3;
 	g_sChar.m_iRespawnX = 1;
 	g_sChar.m_iRespawnY = 28;
+
+	g_sBouncingTrap.m_cLocation.X = 40;
+	g_sBouncingTrap.m_cLocation.Y = 8;
 
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
@@ -139,6 +145,7 @@ void update(double dt)
 	g_dTrapTime += dt;
 	g_fTrapTime += dt;
 	g_dTrapTime2 += dt;
+	g_dBouncingTrap += dt;
 
     switch (g_eGameState)
     {
@@ -245,7 +252,7 @@ void changeMapStorageLevel2() {
 	if (LevelSelected != 2) {
 
 		string line;
-		ifstream myfile("test.txt");
+		ifstream myfile("HellMode.txt");
 		int i = 0;
 		int pos = 0;
 		if (myfile.is_open())
@@ -272,13 +279,14 @@ void gameplay()            // gameplay logic
     moveCharacter();    // moves the character, collision detection, physics, etc
 	if (LevelSelected == 1) {
 		movingTrap(g_dTrapTime, g_sMovingTrap);
-		FallingTrap(g_fTrapTime, g_fTrap);
+		fallingTrap(g_fTrapTime, g_fTrap);
 	}
 	else if (LevelSelected == 2) {
-		DoublePivotTrap(g_dTrapTime, g_sDoublePivotTrap, g_dTrapTime2);
+		doublePivotTrap(g_dTrapTime, g_sDoublePivotTrap, g_dTrapTime2);
+		bouncingTrap(g_dBouncingTrap, g_sBouncingTrap);
 	}
 
-	collisionChecker(LevelSelected, g_sChar, mapStorage, g_sMovingTrap, g_fTrap, g_sDoublePivotTrap);
+	collisionChecker(LevelSelected, g_sChar, mapStorage, g_sMovingTrap, g_fTrap, g_sDoublePivotTrap, g_sBouncingTrap);
 	// sound can be played here too.
 	
 }
@@ -528,14 +536,17 @@ void renderGame()
     if (LevelSelected == 1) {
 		renderMovingTrap(g_Console, g_sMovingTrap);
 		renderFallingTrap(g_Console, g_fTrap);
+		renderUI(g_Console, NumberOfLives, g_sChar);
 	}
 	else if (LevelSelected == 2) {
 		renderDoublePiovtTrap(g_Console, g_sDoublePivotTrap);
+		renderUI2(g_Console, NumberOfLives, g_sChar);
+		renderBouncingTrap(g_Console, g_sBouncingTrap);
 	}
 	
 
 	renderLives(g_sChar, NumberOfLives, g_eGameState);
-	renderUI(g_Console, NumberOfLives, g_sChar);
+	
 }
 
 void renderMap()

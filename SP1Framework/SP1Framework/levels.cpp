@@ -19,5 +19,5 @@ void resetGame2(struct SGameChar &playerInfo) {
 
 	playerInfo.m_iLife = 3;			// reset lives
 	playerInfo.m_cLocation.X = 1;		// reset coord x
-	playerInfo.m_cLocation.Y = 28;		// reset coord y
+	playerInfo.m_cLocation.Y = 2;		// reset coord y
 }

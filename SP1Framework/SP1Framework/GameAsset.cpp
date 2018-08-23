@@ -99,7 +99,7 @@ void movingTrap(double &trapTime, struct SGameMovingTrap g_sMovingTrap[8]) {
 	}
 }
 
-void FallingTrap(double &ftrapTime, struct SGameTrap g_fTrap[34])
+void fallingTrap(double &ftrapTime, struct SGameTrap g_fTrap[34])
 {
 		if (ftrapTime >= 0.5 && bTriggerFallTrap == true)
 		{
@@ -136,7 +136,7 @@ int rotation2 = 1;
 int x2 = -7;
 int y2 = 3;
 
-void DoublePivotTrap(double &trapTime, struct SGameTrap &g_sDoublePiovtTrap, double &trapTime2) {
+void doublePivotTrap(double &trapTime, struct SGameTrap &g_sDoublePiovtTrap, double &trapTime2) {
 
 	if (trapTime2 >= 0.1) {
 
@@ -215,6 +215,40 @@ void DoublePivotTrap(double &trapTime, struct SGameTrap &g_sDoublePiovtTrap, dou
 
 }
 
+
+int bT_x = 1;
+int bT_y = 1;
+
+void bouncingTrap(double &g_dBouncingTrap, struct SGameTrap &g_sBouncingTrap) {
+
+	if (g_dBouncingTrap >= 0.02) {
+
+		if (g_sBouncingTrap.m_cLocation.X == 78) {
+
+			bT_x *= -1;
+		}
+		else if (g_sBouncingTrap.m_cLocation.X == 1) {
+			bT_x *= -1;
+		}
+
+		if (g_sBouncingTrap.m_cLocation.Y == 28) {
+
+			bT_y *= -1;
+		}
+		else if (g_sBouncingTrap.m_cLocation.Y == 2) {
+			bT_y *= -1;
+		}
+
+		g_sBouncingTrap.m_cLocation.X += bT_x;
+		g_sBouncingTrap.m_cLocation.Y += bT_y;
+
+		g_dBouncingTrap = 0.0;
+	}
+
+
+
+}
+
 void resetTrap(bool &bGotTrapPos, SGameTrap g_fTrap[34]) {
 
 	bTriggerFallTrap = false;
@@ -256,6 +290,15 @@ void renderDoublePiovtTrap(Console &g_Console, struct SGameTrap g_sDoublePiovtTr
 		trapColor = 0x0A;
 	}
 		g_Console.writeToBuffer(g_sDoublePiovtTrap.m_cLocation, "Q", trapColor);
+}
+
+void renderBouncingTrap(Console &g_Console, struct SGameTrap g_sBouncingTrap) {
+
+	WORD trapColor = 0x0C;
+	{
+		trapColor = 0x0A;
+	}
+	g_Console.writeToBuffer(g_sBouncingTrap.m_cLocation, "9", trapColor);
 }
 
 void renderCharacter(Console &g_Console, struct SGameChar playerInfo)
