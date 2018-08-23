@@ -8,6 +8,7 @@
 #include <sstream>
 #include <fstream>
 #include <string>
+#include <random>
 
 using namespace std;
 
@@ -245,7 +246,7 @@ void changeMapStorageLevel2() {
 	if (LevelSelected != 2) {
 
 		string line;
-		ifstream myfile("test.txt");
+		ifstream myfile("HELLMODEoWo.txt");
 		int i = 0;
 		int pos = 0;
 		if (myfile.is_open())
@@ -564,10 +565,8 @@ void renderMap()
 				}
 			}
 		}
-
 		ArrayLevelOneActivate(g_sChar, ChangesArrayOne, mapStorage, g_fTrap, g_eGameState); // Activate traps
 	}
-
 	for (int k = 0; k < 30; k++) {
 		int pos2 = 0;
 		c.Y = 1 + pos;
@@ -579,7 +578,6 @@ void renderMap()
 			else if (mapStorage[k][j] == 'S')
 			{
 				g_Console.writeToBuffer(c, mapStorage[k][j], 0x40);
-
 			}
 			else if (mapStorage[k][j] == 'D')
 			{

@@ -27,6 +27,7 @@ void FanFunctionUp(struct SGameChar &playerInfo, char mapStorage[100][100]);				
 void FanFunctionDown(struct SGameChar &playerInfo, char mapStorage[100][100], Console &g_console);		 // Down function (movement & some checking)
 void FanFunctionMain(struct SGameChar &playerInfo, char mapStorage[100][100], Console &g_console);		 // Main fan function (checking)
 
+
 void ArrayLevelOneDetect(struct SGameChar &playerInfo, int ChangesArrayOne[50]); // traps array detection (WIP)
 void ArrayLevelOneActivate(struct SGameChar &playerInfo, int ChangesArrayOne[50], char mapStorage[100][100], struct SGameTrap g_fTrap[34], enum EGAMESTATES &g_eGameState); // traps array activate (WIP)
 
