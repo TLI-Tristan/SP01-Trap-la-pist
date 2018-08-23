@@ -21,7 +21,6 @@ enum EKEYS
 	K_SPACE,
 	K_RESET,
 	K_HOME,
-	K_PAUSE,
 	K_RESUME,
 	K_ENTER,
 	K_COUNT
@@ -32,7 +31,6 @@ enum EGAMESTATES
 {
     S_GAMEMENU,
     S_GAME,
-	S_PAUSE,
 	S_DEFEAT,
 	S_VICTORY,
     S_COUNT
@@ -48,14 +46,14 @@ struct SGameChar
 	int m_iRespawnY;
 };
 
-struct SGameTrap
+struct SGameMovingTrap
 {
 	COORD m_cLocation;
 	bool  m_bActive;
 	int m_cDirection;
 };
 
-struct SFallingTrap
+struct SGameTrap
 {
 	COORD m_cLocation;
 	bool  m_bActive;
@@ -67,6 +65,8 @@ void update      ( double dt ); // update the game and the state of the game
 void render      ( void );      // renders the current state of the game to the console
 void shutdown    ( void );      // do clean up, free memory
 
+void changeMapStorageLevel1();
+void changeMapStorageLevel2();
 void gameMenu();			// waits for player to choose what they want to do
 void gameplay();            // gameplay logic
 void moveCharacter();       // moves the character, collision detection, physics, etc
@@ -79,6 +79,5 @@ void renderFramerate();     // renders debug information, frame rate, elapsed ti
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
 void renderDefeatScreen();  // Changes to defeat screen when die
 void renderVictoryScreen(); // Changes to victory screen when win
-void renderPauseScreen(); // Changes to pause screen when paused
 
 #endif // _GAME_H

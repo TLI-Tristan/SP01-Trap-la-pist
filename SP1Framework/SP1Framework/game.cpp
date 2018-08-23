@@ -15,6 +15,8 @@ double  g_dElapsedTime;
 double  g_dDeltaTime;
 double g_dTrapTime;
 double g_fTrapTime;
+double g_dTrapTime2;
+
 
 bool g_abKeyPressed[K_COUNT];
 int Choice;
@@ -23,11 +25,14 @@ string NumberOfLives;
 int LevelSelected = 0;
 
 bool bGotTrapPos;
+bool bGotTrapPos2;
 
 // Game specific variables here
 SGameChar   g_sChar;
-SGameTrap g_sMovingTrap[8];
-SFallingTrap g_fTrap[34];
+SGameMovingTrap g_sMovingTrap[8];
+SGameTrap g_fTrap[34];
+SGameTrap g_sDoublePivotTrap;
+
 int ChangesArrayOne[50];
 
 EGAMESTATES g_eGameState = S_GAMEMENU;
@@ -50,7 +55,7 @@ void init( void )
     g_dBounceTime = 0.0;
 	g_dTrapTime = 0.0;
 	g_fTrapTime = 0.0;
-
+	g_dTrapTime2 = 0.0;
     // sets the initial state for the game
     g_eGameState = S_GAMEMENU;		
 
@@ -66,26 +71,10 @@ void init( void )
 	Choice = 1;
 
 	bGotTrapPos = false;
+	bGotTrapPos2 = false;
 	initMovingTrap(g_sMovingTrap);
 	initFallingTrap(g_fTrap);
 	ChangesArrayOne[50] = { 0, };
-
-	string line;
-	ifstream myfile("maze.txt");
-	int i = 0;
-	int pos = 0;
-	if (myfile.is_open())
-	{
-		while (getline(myfile, line))
-		{
-			for (int j = 0; j < 80; j++)
-			{
-				mapStorage[i][j] = line[j]; // WHY IS IT Y,X
-			}
-			i++;
-		}
-		myfile.close();
-	}
 }
 
 
@@ -126,7 +115,6 @@ void getInput( void )
 	g_abKeyPressed[K_ENTER]  = isKeyPressed(VK_RETURN);
 	g_abKeyPressed[K_RESET] = isKeyPressed(0x52);
 	g_abKeyPressed[K_HOME] = isKeyPressed(0x48);
-	g_abKeyPressed[K_PAUSE] = isKeyPressed(0x50);
 	g_abKeyPressed[K_RESUME] = isKeyPressed(0x4F);
 }
 //--------------------------------------------------------------
@@ -150,6 +138,7 @@ void update(double dt)
     g_dDeltaTime = dt;
 	g_dTrapTime += dt;
 	g_fTrapTime += dt;
+	g_dTrapTime2 += dt;
 
     switch (g_eGameState)
     {
@@ -177,8 +166,6 @@ void render()
         case S_GAME: renderGame();
             break;
 		case S_DEFEAT: renderDefeatScreen();
-			break;
-		case S_PAUSE: renderPauseScreen();
 			break;
 		case S_VICTORY: renderVictoryScreen();
 			break;
@@ -213,9 +200,13 @@ void gameMenu()
 	}
 	if (g_abKeyPressed[K_ENTER]) { // Press enter to start game
 		switch (Choice) {
-		case 1: LevelSelected = 1; // set LevelSelected values (for hard-coding level assets)
+		case 1:  // set LevelSelected values (for hard-coding level assets)
+			changeMapStorageLevel1();
 			g_eGameState = S_GAME;
-			resetGame(g_sChar, ChangesArrayOne, g_fTrap, bGotTrapPos);
+			break;
+		case 2:
+			changeMapStorageLevel2();
+			g_eGameState = S_GAME;
 			break;
 		case 3: g_bQuitGame = true;
 			break;
@@ -223,13 +214,71 @@ void gameMenu()
 	}
 }
 
+void changeMapStorageLevel1() {
+
+	if (LevelSelected != 1) {
+
+		string line;
+		ifstream myfile("maze.txt");
+		int i = 0;
+		int pos = 0;
+		if (myfile.is_open())
+		{
+			while (getline(myfile, line))
+			{
+				for (int j = 0; j < 80; j++)
+				{
+					mapStorage[i][j] = line[j]; // WHY IS IT Y,X
+				}
+				i++;
+			}
+			myfile.close();
+		}
+		LevelSelected = 1;
+	}
+
+	resetGame(g_sChar, ChangesArrayOne, g_fTrap, bGotTrapPos);
+}
+
+void changeMapStorageLevel2() {
+
+	if (LevelSelected != 2) {
+
+		string line;
+		ifstream myfile("test.txt");
+		int i = 0;
+		int pos = 0;
+		if (myfile.is_open())
+		{
+			while (getline(myfile, line))
+			{
+				for (int j = 0; j < 80; j++)
+				{
+					mapStorage[i][j] = line[j]; // WHY IS IT Y,X
+				}
+				i++;
+			}
+			myfile.close();
+		}
+		LevelSelected = 2;
+	}
+	resetGame(g_sChar, ChangesArrayOne, g_fTrap, bGotTrapPos);
+
+}
 void gameplay()            // gameplay logic
 {
+	
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
     moveCharacter();    // moves the character, collision detection, physics, etc
-	movingTrap(g_dTrapTime, g_sMovingTrap);
-	FallingTrap(g_fTrapTime, g_fTrap);
-	collisionChecker(g_sChar, mapStorage, g_sMovingTrap, g_fTrap);
+	if (LevelSelected == 1) {
+		movingTrap(g_dTrapTime, g_sMovingTrap);
+		FallingTrap(g_fTrapTime, g_fTrap);
+	}
+	else if (LevelSelected == 2) {
+		DoublePivotTrap(g_dTrapTime, g_sDoublePivotTrap, g_dTrapTime2);
+	}
+
+	collisionChecker(LevelSelected, g_sChar, mapStorage, g_sMovingTrap, g_fTrap);
 	// sound can be played here too.
 	
 }
@@ -238,98 +287,90 @@ void gameplay()            // gameplay logic
 
 void moveCharacter()
 {
-    bool bSomethingHappened = false;
-    if (g_dBounceTime > g_dElapsedTime)
-        return;
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
 
-    // Updating the location of the character based on the key press
-    // providing a beep sound whenver we shift the character
-if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 2) // FOR "UP"
-{
-	//Beep(1440, 30);
-	if (mapStorage[(int)g_sChar.m_cLocation.Y - 2][(int)g_sChar.m_cLocation.X] != '#')
+	// Updating the location of the character based on the key press
+	// providing a beep sound whenver we shift the character
+	if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 2) // FOR "UP"
 	{
-		if (mapStorage[(int)g_sChar.m_cLocation.Y - 2][(int)g_sChar.m_cLocation.X] != 'D')
+		//Beep(1440, 30);
+		if (mapStorage[(int)g_sChar.m_cLocation.Y - 2][(int)g_sChar.m_cLocation.X] != '#')
 		{
-			g_sChar.m_cLocation.Y--;
-			bSomethingHappened = true;
-		}	
+			if (mapStorage[(int)g_sChar.m_cLocation.Y - 2][(int)g_sChar.m_cLocation.X] != 'D')
+			{
+				g_sChar.m_cLocation.Y--;
+				bSomethingHappened = true;
+			}
+		}
 	}
-}
-if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0 && g_sChar.m_cLocation.X < 79) // FOR "LEFT"
-{
-	//Beep(1440, 30);
-	if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 1] != '#')
+	if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0 && g_sChar.m_cLocation.X < 79) // FOR "LEFT"
 	{
-		if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 1] != 'D')
+		//Beep(1440, 30);
+		if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 1] != '#')
 		{
-			g_sChar.m_cLocation.X--;
-			bSomethingHappened = true;
+			if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X - 1] != 'D')
+			{
+				g_sChar.m_cLocation.X--;
+				bSomethingHappened = true;
+			}
+		}
+
+	}
+	if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 7) // FOR "DOWN"
+	{
+		//Beep(1440, 30);
+		if (mapStorage[(int)g_sChar.m_cLocation.Y][(int)g_sChar.m_cLocation.X] != '#')
+		{
+			if (mapStorage[(int)g_sChar.m_cLocation.Y][(int)g_sChar.m_cLocation.X] != 'D')
+			{
+				g_sChar.m_cLocation.Y++;
+				bSomethingHappened = true;
+			}
+		}
+
+	}
+	if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 41) // FOR "RIGHT"
+	{
+		//Beep(1440, 30);
+		if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 1] != '#')
+		{
+			if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 1] != 'D')
+			{
+				g_sChar.m_cLocation.X++;
+				bSomethingHappened = true;
+			}
+		}
+
+	}
+	if (g_abKeyPressed[K_SPACE])
+	{
+		g_sChar.m_bActive = !g_sChar.m_bActive;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_RESET])
+	{
+		playerKilled(g_sChar);
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_HOME])
+	{
+		//resetGame();
+		gameMenu();
+	}
+
+	if (LevelSelected == 1) {
+		FanFunctionMain(g_sChar, mapStorage, g_Console); // calls main fan function
+		if (bSomethingHappened)
+		{
+			// set the bounce time to some time in the future to prevent accidental triggers
+			g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
+
+			ArrayLevelOneDetect(g_sChar, ChangesArrayOne); // Detect pressure plates etc presses
 		}
 	}
 
-}
-if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 7) // FOR "DOWN"
-{
-	//Beep(1440, 30);
-	if (mapStorage[(int)g_sChar.m_cLocation.Y][(int)g_sChar.m_cLocation.X] != '#')
-	{
-		if (mapStorage[(int)g_sChar.m_cLocation.Y][(int)g_sChar.m_cLocation.X] != 'D') 
-		{
-			g_sChar.m_cLocation.Y++;
-			bSomethingHappened = true;
-		}
-	}
-
-}
-if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 41) // FOR "RIGHT"
-{
-	//Beep(1440, 30);
-	if (mapStorage[(int)g_sChar.m_cLocation.Y-1][(int)g_sChar.m_cLocation.X+1] != '#')
-	{
-		if (mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 1] != 'D')
-		{
-			g_sChar.m_cLocation.X++;
-			bSomethingHappened = true;
-		}
-	}
-
-}
-if (g_abKeyPressed[K_SPACE])
-{
-	g_sChar.m_bActive = !g_sChar.m_bActive;
-	bSomethingHappened = true;
-}
-
-if (g_abKeyPressed[K_PAUSE])
-{
-		g_eGameState = S_PAUSE;
-}
-
-if (g_abKeyPressed[K_RESET])
-{
-	playerKilled(g_sChar);
-	bSomethingHappened = true;
-}
-
-if (g_abKeyPressed[K_HOME])
-{
-	//resetGame();
-	gameMenu();
-}
-
-FanFunctionMain(g_sChar, mapStorage, g_Console); // calls main fan function
-
-if (bSomethingHappened)
-{
-	// set the bounce time to some time in the future to prevent accidental triggers
-	g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
-
-	if (LevelSelected == 1) // FOR FIRST LEVEL
-	{
-		 ArrayLevelOneDetect(g_sChar, ChangesArrayOne); // Detect pressure plates etc presses
-	}
-}
 }
 
 void processUserInput() {
@@ -392,49 +433,6 @@ void renderGameMenu()  // renders the game menu	//TODO: change this to game menu
 	c.Y = 16 + Choice; //Arrow location
 	c.X = g_Console.getConsoleSize().X / 2 - 12;
 	g_Console.writeToBuffer(c, "->", 0x03);
-}
-
-void renderPauseScreen()
-{
-	COORD c = g_Console.getConsoleSize();
-	COORD d;
-	string line;
-	ifstream myfile("Pause.txt");
-	char NameStorage[100][100];
-	int i = 0, j = 0;
-	int pos = 0;
-	int p = 0;
-	if (myfile.is_open())
-	{
-		while (getline(myfile, line))
-		{
-			d.Y = i;
-			p = 0;
-			for (j = 0; j < 120; j++)
-			{
-				NameStorage[i][j] = line[j]; // Y,X
-				d.X = p;
-				if (NameStorage[i][j] == '#') {
-					g_Console.writeToBuffer(d, NameStorage[i][j], 0x44);
-				}
-				else
-				{
-					g_Console.writeToBuffer(d, NameStorage[i][j], 0x04);
-				}
-				p++;
-			}
-			i++;
-		}
-		if (g_abKeyPressed[K_HOME])
-		{
-			gameMenu();
-		}
-		if (g_abKeyPressed[K_RESUME])
-		{
-			g_eGameState = S_GAME;
-		}
-		myfile.close();
-	}
 }
 
 void renderDefeatScreen()
@@ -520,9 +518,15 @@ void renderGame()
 	renderCollisionCheck(g_Console);
 	renderMap();        // renders the map to the buffer first
 	renderCharacter(g_Console, g_sChar);  // renders the character into the buffer
+    if (LevelSelected == 1) {
+		renderMovingTrap(g_Console, g_sMovingTrap);
+		renderFallingTrap(g_Console, g_fTrap);
+	}
+	else if (LevelSelected == 2) {
+		renderDoublePiovtTrap(g_Console, g_sDoublePivotTrap);
+	}
+	
 
-	renderMovingTrap(g_Console, g_sMovingTrap);
-	renderFallingTrap(g_Console, g_fTrap);
 	renderLives(g_sChar, NumberOfLives, g_eGameState);
 	renderUI(g_Console, NumberOfLives, g_sChar);
 }
@@ -533,6 +537,10 @@ void renderMap()
 	COORD c;
 	int pos = 0;
 	string line;
+	int i = 0;
+
+	if (LevelSelected == 1) // FOR LEVEL ONE
+	{
 
 		for (int k = 0; k < 30; k++) // Reset Traps loop
 		{
@@ -557,9 +565,6 @@ void renderMap()
 			}
 		}
 
-	int i = 0;
-	if (LevelSelected == 1) // FOR LEVEL ONE
-	{
 		ArrayLevelOneActivate(g_sChar, ChangesArrayOne, mapStorage, g_fTrap, g_eGameState); // Activate traps
 	}
 
@@ -621,11 +626,18 @@ void renderMap()
 		pos++;
 	}
 
-		if (bGotTrapPos == false)
-		{
-			getMovingTrapPos(bGotTrapPos, mapStorage, g_sMovingTrap);
-			getFallingTrapPos(bGotTrapPos, mapStorage, g_fTrap);
-		}
+	if (bGotTrapPos == false && LevelSelected == 1)
+	{
+		getMovingTrapPos(mapStorage, g_sMovingTrap);
+		getFallingTrapPos(mapStorage, g_fTrap);
+		bGotTrapPos = true;
+	}
+	else if (bGotTrapPos2 == false && LevelSelected == 2) {
+
+		getDoublePiovtTrapPos(mapStorage, g_sDoublePivotTrap);
+		bGotTrapPos2 = true;
+	}
+		
 }
 
 void renderFramerate()
