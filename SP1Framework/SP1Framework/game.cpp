@@ -278,7 +278,7 @@ void gameplay()            // gameplay logic
 		DoublePivotTrap(g_dTrapTime, g_sDoublePivotTrap, g_dTrapTime2);
 	}
 
-	collisionChecker(LevelSelected, g_sChar, mapStorage, g_sMovingTrap, g_fTrap);
+	collisionChecker(LevelSelected, g_sChar, mapStorage, g_sMovingTrap, g_fTrap, g_sDoublePivotTrap);
 	// sound can be played here too.
 	
 }
@@ -368,6 +368,13 @@ void moveCharacter()
 			g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
 
 			ArrayLevelOneDetect(g_sChar, ChangesArrayOne); // Detect pressure plates etc presses
+		}
+	}
+	else if (LevelSelected == 2) {
+		if (bSomethingHappened)
+		{
+			// set the bounce time to some time in the future to prevent accidental triggers
+			g_dBounceTime = g_dElapsedTime + 0.025; // 125ms should be enough
 		}
 	}
 

@@ -135,6 +135,7 @@ int rotation = 1;
 int rotation2 = 1;
 int x2 = -7;
 int y2 = 3;
+
 void DoublePivotTrap(double &trapTime, struct SGameTrap &g_sDoublePiovtTrap, double &trapTime2) {
 
 	if (trapTime2 >= 0.1) {
