@@ -19,6 +19,7 @@ double g_dTrapTime2;
 double g_dBouncingTrap;
 
 double g_sTrapTime;
+double g_leftFanTrapTime, g_rightFanTrapTime, g_upFanTrapTime, g_downFanTrapTime;
 
 
 bool g_abKeyPressed[K_COUNT];
@@ -38,6 +39,8 @@ SGameTrap g_sDoublePivotTrap;
 SGameTrap g_sBouncingTrap;
 
 SGameTrap g_sStalkerTrap[7];
+
+SGameTrap g_leftFanTrap[5], g_rightFanTrap[5], g_upFanTrap[5], g_downFanTrap[5];
 
 int ChangesArrayOne[50];
 
@@ -64,6 +67,9 @@ void init( void )
 	g_dTrapTime2 = 0.0;
 	g_dBouncingTrap = 0.0;
 	g_sTrapTime = 0.0;
+
+	g_leftFanTrapTime = 0.0, g_rightFanTrapTime = 0.0, g_upFanTrapTime = 0.0, g_downFanTrapTime = 0.0;
+
     // sets the initial state for the game
     g_eGameState = S_GAMEMENU;		
 
@@ -152,6 +158,8 @@ void update(double dt)
 	g_dTrapTime2 += dt;
 	g_dBouncingTrap += dt;
 	g_sTrapTime += dt;
+
+	g_leftFanTrapTime += dt, g_rightFanTrapTime += dt, g_downFanTrapTime += dt, g_upFanTrapTime += dt;
 
     switch (g_eGameState)
     {
@@ -275,7 +283,7 @@ void changeMapStorageLevel2() {
 		}
 		LevelSelected = 2;
 	}
-	resetGame(g_sChar, ChangesArrayOne, g_fTrap, bGotTrapPos);
+	resetGame2(g_sChar, bGotTrapPos2);
 
 }
 
@@ -287,6 +295,11 @@ void gameplay()            // gameplay logic
 	if (LevelSelected == 1) {
 		movingTrap(g_dTrapTime, g_sMovingTrap);
 		fallingTrap(g_fTrapTime, g_fTrap);
+		FanFunctionMain(g_sChar, mapStorage, g_Console, g_leftFanTrap, g_rightFanTrap, g_upFanTrap, g_downFanTrap);
+		leftFanMovement(g_leftFanTrapTime, g_sChar, mapStorage, g_leftFanTrap);
+		rightFanMovement(g_rightFanTrapTime, g_sChar, mapStorage, g_rightFanTrap);
+		upFanMovement(g_upFanTrapTime, g_sChar, mapStorage, g_upFanTrap);
+		downFanMovement(g_downFanTrapTime, g_sChar, mapStorage, g_downFanTrap);
 	}
 	else if (LevelSelected == 2) {
 		doublePivotTrap(g_dTrapTime, g_sDoublePivotTrap, g_dTrapTime2);
@@ -295,7 +308,7 @@ void gameplay()            // gameplay logic
 		StalkerFunctionMovement(g_sTrapTime, g_sChar, mapStorage, g_sStalkerTrap);
 	}
 
-	collisionChecker(LevelSelected, g_sChar, mapStorage, g_sMovingTrap, g_fTrap, g_sDoublePivotTrap, g_sBouncingTrap);
+	collisionChecker(LevelSelected, g_sChar, mapStorage, g_sMovingTrap, g_fTrap, g_sDoublePivotTrap, g_sBouncingTrap, g_sStalkerTrap);
 	// sound can be played here too.
 	
 }
@@ -378,7 +391,7 @@ void moveCharacter()
 	}
 
 	if (LevelSelected == 1) {
-		FanFunctionMain(g_sChar, mapStorage, g_Console); // calls main fan function
+		//FanFunctionMain(g_sChar, mapStorage, g_Console); // calls main fan function
 		if (bSomethingHappened)
 		{
 			// set the bounce time to some time in the future to prevent accidental triggers
@@ -388,11 +401,15 @@ void moveCharacter()
 		}
 	}
 	else if (LevelSelected == 2) {
-		FanFunctionMain(g_sChar, mapStorage, g_Console);
+		/*FanFunctionMain(g_sChar, mapStorage, g_Console);*/
 		if (bSomethingHappened)
 		{
 			// set the bounce time to some time in the future to prevent accidental triggers
+<<<<<<< HEAD
 			g_dBounceTime = g_dElapsedTime + 0.1;
+=======
+			g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
+>>>>>>> pr/32
 		}
 	}
 }
@@ -605,7 +622,6 @@ void renderMap()
 			else if (mapStorage[k][j] == 'S')
 			{
 				g_Console.writeToBuffer(c, mapStorage[k][j], 0x40);
-
 			}
 			else if (mapStorage[k][j] == 'D')
 			{
@@ -656,13 +672,14 @@ void renderMap()
 	{
 		getMovingTrapPos(mapStorage, g_sMovingTrap);
 		getFallingTrapPos(mapStorage, g_fTrap);
+		getFanTrapPos(mapStorage, g_leftFanTrap, g_rightFanTrap, g_upFanTrap, g_downFanTrap);
 		bGotTrapPos = true;
 	}
 	else if (bGotTrapPos2 == false && LevelSelected == 2) {
 
 		getDoublePiovtTrapPos(mapStorage, g_sDoublePivotTrap);
-		bGotTrapPos2 = true;
 		getStalkerTrapPos(mapStorage, g_sStalkerTrap);
+		bGotTrapPos2 = true;
 	}
 		
 }

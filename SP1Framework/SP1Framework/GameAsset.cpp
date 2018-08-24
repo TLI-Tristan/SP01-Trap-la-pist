@@ -1,9 +1,7 @@
 #include "GameAsset.h"
 
-int FanBlowLeftDelay = 0, FanBlowRightDelay = 0, FanBlowUpDelay = 0, FanBlowDownDelay = 0;
-int AllowedMaxFanDelay = 3; // maximum frames allowed for delay CAN BE EDITED
-
 bool bTriggerFallTrap = false;
+bool disableFans = false;
 
 void getMovingTrapPos(char map[100][100], struct SGameMovingTrap g_sMovingTrap[8]) {
 
@@ -65,6 +63,44 @@ void getStalkerTrapPos(char map[100][100], struct SGameTrap g_sStalkerTrap[7])
 				g_sStalkerTrap[i].m_cLocation.X = j;
 				g_sStalkerTrap[i].m_cLocation.Y = k + 1;
 				i++;
+			}
+		}
+	}
+}
+
+void getFanTrapPos(char map[100][100], struct SGameTrap g_leftFanTrap[5], struct SGameTrap g_rightFanTrap[5], struct SGameTrap g_upFanTrap[5], struct SGameTrap g_downFanTrap[5])
+{
+	int i = 0, h = 0, g = 0, f = 0;
+	for (int k = 0; k < 30; k++)
+	{
+		for (int j = 0; j < 80; j++)
+		{
+			if (map[k][j] == 'Z')
+			{
+				g_upFanTrap[i].m_cLocation.X = j;
+				g_upFanTrap[i].m_cLocation.Y = k + 1;
+				i++;
+			}
+			else if (map[k][j] == 'X')
+			{
+				g_downFanTrap[h].m_cLocation.X = j;
+				g_downFanTrap[h].m_cLocation.Y = k + 1;
+				h++;
+			}
+			else if (map[k][j] == 'N')
+			{
+				if (disableFans == false)
+				{
+					g_leftFanTrap[g].m_cLocation.X = j;
+					g_leftFanTrap[g].m_cLocation.Y = k + 1;
+					g++;
+				}
+			}
+			else if (map[k][j] == 'M')
+			{
+				g_rightFanTrap[f].m_cLocation.X = j;
+				g_rightFanTrap[f].m_cLocation.Y = k + 1;
+				f++;
 			}
 		}
 	}
@@ -274,6 +310,12 @@ void resetTrap(bool &bGotTrapPos, SGameTrap g_fTrap[34]) {
 	for (int i = 0; i < 34; i++) {
 		g_fTrap[i].m_bActive = true;
 	}
+	disableFans = false;
+}
+
+void resetStalkerTrap(bool &bGotTrapPos2)
+{
+	bGotTrapPos2 = false;
 }
 
 void renderMovingTrap(Console &g_Console, struct SGameMovingTrap g_sMovingTrap[8]) {
@@ -347,120 +389,162 @@ void renderCharacter(Console &g_Console, struct SGameChar playerInfo)
 	g_Console.writeToBuffer(playerInfo.m_cLocation, (char)1, charColor);
 }
 
+
 // START FAN FUNCTION //
-void FanFunctionMain(struct SGameChar &playerInfo, char mapStorage[100][100], Console &g_console)
+double FanDelay = 0.1; // can be edited
+int FanRange = 28;
+void FanFunctionMain(struct SGameChar &playerInfo, char mapStorage[100][100], Console &g_console, struct SGameTrap g_leftFanTrap[5], struct SGameTrap g_rightFanTrap[5], struct SGameTrap g_upFanTrap[5], struct SGameTrap g_downFanTrap[5])
 {
-	if (/*mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 29] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 28] == 'N' ||
-		mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 27] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 26] == 'N' ||
-		mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 25] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 24] == 'N' ||
-		mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 23] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 22] == 'N' ||
-		mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 21] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 20] == 'N' ||
-		mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 19] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 18] == 'N' ||
-		mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 17] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 16] == 'N' ||
-		mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 15] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 14] == 'N' ||
-		mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 13] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 12] == 'N' ||					// include if want larger fan blowing distance
-		mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 11] == 'N' || mapStorage[(int)g_sChar.m_cLocation.Y - 1][(int)g_sChar.m_cLocation.X + 10] == 'N' ||*/
-		mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X + 9] == 'N' || mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X + 8] == 'N' ||
-		mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X + 7] == 'N' || mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X + 6] == 'N' ||
-		mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X + 5] == 'N' || mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X + 4] == 'N' ||
-		mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X + 3] == 'N' || mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X + 2] == 'N' ||
-		mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X + 1] == 'N' || mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X] == 'N')
+	for (int i = 0; i < 5; i++)
 	{
-		FanFunctionLeft(playerInfo, mapStorage); // call fanfunctionleft
-	}
+		// left fan checking
+		g_leftFanTrap[i].m_bActive = false;
+		bool gotWallleft = false;
+		for (int m = 0; m < FanRange; m++)
+		{
+			for (int r = 0; r < FanRange; r++)
+			{
+				if (playerInfo.m_cLocation.X + r < g_leftFanTrap[i].m_cLocation.X) // checks row of x-axis, and checks area before trap
+				{
+					if (mapStorage[playerInfo.m_cLocation.Y - 1][playerInfo.m_cLocation.X + r] == '#') // check whether there is a wall infront of trap
+					{
+						gotWallleft = true;
+					}
+				}
+			}
+	
+			if (gotWallleft == false && playerInfo.m_cLocation.Y == (int)g_leftFanTrap[i].m_cLocation.Y && playerInfo.m_cLocation.X == (int)g_leftFanTrap[i].m_cLocation.X - m) // check if walls, if yes, dont activate // another loop that checks for walls in bbetween
+			{
+				g_leftFanTrap[i].m_bActive = true; // if player is same y level as trap, and <<Range>> away from trap, make it active
+			}
+		}
 
-	if (mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X - 9] == 'M' || mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X - 8] == 'M' ||
-		mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X - 7] == 'M' || mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X - 6] == 'M' ||
-		mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X - 5] == 'M' || mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X - 4] == 'M' ||
-		mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X - 3] == 'M' || mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X - 2] == 'M' ||
-		mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X - 1] == 'M' || mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X] == 'M')
-	{
-		FanFunctionRight(playerInfo, mapStorage, g_console); // call fanfunctionright
-	}
+		// right fan checking
+		g_rightFanTrap[i].m_bActive = false;
+		bool gotWallright = false;
 
-	if (mapStorage[(int)playerInfo.m_cLocation.Y + 9][(int)playerInfo.m_cLocation.X] == 'Z' || mapStorage[(int)playerInfo.m_cLocation.Y + 8][(int)playerInfo.m_cLocation.X] == 'Z' ||
-		mapStorage[(int)playerInfo.m_cLocation.Y + 7][(int)playerInfo.m_cLocation.X] == 'Z' || mapStorage[(int)playerInfo.m_cLocation.Y + 6][(int)playerInfo.m_cLocation.X] == 'Z' ||
-		mapStorage[(int)playerInfo.m_cLocation.Y + 5][(int)playerInfo.m_cLocation.X] == 'Z' || mapStorage[(int)playerInfo.m_cLocation.Y + 4][(int)playerInfo.m_cLocation.X] == 'Z' ||
-		mapStorage[(int)playerInfo.m_cLocation.Y + 3][(int)playerInfo.m_cLocation.X] == 'Z' || mapStorage[(int)playerInfo.m_cLocation.Y + 2][(int)playerInfo.m_cLocation.X] == 'Z' ||
-		mapStorage[(int)playerInfo.m_cLocation.Y + 1][(int)playerInfo.m_cLocation.X] == 'Z' || mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X] == 'Z' ||
-		mapStorage[(int)playerInfo.m_cLocation.Y][(int)playerInfo.m_cLocation.X] == 'Z')
-	{
-		FanFunctionUp(playerInfo, mapStorage); // call fanfunctionup
-	}
+		for (int m = 0; m < FanRange; m++)
+		{
+			for (int r = 0; r < FanRange; r++)
+			{
+				if (playerInfo.m_cLocation.X - r > g_rightFanTrap[i].m_cLocation.X) // checks row of x-axis, and checks area before trap
+				{
+					if (mapStorage[playerInfo.m_cLocation.Y - 1][playerInfo.m_cLocation.X - r] == '#') // check whether there is a wall infront of trap
+					{
+						gotWallright = true;
+					}
+				}
+			}
+			if (gotWallright == false && playerInfo.m_cLocation.Y == (int)g_rightFanTrap[i].m_cLocation.Y && playerInfo.m_cLocation.X == (int)g_rightFanTrap[i].m_cLocation.X + m)
+			{
+				g_rightFanTrap[i].m_bActive = true;
+			}
+		}
 
-	if (mapStorage[(int)playerInfo.m_cLocation.Y - 9][(int)playerInfo.m_cLocation.X] == 'X' || mapStorage[(int)playerInfo.m_cLocation.Y - 8][(int)playerInfo.m_cLocation.X] == 'X' ||
-		mapStorage[(int)playerInfo.m_cLocation.Y - 7][(int)playerInfo.m_cLocation.X] == 'X' || mapStorage[(int)playerInfo.m_cLocation.Y - 6][(int)playerInfo.m_cLocation.X] == 'X' ||
-		mapStorage[(int)playerInfo.m_cLocation.Y - 5][(int)playerInfo.m_cLocation.X] == 'X' || mapStorage[(int)playerInfo.m_cLocation.Y - 4][(int)playerInfo.m_cLocation.X] == 'X' ||
-		mapStorage[(int)playerInfo.m_cLocation.Y - 3][(int)playerInfo.m_cLocation.X] == 'X' || mapStorage[(int)playerInfo.m_cLocation.Y - 2][(int)playerInfo.m_cLocation.X] == 'X' ||
-		mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X] == 'X' || mapStorage[(int)playerInfo.m_cLocation.Y][(int)playerInfo.m_cLocation.X] == 'X')
-	{
-		FanFunctionDown(playerInfo, mapStorage, g_console); // call fanfunctiondown
+		// up fan chekcking
+		g_upFanTrap[i].m_bActive = false;
+		bool gotWallup = false;
+		for (int n = 0; n < FanRange; n++)
+		{
+			for (int r = 0; r < FanRange; r++)
+			{
+				if (playerInfo.m_cLocation.Y - 1 + r < g_upFanTrap[i].m_cLocation.Y) // checks col of y-axis, and checks area before trap
+				{
+					if (mapStorage[playerInfo.m_cLocation.Y - 1 + r][playerInfo.m_cLocation.X] == '#') // check whether there is a wall infront of trap
+					{
+						gotWallup = true;
+					}
+				}
+			}
+			if (gotWallup == false && playerInfo.m_cLocation.Y == (int)g_upFanTrap[i].m_cLocation.Y - n && playerInfo.m_cLocation.X == (int)g_upFanTrap[i].m_cLocation.X)
+			{
+				g_upFanTrap[i].m_bActive = true;
+			}
+		}
+
+		// down fan checking
+		g_downFanTrap[i].m_bActive = false;
+		bool gotWalldown = false;
+		for (int n = 0; n < FanRange; n++)
+		{
+			for (int r = 0; r < FanRange; r++)
+			{
+				if (playerInfo.m_cLocation.Y - 1 - r > g_downFanTrap[i].m_cLocation.Y) // checks col of y-axis, and checks area before trap
+				{
+					if (mapStorage[playerInfo.m_cLocation.Y - 1 - r][playerInfo.m_cLocation.X] == '#') // check whether there is a wall infront of trap
+					{
+						gotWalldown = true;
+					}
+				}
+			}
+			if (gotWalldown == false && playerInfo.m_cLocation.Y == (int)g_downFanTrap[i].m_cLocation.Y + n && playerInfo.m_cLocation.X == (int)g_downFanTrap[i].m_cLocation.X)
+			{
+				g_downFanTrap[i].m_bActive = true;
+			}
+		}
 	}
 }
 
-
-void FanFunctionLeft(struct SGameChar &playerInfo, char mapStorage[100][100])
+void leftFanMovement(double &leftFanTrapTime, struct SGameChar &playerInfo, char mapStorage[100][100], SGameTrap g_leftFanTrap[5])
 {
-	if (FanBlowLeftDelay < AllowedMaxFanDelay) // left fan
+	if (leftFanTrapTime >= FanDelay && disableFans == false)
 	{
-		FanBlowLeftDelay++;
-	}
-	else if (FanBlowLeftDelay == AllowedMaxFanDelay && mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X - 1] != '#' && mapStorage[(int)playerInfo.m_cLocation.Y - 2][(int)playerInfo.m_cLocation.X] != 'D')
-	{
-		if (playerInfo.m_cLocation.X > 0 && playerInfo.m_cLocation.X < 79)
+		for (int i = 0; i < 5; i++)
 		{
-			playerInfo.m_cLocation.X--;
+			if (g_leftFanTrap[i].m_bActive == true && (mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X - 1] != '#' && mapStorage[(int)playerInfo.m_cLocation.Y - 2][(int)playerInfo.m_cLocation.X] != 'D') )
+			{
+				playerInfo.m_cLocation.X--;
+			}
 		}
-		FanBlowLeftDelay = 0;
-	}
-
-}
-
-void FanFunctionRight(struct SGameChar &playerInfo, char mapStorage[100][100], Console &g_console)
-{
-	if (FanBlowRightDelay < AllowedMaxFanDelay) // right fan
-	{
-		FanBlowRightDelay++;
-	}
-	else if (FanBlowRightDelay == AllowedMaxFanDelay)
-	{
-		if (playerInfo.m_cLocation.X < g_console.getConsoleSize().X - 41 && mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X + 1] != '#' && mapStorage[(int)playerInfo.m_cLocation.Y - 2][(int)playerInfo.m_cLocation.X] != 'D')
-		{
-			playerInfo.m_cLocation.X++;
-		}
-		FanBlowRightDelay = 0;
+		leftFanTrapTime = 0.0;
 	}
 }
 
-void FanFunctionUp(struct SGameChar &playerInfo, char mapStorage[100][100])
+void rightFanMovement(double &rightFanTrapTime, struct SGameChar &playerInfo, char mapStorage[100][100], SGameTrap g_rightFanTrap[5])
 {
-	if (FanBlowUpDelay < AllowedMaxFanDelay) // up fan // unable to push player if player is IN UP fan
+	if (rightFanTrapTime >= FanDelay)
 	{
-		FanBlowUpDelay++;
-	}
-	else if (FanBlowUpDelay == AllowedMaxFanDelay)
-	{
-		if (playerInfo.m_cLocation.Y > 2 && mapStorage[(int)playerInfo.m_cLocation.Y - 2][(int)playerInfo.m_cLocation.X] != '#' && mapStorage[(int)playerInfo.m_cLocation.Y - 2][(int)playerInfo.m_cLocation.X] != 'D')
+		for (int i = 0; i < 5; i++)
 		{
-			playerInfo.m_cLocation.Y--;
+			if (g_rightFanTrap[i].m_bActive == true && (mapStorage[(int)playerInfo.m_cLocation.Y - 1][(int)playerInfo.m_cLocation.X + 1] != '#' && mapStorage[(int)playerInfo.m_cLocation.Y - 2][(int)playerInfo.m_cLocation.X] != 'D') )
+			{
+				playerInfo.m_cLocation.X++;
+			}
 		}
-		FanBlowUpDelay = 0;
+		rightFanTrapTime = 0.0;
+
 	}
 }
 
-void FanFunctionDown(struct SGameChar &playerInfo, char mapStorage[100][100], Console &g_console)
+void upFanMovement(double &upFanTrapTime, struct SGameChar &playerInfo, char mapStorage[100][100], SGameTrap g_upFanTrap[5])
 {
-	if (FanBlowDownDelay < AllowedMaxFanDelay) // down fan
+	if (upFanTrapTime >= FanDelay)
 	{
-		FanBlowDownDelay++;
-	}
-	else if (FanBlowDownDelay == AllowedMaxFanDelay)
-	{
-		if (playerInfo.m_cLocation.Y < g_console.getConsoleSize().Y - 7 && mapStorage[(int)playerInfo.m_cLocation.Y][(int)playerInfo.m_cLocation.X] != '#' && mapStorage[(int)playerInfo.m_cLocation.Y - 2][(int)playerInfo.m_cLocation.X] != 'D')
+		for (int i = 0; i < 5; i++)
 		{
-			playerInfo.m_cLocation.Y++;
+			if (g_upFanTrap[i].m_bActive == true && (mapStorage[(int)playerInfo.m_cLocation.Y - 2][(int)playerInfo.m_cLocation.X] != '#' && mapStorage[(int)playerInfo.m_cLocation.Y - 2][(int)playerInfo.m_cLocation.X] != 'D') )
+			{
+				playerInfo.m_cLocation.Y--;
+			}
 		}
-		FanBlowDownDelay = 0;
+		upFanTrapTime = 0.0;
+
+	}
+}
+
+void downFanMovement(double &downFanTrapTime, struct SGameChar &playerInfo, char mapStorage[100][100], SGameTrap g_downFanTrap[5])
+{
+	if (downFanTrapTime >= FanDelay)
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			if (g_downFanTrap[i].m_bActive == true && (mapStorage[(int)playerInfo.m_cLocation.Y][(int)playerInfo.m_cLocation.X] != '#' && mapStorage[(int)playerInfo.m_cLocation.Y - 2][(int)playerInfo.m_cLocation.X] != 'D') )
+			{
+				playerInfo.m_cLocation.Y++;
+			}
+		}
+		downFanTrapTime = 0.0;
+
 	}
 }
 // END FAN FUNCTION //
@@ -477,29 +561,29 @@ void StalkerFunctionMain(struct SGameChar &playerInfo, char mapStorage[100][100]
 		{
 			if (g_sStalkerTrap[i].m_bActive != true)
 			{
-				if ((int)playerInfo.m_cLocation.X == g_sStalkerTrap[i].m_cLocation.X - m) // check if player is left of trap by 9 chars range
+				if ((int)playerInfo.m_cLocation.X == g_sStalkerTrap[i].m_cLocation.X - m) // check if player is left of trap by X chars range
 				{
 					for (int n = 0; n < StalkerRange; n++)
 					{
-						if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y - n) // check if player is up of trap in 9 chars range
+						if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y - n) // check if player is up of trap in X chars range
 						{
 							g_sStalkerTrap[i].m_bActive = true;
 						}
-						else if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y + n) // check if player is down of trap in 9 chars range
+						else if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y + n) // check if player is down of trap in X chars range
 						{
 							g_sStalkerTrap[i].m_bActive = true;
 						}
 					}
 				}
-				else if ((int)playerInfo.m_cLocation.X == g_sStalkerTrap[i].m_cLocation.X + m) // check if player is right of trap by 9 chars range
+				else if ((int)playerInfo.m_cLocation.X == g_sStalkerTrap[i].m_cLocation.X + m) // check if player is right of trap by X chars range
 				{
 					for (int n = 0; n < StalkerRange; n++)
 					{
-						if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y - n) // check if player is up of trap in 9 chars range
+						if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y - n) // check if player is up of trap in X chars range
 						{
 							g_sStalkerTrap[i].m_bActive = true;
 						}
-						else if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y + n) // check if player is down of trap in 9 chars range
+						else if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y + n) // check if player is down of trap in X chars range
 						{
 							g_sStalkerTrap[i].m_bActive = true;
 						}
@@ -603,7 +687,7 @@ void ArrayLevelOneDetect(struct SGameChar &playerInfo, int ChangesArrayOne[50])
 	{
 		ChangesArrayOne[12] = 1;
 	}
-	if ((int)playerInfo.m_cLocation.Y - 1 == 27 && (int)playerInfo.m_cLocation.X == 26) // Fans
+	if ((int)playerInfo.m_cLocation.Y - 1 == 27 && (int)playerInfo.m_cLocation.X == 26) // 1st 2 Fans switch
 	{
 		ChangesArrayOne[13] = 1;
 	}
@@ -680,6 +764,7 @@ void ArrayLevelOneActivate(struct SGameChar &playerInfo, int ChangesArrayOne[50]
 	if (ChangesArrayOne[13] == 1)
 	{
 		mapStorage[19][33] = 'l', mapStorage[22][33] = 'l'; //Fanswitch to disable first few fans
+		disableFans = true;
 	}
 	if (ChangesArrayOne[14] == 1)
 	{
