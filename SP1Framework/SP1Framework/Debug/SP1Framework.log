@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿  game.cpp
   collision.cpp
   GameAsset.cpp
@@ -9,3 +10,8 @@
   Generating Code...
   SP1Framework.vcxproj -> C:\Users\Chew Hui Feng\Desktop\Studio Project sem 1\SP1Framework\New folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.exe
   SP1Framework.vcxproj -> C:\Users\Chew Hui Feng\Desktop\Studio Project sem 1\SP1Framework\New folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.pdb (Full PDB)
+=======
+﻿  levels.cpp
+  SP1Framework.vcxproj -> D:\Users\l533\Desktop\23.8 New Folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.exe
+  SP1Framework.vcxproj -> D:\Users\l533\Desktop\23.8 New Folder\SP01-Trap-la-pist\SP1Framework\Debug\SP1Framework.pdb (Full PDB)
+>>>>>>> pr/30

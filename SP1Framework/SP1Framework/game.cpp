@@ -18,6 +18,8 @@ double g_fTrapTime;
 double g_dTrapTime2;
 double g_dBouncingTrap;
 
+double g_sTrapTime;
+
 
 bool g_abKeyPressed[K_COUNT];
 int Choice;
@@ -34,6 +36,8 @@ SGameMovingTrap g_sMovingTrap[8];
 SGameTrap g_fTrap[34];
 SGameTrap g_sDoublePivotTrap;
 SGameTrap g_sBouncingTrap;
+
+SGameTrap g_sStalkerTrap[7];
 
 int ChangesArrayOne[50];
 
@@ -59,6 +63,7 @@ void init( void )
 	g_fTrapTime = 0.0;
 	g_dTrapTime2 = 0.0;
 	g_dBouncingTrap = 0.0;
+	g_sTrapTime = 0.0;
     // sets the initial state for the game
     g_eGameState = S_GAMEMENU;		
 
@@ -146,6 +151,7 @@ void update(double dt)
 	g_fTrapTime += dt;
 	g_dTrapTime2 += dt;
 	g_dBouncingTrap += dt;
+	g_sTrapTime += dt;
 
     switch (g_eGameState)
     {
@@ -272,6 +278,7 @@ void changeMapStorageLevel2() {
 	resetGame(g_sChar, ChangesArrayOne, g_fTrap, bGotTrapPos);
 
 }
+
 void gameplay()            // gameplay logic
 {
 	
@@ -284,6 +291,8 @@ void gameplay()            // gameplay logic
 	else if (LevelSelected == 2) {
 		doublePivotTrap(g_dTrapTime, g_sDoublePivotTrap, g_dTrapTime2);
 		bouncingTrap(g_dBouncingTrap, g_sBouncingTrap);
+		StalkerFunctionMain(g_sChar, mapStorage, g_sStalkerTrap);
+		StalkerFunctionMovement(g_sTrapTime, g_sChar, mapStorage, g_sStalkerTrap);
 	}
 
 	collisionChecker(LevelSelected, g_sChar, mapStorage, g_sMovingTrap, g_fTrap, g_sDoublePivotTrap, g_sBouncingTrap);
@@ -379,13 +388,13 @@ void moveCharacter()
 		}
 	}
 	else if (LevelSelected == 2) {
+		FanFunctionMain(g_sChar, mapStorage, g_Console);
 		if (bSomethingHappened)
 		{
 			// set the bounce time to some time in the future to prevent accidental triggers
 			g_dBounceTime = g_dElapsedTime + 0.025; // 125ms should be enough
 		}
 	}
-
 }
 
 void processUserInput() {
@@ -533,6 +542,8 @@ void renderGame()
 	renderCollisionCheck(g_Console);
 	renderMap();        // renders the map to the buffer first
 	renderCharacter(g_Console, g_sChar);  // renders the character into the buffer
+	renderLives(g_sChar, NumberOfLives, g_eGameState);
+
     if (LevelSelected == 1) {
 		renderMovingTrap(g_Console, g_sMovingTrap);
 		renderFallingTrap(g_Console, g_fTrap);
@@ -542,11 +553,8 @@ void renderGame()
 		renderDoublePiovtTrap(g_Console, g_sDoublePivotTrap);
 		renderUI2(g_Console, NumberOfLives, g_sChar);
 		renderBouncingTrap(g_Console, g_sBouncingTrap);
+		renderStalkerTrap(g_Console, g_sStalkerTrap);
 	}
-	
-
-	renderLives(g_sChar, NumberOfLives, g_eGameState);
-	
 }
 
 void renderMap()
@@ -654,6 +662,7 @@ void renderMap()
 
 		getDoublePiovtTrapPos(mapStorage, g_sDoublePivotTrap);
 		bGotTrapPos2 = true;
+		getStalkerTrapPos(mapStorage, g_sStalkerTrap);
 	}
 		
 }
