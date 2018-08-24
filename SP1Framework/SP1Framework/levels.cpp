@@ -14,3 +14,10 @@ void resetGame(struct SGameChar &playerInfo, int ChangesArrayOne[50], struct SGa
 	resetTrap(bGotTrapPos,  g_fTrap);
 
 }
+
+void resetGame2(struct SGameChar &playerInfo) {
+
+	playerInfo.m_iLife = 3;			// reset lives
+	playerInfo.m_cLocation.X = 1;		// reset coord x
+	playerInfo.m_cLocation.Y = 2;		// reset coord y
+}
