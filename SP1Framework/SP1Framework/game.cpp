@@ -392,7 +392,7 @@ void moveCharacter()
 		if (bSomethingHappened)
 		{
 			// set the bounce time to some time in the future to prevent accidental triggers
-			g_dBounceTime = g_dElapsedTime + 0.025; // 125ms should be enough
+			g_dBounceTime = g_dElapsedTime + 0.1;
 		}
 	}
 }

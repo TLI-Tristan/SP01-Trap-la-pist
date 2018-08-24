@@ -81,7 +81,6 @@ void collisionChecker(int LevelSelected, struct SGameChar &playerInfo, char map[
 
 		if (playerInfo.m_cLocation.X == g_sDoublePivotTrap.m_cLocation.X && playerInfo.m_cLocation.Y == g_sDoublePivotTrap.m_cLocation.Y)
 		{
-
 			bHitSomething = true;
 			playerKilled(playerInfo);
 		}
