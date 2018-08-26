@@ -95,6 +95,14 @@
     <ClInclude Include="user_interface.h" />
     <ClInclude Include="levels.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="Checkpoint.wav" />
+    <Media Include="Defeat.wav" />
+    <Media Include="Game.wav" />
+    <Media Include="LoseALife.wav" />
+    <Media Include="MainMenu.wav" />
+    <Media Include="Silent.wav" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
