@@ -8,6 +8,8 @@
 #include <sstream>
 #include <fstream>
 #include <string>
+#include <Windows.h>
+#pragma comment (lib,"Winmm.lib")
 
 using namespace std;
 
@@ -16,6 +18,7 @@ double g_dDeltaTime;
 double g_dTrapTime;
 double g_fTrapTime;
 double g_dTrapTime2;
+double g_dTrapTime3;
 double g_dBouncingTrap;
 
 double g_sTrapTime;
@@ -37,6 +40,7 @@ SGameMovingTrap g_sMovingTrap[8];
 SGameTrap g_fTrap[34];
 SGameTrap g_sDoublePivotTrap;
 SGameTrap g_sBouncingTrap;
+SGameTrap g_sChargeTrap[12];
 
 SGameTrap g_sStalkerTrap[7];
 
@@ -156,6 +160,7 @@ void update(double dt)
 	g_dTrapTime += dt;
 	g_fTrapTime += dt;
 	g_dTrapTime2 += dt;
+	g_dTrapTime3 += dt;
 	g_dBouncingTrap += dt;
 	g_sTrapTime += dt;
 
@@ -245,6 +250,7 @@ void changeMapStorageLevel1() {
 		int pos = 0;
 		if (myfile.is_open())
 		{
+			PlaySound(TEXT("Silent.wav"), NULL, SND_FILENAME | SND_ASYNC);
 			while (getline(myfile, line))
 			{
 				for (int j = 0; j < 80; j++)
@@ -271,6 +277,7 @@ void changeMapStorageLevel2() {
 		int pos = 0;
 		if (myfile.is_open())
 		{
+			PlaySound(TEXT("Silent.wav"), NULL, SND_FILENAME | SND_ASYNC);
 			while (getline(myfile, line))
 			{
 				for (int j = 0; j < 80; j++)
@@ -283,7 +290,7 @@ void changeMapStorageLevel2() {
 		}
 		LevelSelected = 2;
 	}
-	resetGame2(g_sChar, bGotTrapPos2);
+	resetGame(g_sChar, ChangesArrayOne, g_fTrap, bGotTrapPos2);
 
 }
 
@@ -306,9 +313,10 @@ void gameplay()            // gameplay logic
 		bouncingTrap(g_dBouncingTrap, g_sBouncingTrap);
 		StalkerFunctionMain(g_sChar, mapStorage, g_sStalkerTrap);
 		StalkerFunctionMovement(g_sTrapTime, g_sChar, mapStorage, g_sStalkerTrap);
+		chargeTrap(g_dTrapTime3, g_sChargeTrap);
 	}
 
-	collisionChecker(LevelSelected, g_sChar, mapStorage, g_sMovingTrap, g_fTrap, g_sDoublePivotTrap, g_sBouncingTrap, g_sStalkerTrap);
+	collisionChecker(LevelSelected, g_sChar, mapStorage, g_sMovingTrap, g_fTrap, g_sDoublePivotTrap, g_sBouncingTrap, g_sStalkerTrap, g_sChargeTrap);
 	// sound can be played here too.
 	
 }
@@ -388,6 +396,7 @@ void moveCharacter()
 	{
 		//resetGame();
 		gameMenu();
+		PlaySound(TEXT("Silent.wav"), NULL, SND_FILENAME | SND_ASYNC);
 	}
 
 	if (LevelSelected == 1) {
@@ -405,11 +414,11 @@ void moveCharacter()
 		if (bSomethingHappened)
 		{
 			// set the bounce time to some time in the future to prevent accidental triggers
-<<<<<<< HEAD
+
 			g_dBounceTime = g_dElapsedTime + 0.1;
-=======
+
 			g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
->>>>>>> pr/32
+
 		}
 	}
 }
@@ -439,6 +448,7 @@ void renderGameMenu()  // renders the game menu	//TODO: change this to game menu
 	int p = 0;
 	if (myfile.is_open())
 	{
+		PlaySound(TEXT("MainMenu.wav"), NULL, SND_FILENAME | SND_NOSTOP | SND_ASYNC);
 		while (getline(myfile, line))
 		{
 			d.Y = i;
@@ -488,6 +498,7 @@ void renderDefeatScreen()
 	int p = 0;
 	if (myfile.is_open())
 	{
+		PlaySound(TEXT("Defeat.wav"), NULL, SND_FILENAME | SND_NOSTOP | SND_ASYNC);
 		while (getline(myfile, line))
 		{
 			d.Y = i;
@@ -510,6 +521,7 @@ void renderDefeatScreen()
 		if (g_abKeyPressed[K_HOME])
 		{
 			gameMenu();
+			PlaySound(TEXT("Silent.wav"), NULL, SND_FILENAME | SND_NOSTOP | SND_ASYNC);
 		}
 		myfile.close();
 	}
@@ -549,6 +561,7 @@ void renderVictoryScreen()
 		if (g_abKeyPressed[K_HOME])
 		{
 			gameMenu();
+			PlaySound(TEXT("Silent.wav"), NULL, SND_FILENAME | SND_ASYNC);
 		}
 		myfile.close();
 	}
@@ -571,6 +584,7 @@ void renderGame()
 		renderUI2(g_Console, NumberOfLives, g_sChar);
 		renderBouncingTrap(g_Console, g_sBouncingTrap);
 		renderStalkerTrap(g_Console, g_sStalkerTrap);
+		renderChargeTrap(g_Console, g_sChargeTrap);
 	}
 }
 
@@ -581,6 +595,7 @@ void renderMap()
 	int pos = 0;
 	string line;
 	int i = 0;
+	PlaySound(TEXT("Game.wav"), NULL, SND_FILENAME | SND_NOSTOP | SND_ASYNC);
 
 	if (LevelSelected == 1) // FOR LEVEL ONE
 	{
@@ -679,6 +694,7 @@ void renderMap()
 
 		getDoublePiovtTrapPos(mapStorage, g_sDoublePivotTrap);
 		getStalkerTrapPos(mapStorage, g_sStalkerTrap);
+		getChargeTrapPos(mapStorage, g_sChargeTrap);
 		bGotTrapPos2 = true;
 	}
 		

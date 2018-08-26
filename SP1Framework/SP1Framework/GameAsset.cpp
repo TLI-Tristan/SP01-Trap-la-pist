@@ -3,6 +3,8 @@
 bool bTriggerFallTrap = false;
 bool disableFans = false;
 
+storage ChargeTrapStorage[12];
+
 void getMovingTrapPos(char map[100][100], struct SGameMovingTrap g_sMovingTrap[8]) {
 
 	int i = 0;
@@ -66,6 +68,25 @@ void getStalkerTrapPos(char map[100][100], struct SGameTrap g_sStalkerTrap[7])
 			}
 		}
 	}
+}
+
+void getChargeTrapPos(char map[100][100], struct SGameTrap g_sMovingTrap[12])
+{
+
+	int i = 0;
+	for (int k = 0; k<30; k++)
+	{
+		for (int j = 0; j<80; j++)
+		{
+			if (map[k][j] == 'Y' || map[k][j] == 'y')
+			{
+				g_sMovingTrap[i].m_cLocation.X = j;
+				g_sMovingTrap[i].m_cLocation.Y = k + 1;
+				i++;
+			}
+		}
+	}
+
 }
 
 void getFanTrapPos(char map[100][100], struct SGameTrap g_leftFanTrap[5], struct SGameTrap g_rightFanTrap[5], struct SGameTrap g_upFanTrap[5], struct SGameTrap g_downFanTrap[5])
@@ -326,6 +347,137 @@ void renderMovingTrap(Console &g_Console, struct SGameMovingTrap g_sMovingTrap[8
 	}
 	for (int i = 0; i < 8; i++) {
 		g_Console.writeToBuffer(g_sMovingTrap[i].m_cLocation, "A", trapColor);
+	}
+}
+
+int numberprint[12] = { 6,6,6,5,5,7,7,7,7,7,5,9 };
+
+void chargeTrap(double & trapTime, SGameTrap g_sChargeTrap[12]) //hi
+{
+	if (trapTime >= 0.35) {
+		for (int i = 0; i < 12; i++)
+		{
+			if (i <= 2) {
+
+				if (g_sChargeTrap[i].m_cLocation.Y == 2)
+				{
+					g_sChargeTrap[i].m_cLocation.Y += 6;
+					numberprint[i] = 6;
+				}
+				else {
+					g_sChargeTrap[i].m_cLocation.Y -= 1;
+					numberprint[i]--;
+				}
+
+			}
+			else if (i >= 5 && i <= 9)
+			{
+				if (g_sChargeTrap[i].m_cLocation.Y == 22)
+				{
+					g_sChargeTrap[i].m_cLocation.Y += 7;
+					numberprint[i] = 7;
+				}
+				else {
+					g_sChargeTrap[i].m_cLocation.Y -= 1;
+					numberprint[i]--;
+				}
+			}
+			else if (i >= 3 && i <= 4)
+			{
+				if (g_sChargeTrap[i].m_cLocation.X == 34)
+				{
+					g_sChargeTrap[i].m_cLocation.X += 5;
+					numberprint[i] = 5;
+				}
+				else {
+					g_sChargeTrap[i].m_cLocation.X -= 1;
+					numberprint[i]--;
+				}
+			}
+			else if (i == 10)
+			{
+				if (g_sChargeTrap[i].m_cLocation.X == 34)
+				{
+					g_sChargeTrap[i].m_cLocation.X += 5;
+					numberprint[i] = 5;
+				}
+				else {
+					g_sChargeTrap[i].m_cLocation.X -= 1;
+					numberprint[i]--;
+				}
+			}
+			else if (i >= 11)
+			{
+				if (g_sChargeTrap[i].m_cLocation.X == 34)
+				{
+					g_sChargeTrap[i].m_cLocation.X += 9;
+					numberprint[i] = 9;
+				}
+				else {
+					g_sChargeTrap[i].m_cLocation.X -= 1;
+					numberprint[i]--;
+				}
+			}
+			trapTime = 0.0;
+		}
+	}
+
+	for (int i = 0; i < 12; i++)
+	{
+		ChargeTrapStorage[i].m_cLocation.X = g_sChargeTrap[i].m_cLocation.X;
+		ChargeTrapStorage[i].m_cLocation.Y = g_sChargeTrap[i].m_cLocation.Y;
+	}
+
+}
+
+
+
+void renderChargeTrap(Console &g_Console, struct SGameTrap g_sChargeTrap[12])
+{
+
+	WORD trapColor = 0x0C;
+	{
+		trapColor = 0x0A;
+	}
+
+	for (int i = 0; i < 12; i++) {
+		if (i <= 2) {
+			for (int p = 0; p < numberprint[i]; p++) {
+
+				ChargeTrapStorage[i].m_cLocation.Y -= 1;
+				g_Console.writeToBuffer(ChargeTrapStorage[i].m_cLocation, "Y", trapColor);
+			}
+		}
+		else if (i >= 5 && i <= 9) {
+			for (int a = 0; a < numberprint[i]; a++)
+			{
+				ChargeTrapStorage[i].m_cLocation.Y -= 1;
+				g_Console.writeToBuffer(ChargeTrapStorage[i].m_cLocation, "Y", trapColor);
+			}
+
+		}
+		else if (i >= 3 && i <= 4) {
+			for (int b = 0; b < numberprint[i]; b++)
+			{
+				ChargeTrapStorage[i].m_cLocation.X -= 1;
+				g_Console.writeToBuffer(ChargeTrapStorage[i].m_cLocation, "Y", trapColor);
+			}
+		}
+		else if (i == 10) {
+			for (int c = 0; c < numberprint[i]; c++)
+			{
+				ChargeTrapStorage[i].m_cLocation.X -= 1;
+				g_Console.writeToBuffer(ChargeTrapStorage[i].m_cLocation, "Y", trapColor);
+			}
+		}
+		else if (i >= 11) {
+			for (int d = 0; d < numberprint[i]; d++)
+			{
+				ChargeTrapStorage[i].m_cLocation.X -= 1;
+				g_Console.writeToBuffer(ChargeTrapStorage[i].m_cLocation, "Y", trapColor);
+
+			}
+		}
 	}
 }
 

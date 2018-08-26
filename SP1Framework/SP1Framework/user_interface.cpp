@@ -1,6 +1,6 @@
 #include "user_interface.h"
 
-void renderUI(Console &g_Console, string NumberOfLives, struct SGameChar &playerInfo)
+void renderUI(Console &g_Console, string NumberOfLives, struct SGameChar &playerInfo) //For level 1
 {
 	COORD c;
 	std::ostringstream ss;
@@ -240,7 +240,7 @@ void renderLives(struct SGameChar &playerInfo, string &NumberOfLives, enum EGAME
 
 #include "user_interface.h"
 
-void renderUI2(Console &g_Console, string NumberOfLives, struct SGameChar &playerInfo)
+void renderUI2(Console &g_Console, string NumberOfLives, struct SGameChar &playerInfo) //For level 2
 {
 	COORD c;
 	std::ostringstream ss;
@@ -398,17 +398,50 @@ void renderUI2(Console &g_Console, string NumberOfLives, struct SGameChar &playe
 	c.X = g_Console.getConsoleSize().X + 101;
 	c.Y = 16;
 	g_Console.writeToBuffer(c, ss.str());
+	//Displays Legends13 at the Right
+	ss.str("");
+	ss << "Y";
+	c.X = g_Console.getConsoleSize().X + 100;
+	c.Y = 17;
+	g_Console.writeToBuffer(c, ss.str(), 0x02);
+	ss.str("");
+	ss << " - Charge Trap";
+	c.X = g_Console.getConsoleSize().X + 101;
+	c.Y = 17;
+	g_Console.writeToBuffer(c, ss.str());
+	//Displays Legends14 at the Right
+	ss.str("");
+	ss << "U";
+	c.X = g_Console.getConsoleSize().X + 100;
+	c.Y = 18;
+	g_Console.writeToBuffer(c, ss.str(), 0x0D);
+	ss.str("");
+	ss << " - Stalker";
+	c.X = g_Console.getConsoleSize().X + 101;
+	c.Y = 18;
+	g_Console.writeToBuffer(c, ss.str());
+	//Displays Legends15 at the Right
+	ss.str("");
+	ss << "Q";
+	c.X = g_Console.getConsoleSize().X + 100;
+	c.Y = 19;
+	g_Console.writeToBuffer(c, ss.str(), 0x0D);
+	ss.str("");
+	ss << " - Double Pivot";
+	c.X = g_Console.getConsoleSize().X + 101;
+	c.Y = 19;
+	g_Console.writeToBuffer(c, ss.str());
 	//Displays Reset and Home Button at the Right
 	ss.str("");
 	ss << "Reset"; //Program in the buttons
 	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 18;
+	c.Y = 20;
 	g_Console.writeToBuffer(c, ss.str(), 0xE0);
 
 	ss.str("");
 	ss << "Home"; //Program in the buttons
 	c.X = g_Console.getConsoleSize().X + 115;
-	c.Y = 18;
+	c.Y = 20;
 	g_Console.writeToBuffer(c, ss.str(), 0xE0);
 
 	//Displays instructions1 at the Bottom
