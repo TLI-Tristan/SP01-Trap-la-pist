@@ -69,4 +69,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="Checkpoint.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="Defeat.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="Game.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="LoseALife.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="MainMenu.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="Silent.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+  </ItemGroup>
 </Project>
