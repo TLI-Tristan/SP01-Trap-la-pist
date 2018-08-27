@@ -52,7 +52,7 @@ EGAMESTATES g_eGameState = S_GAMEMENU;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 // Console object
-Console g_Console(120, 35, "SP1 Framework");
+Console g_Console(200, 35, "SP1 Framework");
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
