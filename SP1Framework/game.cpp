@@ -49,6 +49,7 @@ SGameTrap g_sStalkerTrap[7];
 SGameTrap g_leftFanTrap[5], g_rightFanTrap[5], g_upFanTrap[5], g_downFanTrap[5];
 
 int ChangesArrayOne[50];
+int ChangesArrayTwo[50];
 
 EGAMESTATES g_eGameState = S_GAMEMENU;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
@@ -99,6 +100,7 @@ void init( void )
 	initMovingTrap(g_sMovingTrap);
 	initFallingTrap(g_fTrap);
 	ChangesArrayOne[50] = { 0, };
+	ChangesArrayTwo[50] = { 0, };
 }
 
 
@@ -294,7 +296,7 @@ void changeMapStorageLevel2() {
 		}
 		LevelSelected = 2;
 	}
-	resetGame(g_sChar, ChangesArrayOne, g_fTrap, bGotTrapPos2);
+	resetGame2(g_sChar, ChangesArrayTwo, bGotTrapPos2);
 
 }
 
@@ -424,6 +426,7 @@ void moveCharacter()
 
 			g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
 
+			ArrayLevelTwoDetect(g_sChar, ChangesArrayTwo); // Detect pressure plates etc presses
 		}
 	}
 }
@@ -631,6 +634,23 @@ void renderMap()
 
 		ArrayLevelOneActivate(g_sChar, ChangesArrayOne, mapStorage, g_fTrap, g_eGameState); // Activate traps
 	}
+
+	if (LevelSelected == 2)
+	{
+		for (int k = 0; k < 30; k++) // Reset Traps loop
+		{
+			for (int j = 0; j < 80; j++)
+			{
+				if (mapStorage[k][j] == ',')
+				{
+					mapStorage[k][j] = 'D';
+				}
+			}
+		}
+
+		ArrayLevelTwoActivate(g_sChar, ChangesArrayTwo, mapStorage, g_eGameState); // Activate traps
+	}
+
 
 	for (int k = 0; k < 30; k++) {
 		int pos2 = 0;
