@@ -1,5 +1,6 @@
 #include "GameAsset.h"
 
+
 bool bTriggerFallTrap = false;
 bool disableFans = false;
 
@@ -127,6 +128,21 @@ void getFanTrapPos(char map[100][100], struct SGameTrap g_leftFanTrap[5], struct
 	}
 }
 
+void getRandomMovementTrapPos(char map[100][100], struct SGameTrap g_sRandomMovementTrap[28]) {
+
+	int i = 0;
+	for (int k = 0; k < 30;  k++) 
+	{
+		for (int j = 0; j < 80; j++) {
+			if (map[k][j] == 'R') {
+				g_sRandomMovementTrap[i].m_cLocation.X = j;
+				g_sRandomMovementTrap[i].m_cLocation.Y = k + 1;
+				i++;
+			}
+		}
+	}
+
+}
 
 void initMovingTrap(struct SGameMovingTrap g_sMovingTrap[8]) {
 
@@ -324,6 +340,39 @@ void bouncingTrap(double &g_dBouncingTrap, struct SGameTrap &g_sBouncingTrap) {
 
 }
 
+
+
+	std::random_device rd; // obtain a random number from hardware
+	std::mt19937 eng(rd()); // seed the generator
+	std::uniform_int_distribution<> distr(2, 63); // define the range
+
+	int compare[28];
+
+void randomMovementTrap(double &trapTime, struct SGameTrap g_sRandomMovementTrap[28]) {
+
+	if (trapTime >= 0.5) {
+
+		for (int i = 0; i < 28; i++) {
+			int randomNumber;
+			randomNumber = distr(eng);
+			
+		//	do {
+			//}
+
+
+
+
+		} 
+
+		trapTime = 0.0;
+	}
+
+
+
+
+
+}
+
 void resetTrap(bool &bGotTrapPos, SGameTrap g_fTrap[34]) {
 
 	bTriggerFallTrap = false;
@@ -430,8 +479,6 @@ void chargeTrap(double & trapTime, SGameTrap g_sChargeTrap[12]) //hi
 
 }
 
-
-
 void renderChargeTrap(Console &g_Console, struct SGameTrap g_sChargeTrap[12])
 {
 
@@ -528,6 +575,18 @@ void renderStalkerTrap(Console &g_Console, struct SGameTrap g_sStalkerTrap[7]) {
 			g_Console.writeToBuffer(g_sStalkerTrap[i].m_cLocation, "U", trapColor);
 		}
 	}
+}
+
+void renderRandomMvementTrap(Console &g_Console, struct SGameTrap g_sRandomMovementTrap[28]) {
+
+	WORD trapColor = 0x0C;
+	{
+		trapColor = 0x0E;
+	}
+	for (int i = 0; i < 28; i++) {
+		g_Console.writeToBuffer(g_sRandomMovementTrap[i].m_cLocation, "R", trapColor);
+	}
+
 }
 
 void renderCharacter(Console &g_Console, struct SGameChar playerInfo)

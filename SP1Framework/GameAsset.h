@@ -3,12 +3,17 @@
 
 #include "Framework\console.h"
 #include "game.h"
+#include <random>
 
 using namespace std;
 
 struct storage {
 	COORD m_cLocation;
 };
+
+void getRandomMovementTrapPos(char map[100][100], struct SGameTrap g_sRandomMovementTrap[28]);
+void randomMovementTrap(double &trapTime, struct SGameTrap g_sRandomMovementTrap[28]);
+void renderRandomMvementTrap(Console &g_Console, struct SGameTrap g_sRandomMovementTrap[28]);
 
 void getDoublePiovtTrapPos (char map[100][100], struct SGameTrap &g_sDoublePiovtTrap);
 void renderDoublePiovtTrap(Console &g_Console, struct SGameTrap g_sDoublePiovtTrap);
