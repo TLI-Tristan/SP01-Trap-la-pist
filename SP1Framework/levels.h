@@ -7,5 +7,5 @@
 using namespace std;
 
 void resetGame(struct SGameChar &playerInfo, int ChangesArrayOne[50], struct SGameTrap g_fTrap[34], bool &bGotTrapPos);	
-void resetGame2(struct SGameChar &playerInfo);
+void resetGame2(struct SGameChar &playerInfo, int ChangesArrayTwo[50], bool &bGotTrapPos2);
 #endif

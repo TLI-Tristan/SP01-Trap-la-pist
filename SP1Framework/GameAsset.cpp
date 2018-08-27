@@ -923,3 +923,53 @@ void ArrayLevelOneActivate(struct SGameChar &playerInfo, int ChangesArrayOne[50]
 		g_eGameState = S_VICTORY;
 	}
 }
+
+void ArrayLevelTwoDetect(struct SGameChar &playerInfo, int ChangesArrayTwo[50])
+{
+	if ((int)playerInfo.m_cLocation.Y - 1 == 14 && (int)playerInfo.m_cLocation.X == 3) // 1st Door Plate (2nd Room)
+	{
+		ChangesArrayTwo[0] = 1;
+	}
+	if ((int)playerInfo.m_cLocation.Y - 1 == 4 && (int)playerInfo.m_cLocation.X == 41) // 2nd Door Plate (4th Room/Corridor)
+	{
+		ChangesArrayTwo[1] = 1;
+	}
+	if ((int)playerInfo.m_cLocation.Y - 1 == 1 && (int)playerInfo.m_cLocation.X == 78) // 3nd Door Plate (5th Room)
+	{
+		ChangesArrayTwo[2] = 1;
+	}
+	if ((int)playerInfo.m_cLocation.Y - 1 == 24 && (int)playerInfo.m_cLocation.X == 78) // 2nd Door Plate (7th Room)
+	{
+		ChangesArrayTwo[3] = 1;
+	}
+	if ((int)playerInfo.m_cLocation.Y - 1 == 14 && (int)playerInfo.m_cLocation.X == 36) // Win
+	{
+		ChangesArrayTwo[4] = 1;
+	}
+}
+
+void ArrayLevelTwoActivate(struct SGameChar &playerInfo, int ChangesArrayTwo[50], char mapStorage[100][100], enum EGAMESTATES &g_eGameState)
+{
+	if (ChangesArrayTwo[0] == 1)
+	{
+		mapStorage[7][11] = ','; // opens 1st door (double door)
+		mapStorage[7][12] = ',';
+	}
+	if (ChangesArrayTwo[1] == 1)
+	{
+		mapStorage[1][42] = ','; // opens 2nd door
+	}
+	if (ChangesArrayTwo[2] == 1)
+	{
+		mapStorage[11][58] = ','; // opens 3rd door (double door)
+		mapStorage[11][59] = ',';
+	}
+	if (ChangesArrayTwo[3] == 1)
+	{
+		mapStorage[27][43] = ','; // opens 2nd door
+	}
+	if (ChangesArrayTwo[4] == 1)
+	{
+		g_eGameState = S_VICTORY; // win
+	}
+}
