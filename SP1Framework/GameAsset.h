@@ -39,8 +39,12 @@ void initFallingTrap(struct SGameTrap g_fTrap[34]);
 
 void resetTrap(bool &bGotTrapPos, SGameTrap g_fTrap[34]);
 
-void ArrayLevelOneDetect(struct SGameChar &playerInfo, int ChangesArrayOne[50]); // traps array detection (WIP)
-void ArrayLevelOneActivate(struct SGameChar &playerInfo, int ChangesArrayOne[50], char mapStorage[100][100], struct SGameTrap g_fTrap[34], enum EGAMESTATES &g_eGameState); // traps array activate (WIP)
+void ArrayLevelOneDetect(struct SGameChar &playerInfo, int ChangesArrayOne[50]); // traps array detection
+void ArrayLevelOneActivate(struct SGameChar &playerInfo, int ChangesArrayOne[50], char mapStorage[100][100], struct SGameTrap g_fTrap[34], enum EGAMESTATES &g_eGameState); // traps array activate
+void ArrayLevelTwoDetect(struct SGameChar &playerInfo, int ChangesArrayTwo[50]); // traps array detection
+void ArrayLevelTwoActivate(struct SGameChar &playerInfo, int ChangesArrayTwo[50], char mapStorage[100][100], enum EGAMESTATES &g_eGameState); // traps array activate
+
+
 
 void StalkerFunctionMain(struct SGameChar &playerInfo, char mapStorage[100][100], SGameTrap g_sStalkerTrap[7]);
 void StalkerFunctionMovement(double &sTrapTime, struct SGameChar &playerInfo, char mapStorage[100][100], SGameTrap g_sStalkerTrap[7]);
