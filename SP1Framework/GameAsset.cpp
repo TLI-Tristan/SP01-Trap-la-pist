@@ -784,7 +784,7 @@ void downFanMovement(double &downFanTrapTime, struct SGameChar &playerInfo, char
 // END FAN FUNCTION //
 
 
-int StalkerRange = 7;
+int StalkerRange = 7; // (Actual Radius = StalkerRange - 1) = 6
 
 void StalkerFunctionMain(struct SGameChar &playerInfo, char mapStorage[100][100], SGameTrap g_sStalkerTrap[7])
 {
@@ -800,11 +800,11 @@ void StalkerFunctionMain(struct SGameChar &playerInfo, char mapStorage[100][100]
 				{
 					for (int n = 0; n < StalkerRange; n++)
 					{
-						if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y - n) // check if player is up of trap in X chars range
+						if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y - n - 1) // check if player is up of trap in X chars range
 						{
 							g_sStalkerTrap[i].m_bActive = true;
 						}
-						else if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y + n) // check if player is down of trap in X chars range
+						else if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y + n - 1) // check if player is down of trap in X chars range
 						{
 							g_sStalkerTrap[i].m_bActive = true;
 						}
@@ -814,11 +814,11 @@ void StalkerFunctionMain(struct SGameChar &playerInfo, char mapStorage[100][100]
 				{
 					for (int n = 0; n < StalkerRange; n++)
 					{
-						if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y - n) // check if player is up of trap in X chars range
+						if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y - n - 1) // check if player is up of trap in X chars range
 						{
 							g_sStalkerTrap[i].m_bActive = true;
 						}
-						else if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y + n) // check if player is down of trap in X chars range
+						else if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y + n - 1) // check if player is down of trap in X chars range
 						{
 							g_sStalkerTrap[i].m_bActive = true;
 						}
