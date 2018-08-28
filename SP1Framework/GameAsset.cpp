@@ -311,6 +311,9 @@ void doublePivotTrap(double &trapTime, struct SGameTrap &g_sDoublePiovtTrap, dou
 int bT_x = 1;
 int bT_y = 1;
 
+storage lineArray[100];
+int p = 0;
+
 void bouncingTrap(double &g_dBouncingTrap, struct SGameTrap &g_sBouncingTrap) {
 
 	if (g_dBouncingTrap >= 0.02) {
@@ -318,18 +321,27 @@ void bouncingTrap(double &g_dBouncingTrap, struct SGameTrap &g_sBouncingTrap) {
 		if (g_sBouncingTrap.m_cLocation.X == 78) {
 
 			bT_x *= -1;
+			resetLineArray();
 		}
 		else if (g_sBouncingTrap.m_cLocation.X == 1) {
+
 			bT_x *= -1;
+			resetLineArray();
 		}
 
 		if (g_sBouncingTrap.m_cLocation.Y == 28) {
 
 			bT_y *= -1;
+			resetLineArray();
 		}
 		else if (g_sBouncingTrap.m_cLocation.Y == 2) {
 			bT_y *= -1;
+			resetLineArray();
 		}
+
+		lineArray[p].m_cLocation.X = g_sBouncingTrap.m_cLocation.X;
+		lineArray[p].m_cLocation.Y = g_sBouncingTrap.m_cLocation.Y;
+		p++;
 
 		g_sBouncingTrap.m_cLocation.X += bT_x;
 		g_sBouncingTrap.m_cLocation.Y += bT_y;
@@ -339,6 +351,15 @@ void bouncingTrap(double &g_dBouncingTrap, struct SGameTrap &g_sBouncingTrap) {
 
 
 
+}
+
+void resetLineArray() {
+
+	for (int i = 0; i < 100; i++) {
+		lineArray[i].m_cLocation.X = NULL;
+		lineArray[i].m_cLocation.Y = NULL;
+	}
+	p = 0;
 }
 
 std::random_device rd; // truly random number generator
@@ -582,6 +603,11 @@ void renderBouncingTrap(Console &g_Console, struct SGameTrap g_sBouncingTrap) {
 	{
 		trapColor = 0x0A;
 	}
+
+	for (int i = 0; i < 100; i++) {
+
+		g_Console.writeToBuffer(lineArray[i].m_cLocation, "9", trapColor);
+	}
 	g_Console.writeToBuffer(g_sBouncingTrap.m_cLocation, "9", trapColor);
 }
 
@@ -620,7 +646,7 @@ void renderCharacter(Console &g_Console, struct SGameChar playerInfo)
 	WORD charColor = 0x0C;
 	if (playerInfo.m_bActive)
 	{
-		charColor = 0x0A;
+		charColor = 0x0F;
 	}
 	g_Console.writeToBuffer(playerInfo.m_cLocation, (char)1, charColor);
 }

@@ -53,6 +53,7 @@ void initFallingTrap(struct SGameTrap g_fTrap[34]);
 
 void resetTrap(bool &bGotTrapPos, SGameTrap g_fTrap[34]);
 void resetTrap2(bool &bGotTrapPos2);
+void resetLineArray();
 
 void ArrayLevelOneDetect(struct SGameChar &playerInfo, int ChangesArrayOne[50]); // traps array detection
 void ArrayLevelOneActivate(struct SGameChar &playerInfo, int ChangesArrayOne[50], char mapStorage[100][100], struct SGameTrap g_fTrap[34], enum EGAMESTATES &g_eGameState); // traps array activate
