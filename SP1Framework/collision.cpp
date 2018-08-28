@@ -3,7 +3,8 @@
 
 bool bHitSomething = false;
 
-void collisionChecker(int LevelSelected, struct SGameChar &playerInfo, char map[100][100], struct SGameMovingTrap MovingTrap[8], struct SGameTrap FallingTrap[34], struct SGameTrap g_sDoublePivotTrap, struct SGameTrap g_sBouncingTrap, struct SGameTrap g_sStalkerTrap[7], struct SGameTrap ChargeTrap[12]) // check if player hit anything
+void collisionChecker(int LevelSelected, struct SGameChar &playerInfo, char map[100][100], struct SGameMovingTrap MovingTrap[8], struct SGameTrap FallingTrap[34], struct SGameTrap g_sDoublePivotTrap, 
+	struct SGameTrap g_sBouncingTrap, struct SGameTrap g_sStalkerTrap[7], struct SGameTrap ChargeTrap[12], struct SGameTrap g_sRandomMovementTrap[28]) // check if player hit anything
 {
 	int Y = playerInfo.m_cLocation.Y - 1;
 	int X = playerInfo.m_cLocation.X;
@@ -103,6 +104,12 @@ void collisionChecker(int LevelSelected, struct SGameChar &playerInfo, char map[
 		for (int i = 0; i < 12; i++) {
 			if (playerInfo.m_cLocation.X == ChargeTrap[i].m_cLocation.X && playerInfo.m_cLocation.Y == ChargeTrap[i].m_cLocation.Y)
 			{
+				bHitSomething = true;
+				playerKilled(playerInfo);
+			}
+		}
+		for (int i = 0; i < 28; i++) {
+			if (playerInfo.m_cLocation.X== g_sRandomMovementTrap[i].m_cLocation.X && playerInfo.m_cLocation.Y == g_sRandomMovementTrap[i].m_cLocation.Y) {
 				bHitSomething = true;
 				playerKilled(playerInfo);
 			}
