@@ -341,16 +341,15 @@ void bouncingTrap(double &g_dBouncingTrap, struct SGameTrap &g_sBouncingTrap) {
 
 }
 
-std::random_device rd; // obtain a random number from hardware
-std::mt19937 eng(rd()); // seed the generator
-std::uniform_int_distribution<> distr(1, 4); // define the range
+std::random_device rd; // truly random number generator
+std::mt19937 eng(rd()); 
+std::uniform_int_distribution<> distr(1, 4); 
 
 int compare[28];
 	
-
 void randomMovementTrap(double &trapTime, struct SGameTrap g_sRandomMovementTrap[28]) {
 
-	if (trapTime >= 0.5) {
+	if (trapTime >= 0.7) {
 
 		for (int i = 0; i < 28; i++) {
 			int randomNumber;
