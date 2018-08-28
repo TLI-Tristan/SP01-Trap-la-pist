@@ -1,9 +1,11 @@
 #include "GameAsset.h"
 
+
 bool bTriggerFallTrap = false;
 bool disableFans = false;
 
 storage ChargeTrapStorage[12];
+storage2 randomMovementTrapStorage[28];
 
 void getMovingTrapPos(char map[100][100], struct SGameMovingTrap g_sMovingTrap[8]) {
 
@@ -39,18 +41,8 @@ void getFallingTrapPos(char map[100][100], struct SGameTrap g_fTrap[34]) {
 
 void getDoublePiovtTrapPos(char map[100][100], struct SGameTrap &g_sDoublePiovtTrap) {
 
-	for (int k = 0; k < 30; k++) {
-
-		for (int j = 0; j < 80; j++) {
-
-			if (map[k][j] == 'Q') {
-				g_sDoublePiovtTrap.m_cLocation.X = j;
-				g_sDoublePiovtTrap.m_cLocation.Y = k + 9;
-
-			}
-		}
-	}
-
+				g_sDoublePiovtTrap.m_cLocation.X = 37;
+				g_sDoublePiovtTrap.m_cLocation.Y = 22;
 }
 
 void getStalkerTrapPos(char map[100][100], struct SGameTrap g_sStalkerTrap[7])
@@ -127,6 +119,38 @@ void getFanTrapPos(char map[100][100], struct SGameTrap g_leftFanTrap[5], struct
 	}
 }
 
+void getRandomMovementTrapPos(char map[100][100], struct SGameTrap g_sRandomMovementTrap[28]) {
+
+	int i = 0;
+	for (int k = 0; k < 30;  k++) 
+	{
+		for (int j = 0; j < 80; j++) {
+			if (map[k][j] == 'R') {
+				g_sRandomMovementTrap[i].m_cLocation.X = j;
+				g_sRandomMovementTrap[i].m_cLocation.Y = k + 1;
+				i++;
+			}
+		}
+	}
+
+	for (int i = 0; i < 28; i++) {
+
+		randomMovementTrapStorage[i].m_cOne.X = g_sRandomMovementTrap[i].m_cLocation.X;
+		randomMovementTrapStorage[i].m_cOne.Y = g_sRandomMovementTrap[i].m_cLocation.Y;
+
+		randomMovementTrapStorage[i].m_cTwo.X = g_sRandomMovementTrap[i].m_cLocation.X + 2;
+		randomMovementTrapStorage[i].m_cTwo.Y = g_sRandomMovementTrap[i].m_cLocation.Y;
+
+		randomMovementTrapStorage[i].m_cThree.X = g_sRandomMovementTrap[i].m_cLocation.X;
+		randomMovementTrapStorage[i].m_cThree.Y = g_sRandomMovementTrap[i].m_cLocation.Y - 2;
+
+		randomMovementTrapStorage[i].m_cFour.X = g_sRandomMovementTrap[i].m_cLocation.X + 2;
+		randomMovementTrapStorage[i].m_cFour.Y = g_sRandomMovementTrap[i].m_cLocation.Y - 2;
+
+		randomMovementTrapStorage[i].num = 1;
+	}
+
+}
 
 void initMovingTrap(struct SGameMovingTrap g_sMovingTrap[8]) {
 
@@ -255,17 +279,10 @@ void doublePivotTrap(double &trapTime, struct SGameTrap &g_sDoublePiovtTrap, dou
 		trapTime2 = 0.0;
 	}
 
-
-
-
-
 	if (trapTime >= 0.6) {
 	
 		g_sDoublePiovtTrap.m_cLocation.X += x;
 		g_sDoublePiovtTrap.m_cLocation.Y += y;
-
-		
-
 
 		if (rotation == 1) {
 			rotation += 1;
@@ -324,6 +341,59 @@ void bouncingTrap(double &g_dBouncingTrap, struct SGameTrap &g_sBouncingTrap) {
 
 }
 
+std::random_device rd; // obtain a random number from hardware
+std::mt19937 eng(rd()); // seed the generator
+std::uniform_int_distribution<> distr(1, 4); // define the range
+
+int compare[28];
+	
+
+void randomMovementTrap(double &trapTime, struct SGameTrap g_sRandomMovementTrap[28]) {
+
+	if (trapTime >= 0.5) {
+
+		for (int i = 0; i < 28; i++) {
+			int randomNumber;
+
+			do {								//get a random number to set a random position
+				randomNumber = distr(eng);
+
+			} while (randomNumber == randomMovementTrapStorage[i].num);
+
+
+			if (randomNumber == 1) {
+
+				g_sRandomMovementTrap[i].m_cLocation.X = randomMovementTrapStorage[i].m_cOne.X;
+				g_sRandomMovementTrap[i].m_cLocation.Y = randomMovementTrapStorage[i].m_cOne.Y;
+			}
+			else if (randomNumber == 2) {
+
+				g_sRandomMovementTrap[i].m_cLocation.X = randomMovementTrapStorage[i].m_cTwo.X;
+				g_sRandomMovementTrap[i].m_cLocation.Y = randomMovementTrapStorage[i].m_cTwo.Y;
+
+			}
+			else if (randomNumber == 3) {
+
+				g_sRandomMovementTrap[i].m_cLocation.X = randomMovementTrapStorage[i].m_cThree.X;
+				g_sRandomMovementTrap[i].m_cLocation.Y = randomMovementTrapStorage[i].m_cThree.Y;
+
+			}
+			else if (randomNumber == 4) {
+
+				g_sRandomMovementTrap[i].m_cLocation.X = randomMovementTrapStorage[i].m_cFour.X;
+				g_sRandomMovementTrap[i].m_cLocation.Y = randomMovementTrapStorage[i].m_cFour.Y;
+
+			}
+			randomMovementTrapStorage[i].num = randomNumber;
+		}
+
+		trapTime = 0.0;
+
+	}
+
+	
+}
+
 void resetTrap(bool &bGotTrapPos, SGameTrap g_fTrap[34]) {
 
 	bTriggerFallTrap = false;
@@ -334,9 +404,11 @@ void resetTrap(bool &bGotTrapPos, SGameTrap g_fTrap[34]) {
 	disableFans = false;
 }
 
-void resetStalkerTrap(bool &bGotTrapPos2)
+void resetTrap2(bool &bGotTrapPos2)
 {
 	bGotTrapPos2 = false;
+	rotation = 1;
+	rotation2 = 1;
 }
 
 void renderMovingTrap(Console &g_Console, struct SGameMovingTrap g_sMovingTrap[8]) {
@@ -429,8 +501,6 @@ void chargeTrap(double & trapTime, SGameTrap g_sChargeTrap[12]) //hi
 	}
 
 }
-
-
 
 void renderChargeTrap(Console &g_Console, struct SGameTrap g_sChargeTrap[12])
 {
@@ -528,6 +598,18 @@ void renderStalkerTrap(Console &g_Console, struct SGameTrap g_sStalkerTrap[7]) {
 			g_Console.writeToBuffer(g_sStalkerTrap[i].m_cLocation, "U", trapColor);
 		}
 	}
+}
+
+void renderRandomMvementTrap(Console &g_Console, struct SGameTrap g_sRandomMovementTrap[28]) {
+
+	WORD trapColor = 0x0C;
+	{
+		trapColor = 0x0E;
+	}
+	for (int i = 0; i < 28; i++) {
+		g_Console.writeToBuffer(g_sRandomMovementTrap[i].m_cLocation, "R", trapColor);
+	}
+
 }
 
 void renderCharacter(Console &g_Console, struct SGameChar playerInfo)
@@ -703,6 +785,7 @@ void downFanMovement(double &downFanTrapTime, struct SGameChar &playerInfo, char
 
 
 int StalkerRange = 7;
+
 void StalkerFunctionMain(struct SGameChar &playerInfo, char mapStorage[100][100], SGameTrap g_sStalkerTrap[7])
 {
 	for (int i = 0; i < 7; i++)

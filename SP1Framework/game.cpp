@@ -20,6 +20,7 @@ double g_fTrapTime;
 double g_dTrapTime2;
 double g_dTrapTime3;
 double g_dBouncingTrap;
+double g_dRandomeMovementTrapTime;
 
 double g_sTrapTime;
 double g_leftFanTrapTime, g_rightFanTrapTime, g_upFanTrapTime, g_downFanTrapTime;
@@ -41,6 +42,7 @@ SGameTrap g_fTrap[34];
 SGameTrap g_sDoublePivotTrap;
 SGameTrap g_sBouncingTrap;
 SGameTrap g_sChargeTrap[12];
+SGameTrap g_sRandomMovementTrap[28];
 
 SGameTrap g_sStalkerTrap[7];
 
@@ -72,6 +74,7 @@ void init( void )
 	g_dTrapTime2 = 0.0;
 	g_dBouncingTrap = 0.0;
 	g_sTrapTime = 0.0;
+	g_dRandomeMovementTrapTime = 0.0;
 
 	g_leftFanTrapTime = 0.0, g_rightFanTrapTime = 0.0, g_upFanTrapTime = 0.0, g_downFanTrapTime = 0.0;
 
@@ -165,6 +168,7 @@ void update(double dt)
 	g_dTrapTime3 += dt;
 	g_dBouncingTrap += dt;
 	g_sTrapTime += dt;
+	g_dRandomeMovementTrapTime += dt;
 
 	g_leftFanTrapTime += dt, g_rightFanTrapTime += dt, g_downFanTrapTime += dt, g_upFanTrapTime += dt;
 
@@ -316,14 +320,13 @@ void gameplay()            // gameplay logic
 		StalkerFunctionMain(g_sChar, mapStorage, g_sStalkerTrap);
 		StalkerFunctionMovement(g_sTrapTime, g_sChar, mapStorage, g_sStalkerTrap);
 		chargeTrap(g_dTrapTime3, g_sChargeTrap);
+		randomMovementTrap(g_dRandomeMovementTrapTime, g_sRandomMovementTrap);
 	}
 
-	collisionChecker(LevelSelected, g_sChar, mapStorage, g_sMovingTrap, g_fTrap, g_sDoublePivotTrap, g_sBouncingTrap, g_sStalkerTrap, g_sChargeTrap);
+	collisionChecker(LevelSelected, g_sChar, mapStorage, g_sMovingTrap, g_fTrap, g_sDoublePivotTrap, g_sBouncingTrap, g_sStalkerTrap, g_sChargeTrap, g_sRandomMovementTrap);
 	// sound can be played here too.
 	
 }
-
-
 
 void moveCharacter()
 {
@@ -588,6 +591,7 @@ void renderGame()
 		renderBouncingTrap(g_Console, g_sBouncingTrap);
 		renderStalkerTrap(g_Console, g_sStalkerTrap);
 		renderChargeTrap(g_Console, g_sChargeTrap);
+		renderRandomMvementTrap(g_Console, g_sRandomMovementTrap);
 	}
 }
 
@@ -715,9 +719,9 @@ void renderMap()
 		getDoublePiovtTrapPos(mapStorage, g_sDoublePivotTrap);
 		getStalkerTrapPos(mapStorage, g_sStalkerTrap);
 		getChargeTrapPos(mapStorage, g_sChargeTrap);
+		getRandomMovementTrapPos(mapStorage, g_sRandomMovementTrap);
 		bGotTrapPos2 = true;
 	}
-		
 }
 
 void renderFramerate()
