@@ -43,10 +43,9 @@ SGameTrap g_sDoublePivotTrap;
 SGameTrap g_sBouncingTrap;
 SGameTrap g_sChargeTrap[12];
 SGameTrap g_sRandomMovementTrap[28];
-
 SGameTrap g_sStalkerTrap[7];
-
 SGameTrap g_leftFanTrap[5], g_rightFanTrap[5], g_upFanTrap[5], g_downFanTrap[5];
+storage lineArray[100];
 
 int ChangesArrayOne[50];
 int ChangesArrayTwo[50];
@@ -316,14 +315,14 @@ void gameplay()            // gameplay logic
 	}
 	else if (LevelSelected == 2) {
 		doublePivotTrap(g_dTrapTime, g_sDoublePivotTrap, g_dTrapTime2);
-		bouncingTrap(g_dBouncingTrap, g_sBouncingTrap);
+		bouncingTrap(g_dBouncingTrap, g_sBouncingTrap, lineArray);
 		StalkerFunctionMain(g_sChar, mapStorage, g_sStalkerTrap);
 		StalkerFunctionMovement(g_sTrapTime, g_sChar, mapStorage, g_sStalkerTrap);
 		chargeTrap(g_dTrapTime3, g_sChargeTrap);
 		randomMovementTrap(g_dRandomeMovementTrapTime, g_sRandomMovementTrap);
 	}
 
-	collisionChecker(LevelSelected, g_sChar, mapStorage, g_sMovingTrap, g_fTrap, g_sDoublePivotTrap, g_sBouncingTrap, g_sStalkerTrap, g_sChargeTrap, g_sRandomMovementTrap);
+	collisionChecker(LevelSelected, g_sChar, mapStorage, g_sMovingTrap, g_fTrap, g_sDoublePivotTrap, g_sBouncingTrap, g_sStalkerTrap, g_sChargeTrap, g_sRandomMovementTrap, lineArray);
 	// sound can be played here too.
 	
 }
@@ -589,7 +588,7 @@ void renderGame()
 	else if (LevelSelected == 2) {
 		renderDoublePiovtTrap(g_Console, g_sDoublePivotTrap);
 		renderUI2(g_Console, NumberOfLives, g_sChar);
-		renderBouncingTrap(g_Console, g_sBouncingTrap);
+		renderBouncingTrap(g_Console, g_sBouncingTrap, lineArray);
 		renderStalkerTrap(g_Console, g_sStalkerTrap);
 		renderChargeTrap(g_Console, g_sChargeTrap);
 		renderRandomMvementTrap(g_Console, g_sRandomMovementTrap);

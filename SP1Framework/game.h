@@ -59,6 +59,15 @@ struct SGameTrap
 	bool  m_bActive;
 };
 
+struct storage2 
+{
+	COORD m_cOne;
+	COORD m_cTwo;
+	COORD m_cThree;
+	COORD m_cFour;
+	int num;
+};
+
 void init        ( void );      // initialize your variables, allocate memory, etc
 void getInput    ( void );      // get input from player
 void update      ( double dt ); // update the game and the state of the game
