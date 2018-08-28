@@ -102,11 +102,43 @@ void collisionChecker(int LevelSelected, struct SGameChar &playerInfo, char map[
 			}
 		}
 		for (int i = 0; i < 12; i++) {
-			if (playerInfo.m_cLocation.X == ChargeTrap[i].m_cLocation.X && playerInfo.m_cLocation.Y == ChargeTrap[i].m_cLocation.Y)
-			{
-				bHitSomething = true;
-				playerKilled(playerInfo);
+			if (i <= 2) {
+				if (playerInfo.m_cLocation.X == ChargeTrap[i].m_cLocation.X && playerInfo.m_cLocation.Y <= ChargeTrap[i].m_cLocation.Y && playerInfo.m_cLocation.Y >= 2)
+				{
+					bHitSomething = true;
+					playerKilled(playerInfo);
+				}
 			}
+			else if (i >= 5 && i <= 9) {
+				if (playerInfo.m_cLocation.X == ChargeTrap[i].m_cLocation.X && playerInfo.m_cLocation.Y <= ChargeTrap[i].m_cLocation.Y && playerInfo.m_cLocation.Y >= 22)
+				{
+					bHitSomething = true;
+					playerKilled(playerInfo);
+				}
+			}
+			else if (i >= 3 && i <= 4) {
+				if (playerInfo.m_cLocation.X <= ChargeTrap[i].m_cLocation.X && playerInfo.m_cLocation.X >= 34 && playerInfo.m_cLocation.Y == ChargeTrap[i].m_cLocation.Y)
+				{
+					bHitSomething = true;
+					playerKilled(playerInfo);
+				}
+			}
+			else if (i == 10) {
+				if (playerInfo.m_cLocation.X <= ChargeTrap[i].m_cLocation.X && playerInfo.m_cLocation.X >= 34 && playerInfo.m_cLocation.Y == ChargeTrap[i].m_cLocation.Y)
+				{
+					bHitSomething = true;
+					playerKilled(playerInfo);
+				}
+			}
+			else if (i >= 11)
+			{
+				if (playerInfo.m_cLocation.X <= ChargeTrap[i].m_cLocation.X && playerInfo.m_cLocation.X >= 34 && playerInfo.m_cLocation.Y == ChargeTrap[i].m_cLocation.Y)
+				{
+					bHitSomething = true;
+					playerKilled(playerInfo);
+				}
+			}
+
 		}
 		for (int i = 0; i < 28; i++) {
 			if (playerInfo.m_cLocation.X== g_sRandomMovementTrap[i].m_cLocation.X && playerInfo.m_cLocation.Y == g_sRandomMovementTrap[i].m_cLocation.Y) {
@@ -115,7 +147,6 @@ void collisionChecker(int LevelSelected, struct SGameChar &playerInfo, char map[
 			}
 		}
 	}
-
 }
 
 

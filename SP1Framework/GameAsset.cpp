@@ -423,29 +423,29 @@ void renderMovingTrap(Console &g_Console, struct SGameMovingTrap g_sMovingTrap[8
 
 int numberprint[12] = { 6,6,6,5,5,7,7,7,7,7,5,9 };
 
-void chargeTrap(double & trapTime, SGameTrap g_sChargeTrap[12]) //hi
+void chargeTrap(double & trapTime, SGameTrap g_sChargeTrap[12])
 {
 	if (trapTime >= 0.35) {
 		for (int i = 0; i < 12; i++)
 		{
-			if (i <= 2) {
-
+			if (i <= 2)
+			{
 				if (g_sChargeTrap[i].m_cLocation.Y == 2)
 				{
-					g_sChargeTrap[i].m_cLocation.Y += 6;
+					g_sChargeTrap[i].m_cLocation.Y += 5;
 					numberprint[i] = 6;
 				}
 				else {
 					g_sChargeTrap[i].m_cLocation.Y -= 1;
 					numberprint[i]--;
 				}
-
 			}
+
 			else if (i >= 5 && i <= 9)
 			{
 				if (g_sChargeTrap[i].m_cLocation.Y == 22)
 				{
-					g_sChargeTrap[i].m_cLocation.Y += 7;
+					g_sChargeTrap[i].m_cLocation.Y += 6;
 					numberprint[i] = 7;
 				}
 				else {
@@ -457,7 +457,7 @@ void chargeTrap(double & trapTime, SGameTrap g_sChargeTrap[12]) //hi
 			{
 				if (g_sChargeTrap[i].m_cLocation.X == 34)
 				{
-					g_sChargeTrap[i].m_cLocation.X += 5;
+					g_sChargeTrap[i].m_cLocation.X += 4;
 					numberprint[i] = 5;
 				}
 				else {
@@ -469,7 +469,7 @@ void chargeTrap(double & trapTime, SGameTrap g_sChargeTrap[12]) //hi
 			{
 				if (g_sChargeTrap[i].m_cLocation.X == 34)
 				{
-					g_sChargeTrap[i].m_cLocation.X += 5;
+					g_sChargeTrap[i].m_cLocation.X += 4;
 					numberprint[i] = 5;
 				}
 				else {
@@ -481,7 +481,7 @@ void chargeTrap(double & trapTime, SGameTrap g_sChargeTrap[12]) //hi
 			{
 				if (g_sChargeTrap[i].m_cLocation.X == 34)
 				{
-					g_sChargeTrap[i].m_cLocation.X += 9;
+					g_sChargeTrap[i].m_cLocation.X += 8;
 					numberprint[i] = 9;
 				}
 				else {
@@ -510,40 +510,43 @@ void renderChargeTrap(Console &g_Console, struct SGameTrap g_sChargeTrap[12])
 	}
 
 	for (int i = 0; i < 12; i++) {
+
 		if (i <= 2) {
 			for (int p = 0; p < numberprint[i]; p++) {
 
-				ChargeTrapStorage[i].m_cLocation.Y -= 1;
 				g_Console.writeToBuffer(ChargeTrapStorage[i].m_cLocation, "Y", trapColor);
+				ChargeTrapStorage[i].m_cLocation.Y -= 1;
+
 			}
 		}
 		else if (i >= 5 && i <= 9) {
 			for (int a = 0; a < numberprint[i]; a++)
 			{
-				ChargeTrapStorage[i].m_cLocation.Y -= 1;
+
 				g_Console.writeToBuffer(ChargeTrapStorage[i].m_cLocation, "Y", trapColor);
+				ChargeTrapStorage[i].m_cLocation.Y -= 1;
 			}
 
 		}
 		else if (i >= 3 && i <= 4) {
 			for (int b = 0; b < numberprint[i]; b++)
 			{
-				ChargeTrapStorage[i].m_cLocation.X -= 1;
 				g_Console.writeToBuffer(ChargeTrapStorage[i].m_cLocation, "Y", trapColor);
+				ChargeTrapStorage[i].m_cLocation.X -= 1;
 			}
 		}
 		else if (i == 10) {
 			for (int c = 0; c < numberprint[i]; c++)
 			{
-				ChargeTrapStorage[i].m_cLocation.X -= 1;
 				g_Console.writeToBuffer(ChargeTrapStorage[i].m_cLocation, "Y", trapColor);
+				ChargeTrapStorage[i].m_cLocation.X -= 1;
 			}
 		}
 		else if (i >= 11) {
 			for (int d = 0; d < numberprint[i]; d++)
 			{
-				ChargeTrapStorage[i].m_cLocation.X -= 1;
 				g_Console.writeToBuffer(ChargeTrapStorage[i].m_cLocation, "Y", trapColor);
+				ChargeTrapStorage[i].m_cLocation.X -= 1;
 
 			}
 		}
