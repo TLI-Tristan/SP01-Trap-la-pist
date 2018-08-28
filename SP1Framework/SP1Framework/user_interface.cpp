@@ -202,18 +202,6 @@ void renderUI(Console &g_Console, string NumberOfLives, struct SGameChar &player
 	c.X = g_Console.getConsoleSize().X + 101;
 	c.Y = 20;
 	g_Console.writeToBuffer(c, ss.str());
-	//Displays Reset and Home Button at the Right
-	ss.str("");
-	ss << "Reset"; //Program in the buttons
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 21;
-	g_Console.writeToBuffer(c, ss.str(), 0xE0);
-
-	ss.str("");
-	ss << "Home"; //Program in the buttons
-	c.X = g_Console.getConsoleSize().X + 115;
-	c.Y = 21;
-	g_Console.writeToBuffer(c, ss.str(), 0xE0);
 
 	//Displays instructions1 at the Bottom
 	ss.str("");
@@ -242,7 +230,7 @@ void renderUI(Console &g_Console, string NumberOfLives, struct SGameChar &player
 
 	std::ostringstream cd, ra;
 	cd << "(" << playerInfo.m_cLocation.X << ", " << playerInfo.m_cLocation.Y << ")"; //coord
-	c.X = g_Console.getConsoleSize().X - 20;
+	c.X = g_Console.getConsoleSize().X - 80;
 	c.Y = 25;
 	g_Console.writeToBuffer(c, cd.str(), 0x0f);
 
@@ -486,18 +474,6 @@ void renderUI2(Console &g_Console, string NumberOfLives, struct SGameChar &playe
 	c.X = g_Console.getConsoleSize().X + 101;
 	c.Y = 20;
 	g_Console.writeToBuffer(c, ss.str());
-	//Displays Reset and Home Button at the Right
-	ss.str("");
-	ss << "Reset"; //Program in the buttons
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 21;
-	g_Console.writeToBuffer(c, ss.str(), 0xE0);
-
-	ss.str("");
-	ss << "Home"; //Program in the buttons
-	c.X = g_Console.getConsoleSize().X + 115;
-	c.Y = 21;
-	g_Console.writeToBuffer(c, ss.str(), 0xE0);
 
 	//Displays instructions1 at the Bottom
 	ss.str("");
@@ -526,7 +502,7 @@ void renderUI2(Console &g_Console, string NumberOfLives, struct SGameChar &playe
 
 	std::ostringstream cd, ra;
 	cd << "(" << playerInfo.m_cLocation.X << ", " << playerInfo.m_cLocation.Y << ")"; //coord
-	c.X = g_Console.getConsoleSize().X - 20;
+	c.X = g_Console.getConsoleSize().X - 80;
 	c.Y = 25;
 	g_Console.writeToBuffer(c, cd.str(), 0x0f);
 

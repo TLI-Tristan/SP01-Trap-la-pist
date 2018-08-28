@@ -52,7 +52,7 @@ EGAMESTATES g_eGameState = S_GAMEMENU;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 // Console object
-Console g_Console(200, 35, "SP1 Framework");
+Console g_Console(180, 35, "SP1 Framework");
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
@@ -414,7 +414,7 @@ void moveCharacter()
 		if (bSomethingHappened)
 		{
 			// set the bounce time to some time in the future to prevent accidental triggers
-
+			
 			g_dBounceTime = g_dElapsedTime + 0.1;
 
 			g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
@@ -473,16 +473,16 @@ void renderGameMenu()  // renders the game menu	//TODO: change this to game menu
 		myfile.close();
 	}
 	c.Y = 17;
-	c.X = c.X / 2 - 9;
-	g_Console.writeToBuffer(c, "Normal Mode (more like ez)", 0x03);
+	c.X = c.X / 2 - 49;
+	g_Console.writeToBuffer(c, "Normal Stage (more like ez)", 0x03);
 	c.Y += 1;
-	c.X = g_Console.getConsoleSize().X / 2 - 9;
-	g_Console.writeToBuffer(c, "HELL MODE (HEHEHEHAHAHOHO)", 0x03);
+	c.X = g_Console.getConsoleSize().X / 2 - 49;
+	g_Console.writeToBuffer(c, "HELL Stage (HEHEHEHAHAHOHO)", 0x03);
 	c.Y += 1;
-	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	c.X = g_Console.getConsoleSize().X / 2 - 49;
 	g_Console.writeToBuffer(c, "Exit Game (noooo pls :<)", 0x03);
 	c.Y = 16 + Choice; //Arrow location
-	c.X = g_Console.getConsoleSize().X / 2 - 12;
+	c.X = g_Console.getConsoleSize().X / 2 - 52;
 	g_Console.writeToBuffer(c, "->", 0x03);
 }
 
@@ -573,6 +573,7 @@ void renderGame()
 	renderMap();        // renders the map to the buffer first
 	renderCharacter(g_Console, g_sChar);  // renders the character into the buffer
 	renderLives(g_sChar, NumberOfLives, g_eGameState);
+	PlaySound(TEXT("Game.wav"), NULL, SND_FILENAME | SND_NOSTOP | SND_ASYNC);
 
     if (LevelSelected == 1) {
 		renderMovingTrap(g_Console, g_sMovingTrap);
@@ -595,7 +596,7 @@ void renderMap()
 	int pos = 0;
 	string line;
 	int i = 0;
-	PlaySound(TEXT("Game.wav"), NULL, SND_FILENAME | SND_NOSTOP | SND_ASYNC);
+	
 
 	if (LevelSelected == 1) // FOR LEVEL ONE
 	{

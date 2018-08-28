@@ -47,7 +47,7 @@ void cls( HANDLE hConsole )
     if (!hConsole)
         hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
-    COORD coordScreen = { 0, 0 };    /* here's where we'll home the
+    COORD coordScreen = { 0, 0 };    /* here's where we'll ] the
                                         cursor */ 
     BOOL bSuccess;
     DWORD cCharsWritten;
