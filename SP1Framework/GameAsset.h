@@ -11,6 +11,15 @@ struct storage {
 	COORD m_cLocation;
 };
 
+struct storage2 {
+
+	COORD m_cOne;
+	COORD m_cTwo;
+	COORD m_cThree;
+	COORD m_cFour;
+	int num;
+};
+
 void getRandomMovementTrapPos(char map[100][100], struct SGameTrap g_sRandomMovementTrap[28]);
 void randomMovementTrap(double &trapTime, struct SGameTrap g_sRandomMovementTrap[28]);
 void renderRandomMvementTrap(Console &g_Console, struct SGameTrap g_sRandomMovementTrap[28]);
@@ -43,6 +52,7 @@ void initFallingTrap(struct SGameTrap g_fTrap[34]);
 
 
 void resetTrap(bool &bGotTrapPos, SGameTrap g_fTrap[34]);
+void resetTrap2(bool &bGotTrapPos2);
 
 void ArrayLevelOneDetect(struct SGameChar &playerInfo, int ChangesArrayOne[50]); // traps array detection
 void ArrayLevelOneActivate(struct SGameChar &playerInfo, int ChangesArrayOne[50], char mapStorage[100][100], struct SGameTrap g_fTrap[34], enum EGAMESTATES &g_eGameState); // traps array activate
@@ -55,7 +65,6 @@ void StalkerFunctionMain(struct SGameChar &playerInfo, char mapStorage[100][100]
 void StalkerFunctionMovement(double &sTrapTime, struct SGameChar &playerInfo, char mapStorage[100][100], SGameTrap g_sStalkerTrap[7]);
 void getStalkerTrapPos(char map[100][100], struct SGameTrap g_sStalkerTrap[7]);
 void renderStalkerTrap(Console &g_Console, struct SGameTrap g_sStalkerTrap[7]);
-void resetStalkerTrap(bool &bGotTrapPos2);
 
 void getFanTrapPos(char map[100][100], struct SGameTrap g_leftFanTrap[5], struct SGameTrap g_rightFanTrap[5], struct SGameTrap g_upFanTrap[5], struct SGameTrap g_downFanTrap[5]);
 void FanFunctionMain(struct SGameChar &playerInfo, char mapStorage[100][100], Console &g_console, struct SGameTrap g_leftFanTrap[5], struct SGameTrap g_rightFanTrap[5], struct SGameTrap g_upFanTrap[5], struct SGameTrap g_downFanTrap[5]);

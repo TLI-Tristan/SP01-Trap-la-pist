@@ -9,7 +9,9 @@ void resetGame(struct SGameChar &playerInfo, int ChangesArrayOne[50], struct SGa
 
 	playerInfo.m_iLife = 3;				// reset lives
 	playerInfo.m_cLocation.X = 1;		// reset coord x
-	playerInfo.m_cLocation.Y = 4;		// reset coord y
+	playerInfo.m_cLocation.Y = 28;		// reset coord y
+	playerInfo.m_iRespawnX = 1;
+	playerInfo.m_iRespawnY = 28;
 	resetTrap(bGotTrapPos, g_fTrap);	// disable fans bool and resets traps
 }
 
@@ -22,6 +24,10 @@ void resetGame2(struct SGameChar &playerInfo, int ChangesArrayTwo[50], bool &bGo
 
 	playerInfo.m_iLife = 3;				// reset lives
 	playerInfo.m_cLocation.X = 1;		// reset coord x
-	playerInfo.m_cLocation.Y = 4;		// reset coord y
-	resetStalkerTrap(bGotTrapPos2);
+	playerInfo.m_cLocation.Y = 28;		// reset coord y
+	playerInfo.m_iRespawnX = 1;
+	playerInfo.m_iRespawnY = 28;
+
+	resetTrap2(bGotTrapPos2);
 }
+

@@ -323,12 +323,10 @@ void gameplay()            // gameplay logic
 		randomMovementTrap(g_dRandomeMovementTrapTime, g_sRandomMovementTrap);
 	}
 
-	collisionChecker(LevelSelected, g_sChar, mapStorage, g_sMovingTrap, g_fTrap, g_sDoublePivotTrap, g_sBouncingTrap, g_sStalkerTrap, g_sChargeTrap);
+	collisionChecker(LevelSelected, g_sChar, mapStorage, g_sMovingTrap, g_fTrap, g_sDoublePivotTrap, g_sBouncingTrap, g_sStalkerTrap, g_sChargeTrap, g_sRandomMovementTrap);
 	// sound can be played here too.
 	
 }
-
-
 
 void moveCharacter()
 {
