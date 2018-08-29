@@ -19,7 +19,7 @@ void renderRandomMvementTrap(Console &g_Console, struct SGameTrap g_sRandomMovem
 
 void getDoublePiovtTrapPos (char map[100][100], struct SGameTrap &g_sDoublePiovtTrap);
 void renderDoublePiovtTrap(Console &g_Console, struct SGameTrap g_sDoublePiovtTrap);
-void doublePivotTrap(double &trapTime, struct SGameTrap &g_sDoublePiovtTrap, double &trapTime2);
+void doublePivotTrap(double &trapTime, struct SGameTrap &g_sDoublePiovtTrap, double *trapTime2);
 
 void renderBouncingTrap(Console &g_Console, struct SGameTrap g_sBouncingTrap, struct storage lineArray[100]);
 void bouncingTrap(double &g_dBouncingTrap, struct SGameTrap &g_sBouncingTrap, struct storage lineArray[100]);

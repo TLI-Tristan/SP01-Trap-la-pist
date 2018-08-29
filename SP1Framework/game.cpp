@@ -319,7 +319,7 @@ void gameplay()            // gameplay logic
 		downFanMovement(g_downFanTrapTime, g_sChar, mapStorage, g_downFanTrap);
 	}
 	else if (LevelSelected == 2) {
-		doublePivotTrap(g_dTrapTime, g_sDoublePivotTrap, g_dTrapTime2);
+		doublePivotTrap(g_dTrapTime, g_sDoublePivotTrap, &g_dTrapTime2);
 		bouncingTrap(g_dBouncingTrap, g_sBouncingTrap, lineArray);
 		StalkerFunctionMain(g_sChar, mapStorage, g_sStalkerTrap);
 		StalkerFunctionMovement(g_sTrapTime, g_sChar, mapStorage, g_sStalkerTrap);

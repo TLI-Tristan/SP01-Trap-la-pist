@@ -235,9 +235,9 @@ int rotation2 = 1;
 int x2 = -7;
 int y2 = 3;
 
-void doublePivotTrap(double &trapTime, struct SGameTrap &g_sDoublePiovtTrap, double &trapTime2) {
+void doublePivotTrap(double &trapTime, struct SGameTrap &g_sDoublePiovtTrap, double *trapTime2) {
 
-	if (trapTime2 >= 0.1) {
+	if (*trapTime2 >= 0.1) {
 
 		g_sDoublePiovtTrap.m_cLocation.X += x2;
 		g_sDoublePiovtTrap.m_cLocation.Y += y2;
@@ -276,10 +276,10 @@ void doublePivotTrap(double &trapTime, struct SGameTrap &g_sDoublePiovtTrap, dou
 			rotation2 = 1;
 		}
 
-		trapTime2 = 0.0;
+		*trapTime2 = 0.0;
 	}
 
-	if (trapTime >= 0.6) {
+	if (trapTime >= 1.2) {
 	
 		g_sDoublePiovtTrap.m_cLocation.X += x;
 		g_sDoublePiovtTrap.m_cLocation.Y += y;
@@ -307,14 +307,13 @@ void doublePivotTrap(double &trapTime, struct SGameTrap &g_sDoublePiovtTrap, dou
 
 }
 
-
 int bT_x = 1;
 int bT_y = 1;
 int p = 0;
 
 void bouncingTrap(double &g_dBouncingTrap, struct SGameTrap &g_sBouncingTrap, struct storage lineArray[100]) {
 
-	if (g_dBouncingTrap >= 0.02) {
+	if (g_dBouncingTrap >= 0.04) {
 
 		if (g_sBouncingTrap.m_cLocation.X == 78) {
 
@@ -346,8 +345,6 @@ void bouncingTrap(double &g_dBouncingTrap, struct SGameTrap &g_sBouncingTrap, st
 
 		g_dBouncingTrap = 0.0;
 	}
-
-
 
 }
 
@@ -425,8 +422,12 @@ void resetTrap(bool &bGotTrapPos, SGameTrap g_fTrap[34]) {
 void resetTrap2(bool &bGotTrapPos2)
 {
 	bGotTrapPos2 = false;
+	x = 20;
+	y = -8;
 	rotation = 1;
 	rotation2 = 1;
+	x2 = -7;
+	y2 = 3;
 }
 
 void renderMovingTrap(Console &g_Console, struct SGameMovingTrap g_sMovingTrap[8]) {
@@ -889,8 +890,6 @@ void StalkerFunctionMovement(double &sTrapTime, struct SGameChar &playerInfo, ch
 	}		
 }
 	
-
-
 // LEGEND:
 // ',' (Comma) = Deactivated Door
 // '.' (FullStop) = Deactivated Electric Floor
