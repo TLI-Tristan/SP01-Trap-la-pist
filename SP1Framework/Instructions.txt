@@ -1,0 +1,33 @@
+########################################################################################################################
+#  Instructions(Press 'H' to return to Main Menu or 'O' to return to Game):                                            #
+#  -> Get to the end of each level by navigating through the puzzle while surviving the traps                          #
+#  -> You will have 3 lives each level and you will restart the level when you lose them                               #
+#  -> There are checkpoint(s) each level which you will respawn when you lose a life                                   #
+#                                                                                                                      #
+#  Legends and explainations:                                                                                          #
+#  Level 1:                                                                                                            #
+#  S - Spike Traps kill you when you step on them                                                                      #
+#  F - Fans blow you in the direction the fan is facing                                                                #
+#  W - Fan Switch offs nearby fans when stepped on                                                                     #
+#  A - Saw Trap moves in a vertical manner up and down and will kill you when you are hit                              #
+#  F - Falling Trap drops from the ceilings slowly when triggered and will kill you when you are hit                   #
+#  E - Electric Floors kill you when you step on them                                                                  #
+#  G - Generators turns off nearby Electric Floors when stepped on                                                     #
+#  P - Pressure Plates activate something on the map(Beware, there are some fake Pressure Plates)                      #
+#  D - Doors similarly to Walls, block you from moving in that direction                                               #
+#  C - Checkpoints allow you to revive from it when you die if you step on it                                          #
+#                                                                                                                      #
+#  Level 2:                                                                                                            #
+#  S - Spike Traps kill you when you step on them                                                                      #
+#  P - Pressure Plates activate something on the map                                                                   #
+#  D - Doors similarly to Walls, block you from moving in that direction                                               #
+#  C - Checkpoints allow you to revive from it when you die if you step on it                                          #
+#  Q - Double Pivot Trap rotates in 3 different small squares which all rotate around a large square                   #
+#      killing the player when hit                                                                                     #
+#  Y - Charge Traps charges in straight lines(both vertically and horizontally) and will kill the player when hit      #
+#  U - Stalker Traps will follow the player if the player gets within a certain distance from the stalker              #
+#      The stalkers will kill the player when touched                                                                  #
+#  R - Random Traps move randomly in any direction 1-tile around the traps' original locations                         #
+#  9 - The Bouncing Trap has a fixed movement route bouncing against the walls and will kill the player when hit       #
+#      with any of the lines                                                                                           #
+########################################################################################################################

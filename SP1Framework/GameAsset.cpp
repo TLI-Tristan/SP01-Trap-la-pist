@@ -630,7 +630,7 @@ void renderRandomMvementTrap(Console &g_Console, struct SGameTrap g_sRandomMovem
 
 	WORD trapColor = 0x0C;
 	{
-		trapColor = 0x0E;
+		trapColor = 0x50;
 	}
 	for (int i = 0; i < 28; i++) {
 		g_Console.writeToBuffer(g_sRandomMovementTrap[i].m_cLocation, "R", trapColor);
