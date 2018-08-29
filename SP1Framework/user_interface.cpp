@@ -158,74 +158,37 @@ void renderUI(Console &g_Console, string NumberOfLives, struct SGameChar &player
 	c.X = g_Console.getConsoleSize().X + 101;
 	c.Y = 16;
 	g_Console.writeToBuffer(c, ss.str());
-	//Displays Legends13 at the Right
-	ss.str("");
-	ss << "Y";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 17;
-	g_Console.writeToBuffer(c, ss.str(), 0x02);
-	ss.str("");
-	ss << " - Charge Trap";
-	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 17;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays Legends14 at the Right
-	ss.str("");
-	ss << "U";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 18;
-	g_Console.writeToBuffer(c, ss.str(), 0x0D);
-	ss.str("");
-	ss << " - Stalker";
-	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 18;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays Legends15 at the Right
-	ss.str("");
-	ss << "Q";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 19;
-	g_Console.writeToBuffer(c, ss.str(), 0x02);
-	ss.str("");
-	ss << " - Double Pivot";
-	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 19;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays Legends16 at the Right
-	ss.str("");
-	ss << "R";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 20;
-	g_Console.writeToBuffer(c, ss.str(), 0x50);
-	ss.str("");
-	ss << " - Random Trap";
-	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 20;
-	g_Console.writeToBuffer(c, ss.str());
 
 	//Displays instructions1 at the Bottom
 	ss.str("");
 	ss << "WASD and arrowkeys - Move";
-	c.X = 50;
+	c.X = 30;
 	c.Y = g_Console.getConsoleSize().Y - 2;
 	g_Console.writeToBuffer(c, ss.str());
 	//Displays instructions2 at the Bottom
 	ss.str("");
 	ss << "R - Reset(lose a life)";
-	c.X = 50;
+	c.X = 30;
 	c.Y = g_Console.getConsoleSize().Y - 1;
 	g_Console.writeToBuffer(c, ss.str());
 	//Displays instructions3 at the Bottom
 	ss.str("");
 	ss << "ESC - Quit game";
-	c.X = 80;
+	c.X = 60;
 	c.Y = g_Console.getConsoleSize().Y - 2;
 	g_Console.writeToBuffer(c, ss.str());
 	//Displays instructions4 at the Bottom
 	ss.str("");
 	ss << "H - Exit to Home Screen";
-	c.X = 80;
+	c.X = 60;
 	c.Y = g_Console.getConsoleSize().Y - 1;
+	g_Console.writeToBuffer(c, ss.str());
+
+	//Displays instructions5 at the Bottom
+	ss.str("");
+	ss << "I - Press for Instructions";
+	c.X = 90;
+	c.Y = g_Console.getConsoleSize().Y - 2;
 	g_Console.writeToBuffer(c, ss.str());
 
 	std::ostringstream cd, ra;
@@ -317,187 +280,140 @@ void renderUI2(Console &g_Console, string NumberOfLives, struct SGameChar &playe
 	//Displays Legends2 at the Right
 	ss.str("");
 	ss << (char)2 << " - Character";
-	c.X = g_Console.getConsoleSize().X + 100;
+	c.X = g_Console.getConsoleSize().X + 
+		100;
 	c.Y = 6;
 	g_Console.writeToBuffer(c, ss.str());
 	//Displays Legends3 at the Right
 	ss.str("");
-	ss << "F";
+	ss << "S";
 	c.X = g_Console.getConsoleSize().X + 100;
 	c.Y = 7;
-	g_Console.writeToBuffer(c, ss.str(), 0xE0);
+	g_Console.writeToBuffer(c, ss.str(), 0x40);
 	ss.str("");
-	ss << " - Fan";
+	ss << " - Spike";
 	c.X = g_Console.getConsoleSize().X + 101;
 	c.Y = 7;
 	g_Console.writeToBuffer(c, ss.str());
 	//Displays Legends4 at the Right
 	ss.str("");
-	ss << "W";
+	ss << "Q";
 	c.X = g_Console.getConsoleSize().X + 100;
 	c.Y = 8;
-	g_Console.writeToBuffer(c, ss.str(), 0x35);
+	g_Console.writeToBuffer(c, ss.str(), 0x02);
 	ss.str("");
-	ss << " - Fan Switch";
+	ss << " - Double Pivot Trap";
 	c.X = g_Console.getConsoleSize().X + 101;
 	c.Y = 8;
 	g_Console.writeToBuffer(c, ss.str());
 	//Displays Legends5 at the Right
 	ss.str("");
-	ss << "S";
+	ss << "9";
 	c.X = g_Console.getConsoleSize().X + 100;
 	c.Y = 9;
-	g_Console.writeToBuffer(c, ss.str(), 0x40);
+	g_Console.writeToBuffer(c, ss.str(), 0x02);
 	ss.str("");
-	ss << " - Spike";
+	ss << " - Bouncing Trap";
 	c.X = g_Console.getConsoleSize().X + 101;
 	c.Y = 9;
 	g_Console.writeToBuffer(c, ss.str());
 	//Displays Legends6 at the Right
 	ss.str("");
-	ss << "Q";
+	ss << "P";
 	c.X = g_Console.getConsoleSize().X + 100;
 	c.Y = 10;
-	g_Console.writeToBuffer(c, ss.str(), 0x02);
+	g_Console.writeToBuffer(c, ss.str(), 0x21);
 	ss.str("");
-	ss << " - Double Pivot";
+	ss << " - Pressure Plate";
 	c.X = g_Console.getConsoleSize().X + 101;
 	c.Y = 10;
 	g_Console.writeToBuffer(c, ss.str());
 	//Displays Legends7 at the Right
 	ss.str("");
-	ss << "9";
+	ss << "D";
 	c.X = g_Console.getConsoleSize().X + 100;
 	c.Y = 11;
-	g_Console.writeToBuffer(c, ss.str(), 0x02);
+	g_Console.writeToBuffer(c, ss.str(), 0xF0);
 	ss.str("");
-	ss << " - Double Pivot";
+	ss << " - Door";
 	c.X = g_Console.getConsoleSize().X + 101;
 	c.Y = 11;
 	g_Console.writeToBuffer(c, ss.str());
 	//Displays Legends8 at the Right
 	ss.str("");
-	ss << "T";
+	ss << "C";
 	c.X = g_Console.getConsoleSize().X + 100;
 	c.Y = 12;
-	g_Console.writeToBuffer(c, ss.str(), 0x30);
+	g_Console.writeToBuffer(c, ss.str(), 0xB0);
 	ss.str("");
-	ss << " - Falling Trap";
+	ss << " - Checkpoint";
 	c.X = g_Console.getConsoleSize().X + 101;
 	c.Y = 12;
 	g_Console.writeToBuffer(c, ss.str());
 	//Displays Legends9 at the Right
 	ss.str("");
-	ss << "G";
+	ss << "Y";
 	c.X = g_Console.getConsoleSize().X + 100;
 	c.Y = 13;
-	g_Console.writeToBuffer(c, ss.str(), 0xE0);
+	g_Console.writeToBuffer(c, ss.str(), 0x02);
 	ss.str("");
-	ss << " - Generator";
+	ss << " - Charge Trap";
 	c.X = g_Console.getConsoleSize().X + 101;
 	c.Y = 13;
 	g_Console.writeToBuffer(c, ss.str());
 	//Displays Legends10 at the Right
 	ss.str("");
-	ss << "E";
+	ss << "U";
 	c.X = g_Console.getConsoleSize().X + 100;
 	c.Y = 14;
-	g_Console.writeToBuffer(c, ss.str(), 0xC0);
+	g_Console.writeToBuffer(c, ss.str(), 0x0D);
 	ss.str("");
-	ss << " - Electric Floor";
+	ss << " - Stalker";
 	c.X = g_Console.getConsoleSize().X + 101;
 	c.Y = 14;
 	g_Console.writeToBuffer(c, ss.str());
 	//Displays Legends11 at the Right
 	ss.str("");
-	ss << "P";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 15;
-	g_Console.writeToBuffer(c, ss.str(), 0x21);
-	ss.str("");
-	ss << " - Pressure Plate";
-	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 15;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays Legends12 at the Right
-	ss.str("");
-	ss << "D";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 16;
-	g_Console.writeToBuffer(c, ss.str(), 0xF0);
-	ss.str("");
-	ss << " - Door";
-	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 16;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays Legends13 at the Right
-	ss.str("");
-	ss << "C";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 17;
-	g_Console.writeToBuffer(c, ss.str(), 0xB0);
-	ss.str("");
-	ss << " - Checkpoint";
-	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 17;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays Legends14 at the Right
-	ss.str("");
-	ss << "Y";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 18;
-	g_Console.writeToBuffer(c, ss.str(), 0x02);
-	ss.str("");
-	ss << " - Charge Trap";
-	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 18;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays Legends15 at the Right
-	ss.str("");
-	ss << "U";
-	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 19;
-	g_Console.writeToBuffer(c, ss.str(), 0x0D);
-	ss.str("");
-	ss << " - Stalker";
-	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 19;
-	g_Console.writeToBuffer(c, ss.str());
-	//Displays Legends16 at the Right
-	ss.str("");
 	ss << "R";
 	c.X = g_Console.getConsoleSize().X + 100;
-	c.Y = 20;
+	c.Y = 15;
 	g_Console.writeToBuffer(c, ss.str(), 0x50);
 	ss.str("");
 	ss << " - Random Trap";
 	c.X = g_Console.getConsoleSize().X + 101;
-	c.Y = 20;
+	c.Y = 15;
 	g_Console.writeToBuffer(c, ss.str());
 
 	//Displays instructions1 at the Bottom
 	ss.str("");
 	ss << "WASD and arrowkeys - Move";
-	c.X = 50;
+	c.X = 30;
 	c.Y = g_Console.getConsoleSize().Y - 2;
 	g_Console.writeToBuffer(c, ss.str());
 	//Displays instructions2 at the Bottom
 	ss.str("");
 	ss << "R - Reset(lose a life)";
-	c.X = 50;
+	c.X = 30;
 	c.Y = g_Console.getConsoleSize().Y - 1;
 	g_Console.writeToBuffer(c, ss.str());
 	//Displays instructions3 at the Bottom
 	ss.str("");
 	ss << "ESC - Quit game";
-	c.X = 80;
+	c.X = 60;
 	c.Y = g_Console.getConsoleSize().Y - 2;
 	g_Console.writeToBuffer(c, ss.str());
 	//Displays instructions4 at the Bottom
 	ss.str("");
 	ss << "H - Exit to Home Screen";
-	c.X = 80;
+	c.X = 60;
 	c.Y = g_Console.getConsoleSize().Y - 1;
+	g_Console.writeToBuffer(c, ss.str());
+
+	//Displays instructions5 at the Bottom
+	ss.str("");
+	ss << "I - Press for Instructions";
+	c.X = 90;
+	c.Y = g_Console.getConsoleSize().Y - 2;
 	g_Console.writeToBuffer(c, ss.str());
 
 	std::ostringstream cd, ra;
