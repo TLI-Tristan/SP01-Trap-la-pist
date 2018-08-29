@@ -4,7 +4,7 @@
 bool bHitSomething = false;
 
 void collisionChecker(int LevelSelected, struct SGameChar &playerInfo, char map[100][100], struct SGameMovingTrap MovingTrap[8], struct SGameTrap FallingTrap[34], struct SGameTrap g_sDoublePivotTrap, 
-	struct SGameTrap g_sBouncingTrap, struct SGameTrap g_sStalkerTrap[7], struct SGameTrap ChargeTrap[12], struct SGameTrap g_sRandomMovementTrap[28]) // check if player hit anything
+	struct SGameTrap g_sBouncingTrap, struct SGameTrap g_sStalkerTrap[7], struct SGameTrap ChargeTrap[12], struct SGameTrap g_sRandomMovementTrap[28], struct storage lineArray[100]) // check if player hit anything
 {
 	int Y = playerInfo.m_cLocation.Y - 1;
 	int X = playerInfo.m_cLocation.X;
@@ -13,9 +13,6 @@ void collisionChecker(int LevelSelected, struct SGameChar &playerInfo, char map[
 	{
 		bHitSomething = true;
 
-		//if (map[Y][X] == '#') {
-
-		//}
 		 if (map[Y][X] == 'S' || map[Y][X] == '!' || map[Y][X] == 'E')
 		{
 			 playerKilled(playerInfo);
@@ -25,39 +22,6 @@ void collisionChecker(int LevelSelected, struct SGameChar &playerInfo, char map[
 			 newRespawnLocation(playerInfo);
 		 }
 
-		//else if (map[Y][X] == 'D')
-		//{
-
-		//}
-		//else if (map[Y][X] == 'E')
-		//{
-
-		//}
-		//else if (map[Y][X] == 'P')
-		//{
-
-		//}
-		//else if (map[Y][X] == 'Z' || map[Y][X] == 'X' || map[Y][X] == 'N' || map[Y][X] == 'M')
-		//{
-
-		//}
-		//else if (map[Y][X] == 'T')
-		//{
-
-		//}
-		//else if (map[Y][X] == 'A')
-		//{
-
-		//}
-		//else if (map[Y][X] == 'W')
-		//{
-
-		//}
-		
-		//else if (map[Y][X] == 'G')
-		//{
-
-		//}
 	}
 	if (LevelSelected == 1) 
 	{
@@ -86,7 +50,7 @@ void collisionChecker(int LevelSelected, struct SGameChar &playerInfo, char map[
 			playerKilled(playerInfo);
 		}
 
-		if (playerInfo.m_cLocation.X == g_sDoublePivotTrap.m_cLocation.X && playerInfo.m_cLocation.Y == g_sBouncingTrap.m_cLocation.Y)
+		if (playerInfo.m_cLocation.X == g_sBouncingTrap.m_cLocation.X && playerInfo.m_cLocation.Y == g_sBouncingTrap.m_cLocation.Y)
 		{
 
 			bHitSomething = true;
@@ -101,24 +65,72 @@ void collisionChecker(int LevelSelected, struct SGameChar &playerInfo, char map[
 				playerKilled(playerInfo);
 			}
 		}
-		for (int i = 0; i < 12; i++) {
-			if (playerInfo.m_cLocation.X == ChargeTrap[i].m_cLocation.X && playerInfo.m_cLocation.Y == ChargeTrap[i].m_cLocation.Y)
+		for (int i = 0; i < 12; i++) 
+		{
+			if (i <= 2) {
+				if (playerInfo.m_cLocation.X == ChargeTrap[i].m_cLocation.X && playerInfo.m_cLocation.Y <= ChargeTrap[i].m_cLocation.Y && playerInfo.m_cLocation.Y >= 2)
+				{
+					bHitSomething = true;
+					playerKilled(playerInfo);
+				}
+			}
+			else if (i >= 5 && i <= 9) 
+			{
+				if (playerInfo.m_cLocation.X == ChargeTrap[i].m_cLocation.X && playerInfo.m_cLocation.Y <= ChargeTrap[i].m_cLocation.Y && playerInfo.m_cLocation.Y >= 22)
+				{
+					bHitSomething = true;
+					playerKilled(playerInfo);
+				}
+			}
+			else if (i >= 3 && i <= 4) 
+			{
+				if (playerInfo.m_cLocation.X <= ChargeTrap[i].m_cLocation.X && playerInfo.m_cLocation.X >= 34 && playerInfo.m_cLocation.Y == ChargeTrap[i].m_cLocation.Y)
+				{
+					bHitSomething = true;
+					playerKilled(playerInfo);
+				}
+			}
+			else if (i == 10) 
+			{
+				if (playerInfo.m_cLocation.X <= ChargeTrap[i].m_cLocation.X && playerInfo.m_cLocation.X >= 34 && playerInfo.m_cLocation.Y == ChargeTrap[i].m_cLocation.Y)
+				{
+					bHitSomething = true;
+					playerKilled(playerInfo);
+				}
+			}
+
+			else if (i >= 11)
+			{
+				if (playerInfo.m_cLocation.X <= ChargeTrap[i].m_cLocation.X && playerInfo.m_cLocation.X >= 34 && playerInfo.m_cLocation.Y == ChargeTrap[i].m_cLocation.Y)
+				{
+					bHitSomething = true;
+					playerKilled(playerInfo);
+				}
+			}
+
+		}
+
+		for (int i = 0; i < 28; i++) 
+		{
+			if (playerInfo.m_cLocation.X== g_sRandomMovementTrap[i].m_cLocation.X && playerInfo.m_cLocation.Y == g_sRandomMovementTrap[i].m_cLocation.Y) 
 			{
 				bHitSomething = true;
 				playerKilled(playerInfo);
 			}
 		}
-		for (int i = 0; i < 28; i++) {
-			if (playerInfo.m_cLocation.X== g_sRandomMovementTrap[i].m_cLocation.X && playerInfo.m_cLocation.Y == g_sRandomMovementTrap[i].m_cLocation.Y) {
+
+		for (int i = 0; i < 100; i++) 
+		{
+			if (playerInfo.m_cLocation.X == lineArray[i].m_cLocation.X && playerInfo.m_cLocation.Y == lineArray[i].m_cLocation.Y) 
+			{
 				bHitSomething = true;
 				playerKilled(playerInfo);
 			}
 		}
+
+
 	}
-
 }
-
-
 
 void playerKilled(struct SGameChar &playerInfo){
 	playerInfo.m_cLocation.Y = playerInfo.m_iRespawnY;

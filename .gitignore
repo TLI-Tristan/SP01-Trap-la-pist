@@ -347,3 +347,10 @@ SP1Framework/SP1Framework.VC.db
 *.obj
 *.tlog
 *.lastbuildstate
+*.lastbuildstate
+*.obj
+*.obj
+*.tlog
+*.db
+*.pdb
+SP1Framework/.vs/SP1Framework/v14/.suo

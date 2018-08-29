@@ -310,26 +310,36 @@ void doublePivotTrap(double &trapTime, struct SGameTrap &g_sDoublePiovtTrap, dou
 
 int bT_x = 1;
 int bT_y = 1;
+int p = 0;
 
-void bouncingTrap(double &g_dBouncingTrap, struct SGameTrap &g_sBouncingTrap) {
+void bouncingTrap(double &g_dBouncingTrap, struct SGameTrap &g_sBouncingTrap, struct storage lineArray[100]) {
 
 	if (g_dBouncingTrap >= 0.02) {
 
 		if (g_sBouncingTrap.m_cLocation.X == 78) {
 
 			bT_x *= -1;
+			resetLineArray(lineArray);
 		}
 		else if (g_sBouncingTrap.m_cLocation.X == 1) {
+
 			bT_x *= -1;
+			resetLineArray(lineArray);
 		}
 
 		if (g_sBouncingTrap.m_cLocation.Y == 28) {
 
 			bT_y *= -1;
+			resetLineArray(lineArray);
 		}
 		else if (g_sBouncingTrap.m_cLocation.Y == 2) {
 			bT_y *= -1;
+			resetLineArray(lineArray);
 		}
+
+		lineArray[p].m_cLocation.X = g_sBouncingTrap.m_cLocation.X;
+		lineArray[p].m_cLocation.Y = g_sBouncingTrap.m_cLocation.Y;
+		p++;
 
 		g_sBouncingTrap.m_cLocation.X += bT_x;
 		g_sBouncingTrap.m_cLocation.Y += bT_y;
@@ -341,16 +351,24 @@ void bouncingTrap(double &g_dBouncingTrap, struct SGameTrap &g_sBouncingTrap) {
 
 }
 
-std::random_device rd; // obtain a random number from hardware
-std::mt19937 eng(rd()); // seed the generator
-std::uniform_int_distribution<> distr(1, 4); // define the range
+void resetLineArray(struct storage lineArray[100]) {
+
+	for (int i = 0; i < 100; i++) {
+		lineArray[i].m_cLocation.X = NULL;
+		lineArray[i].m_cLocation.Y = NULL;
+	}
+	p = 0;
+}
+
+std::random_device rd; // truly random number generator
+std::mt19937 eng(rd()); 
+std::uniform_int_distribution<> distr(1, 4); 
 
 int compare[28];
 	
-
 void randomMovementTrap(double &trapTime, struct SGameTrap g_sRandomMovementTrap[28]) {
 
-	if (trapTime >= 0.5) {
+	if (trapTime >= 0.7) {
 
 		for (int i = 0; i < 28; i++) {
 			int randomNumber;
@@ -424,29 +442,29 @@ void renderMovingTrap(Console &g_Console, struct SGameMovingTrap g_sMovingTrap[8
 
 int numberprint[12] = { 6,6,6,5,5,7,7,7,7,7,5,9 };
 
-void chargeTrap(double & trapTime, SGameTrap g_sChargeTrap[12]) //hi
+void chargeTrap(double & trapTime, SGameTrap g_sChargeTrap[12])
 {
 	if (trapTime >= 0.35) {
 		for (int i = 0; i < 12; i++)
 		{
-			if (i <= 2) {
-
+			if (i <= 2)
+			{
 				if (g_sChargeTrap[i].m_cLocation.Y == 2)
 				{
-					g_sChargeTrap[i].m_cLocation.Y += 6;
+					g_sChargeTrap[i].m_cLocation.Y += 5;
 					numberprint[i] = 6;
 				}
 				else {
 					g_sChargeTrap[i].m_cLocation.Y -= 1;
 					numberprint[i]--;
 				}
-
 			}
+
 			else if (i >= 5 && i <= 9)
 			{
 				if (g_sChargeTrap[i].m_cLocation.Y == 22)
 				{
-					g_sChargeTrap[i].m_cLocation.Y += 7;
+					g_sChargeTrap[i].m_cLocation.Y += 6;
 					numberprint[i] = 7;
 				}
 				else {
@@ -458,7 +476,7 @@ void chargeTrap(double & trapTime, SGameTrap g_sChargeTrap[12]) //hi
 			{
 				if (g_sChargeTrap[i].m_cLocation.X == 34)
 				{
-					g_sChargeTrap[i].m_cLocation.X += 5;
+					g_sChargeTrap[i].m_cLocation.X += 4;
 					numberprint[i] = 5;
 				}
 				else {
@@ -470,7 +488,7 @@ void chargeTrap(double & trapTime, SGameTrap g_sChargeTrap[12]) //hi
 			{
 				if (g_sChargeTrap[i].m_cLocation.X == 34)
 				{
-					g_sChargeTrap[i].m_cLocation.X += 5;
+					g_sChargeTrap[i].m_cLocation.X += 4;
 					numberprint[i] = 5;
 				}
 				else {
@@ -482,7 +500,7 @@ void chargeTrap(double & trapTime, SGameTrap g_sChargeTrap[12]) //hi
 			{
 				if (g_sChargeTrap[i].m_cLocation.X == 34)
 				{
-					g_sChargeTrap[i].m_cLocation.X += 9;
+					g_sChargeTrap[i].m_cLocation.X += 8;
 					numberprint[i] = 9;
 				}
 				else {
@@ -511,40 +529,43 @@ void renderChargeTrap(Console &g_Console, struct SGameTrap g_sChargeTrap[12])
 	}
 
 	for (int i = 0; i < 12; i++) {
+
 		if (i <= 2) {
 			for (int p = 0; p < numberprint[i]; p++) {
 
-				ChargeTrapStorage[i].m_cLocation.Y -= 1;
 				g_Console.writeToBuffer(ChargeTrapStorage[i].m_cLocation, "Y", trapColor);
+				ChargeTrapStorage[i].m_cLocation.Y -= 1;
+
 			}
 		}
 		else if (i >= 5 && i <= 9) {
 			for (int a = 0; a < numberprint[i]; a++)
 			{
-				ChargeTrapStorage[i].m_cLocation.Y -= 1;
+
 				g_Console.writeToBuffer(ChargeTrapStorage[i].m_cLocation, "Y", trapColor);
+				ChargeTrapStorage[i].m_cLocation.Y -= 1;
 			}
 
 		}
 		else if (i >= 3 && i <= 4) {
 			for (int b = 0; b < numberprint[i]; b++)
 			{
-				ChargeTrapStorage[i].m_cLocation.X -= 1;
 				g_Console.writeToBuffer(ChargeTrapStorage[i].m_cLocation, "Y", trapColor);
+				ChargeTrapStorage[i].m_cLocation.X -= 1;
 			}
 		}
 		else if (i == 10) {
 			for (int c = 0; c < numberprint[i]; c++)
 			{
-				ChargeTrapStorage[i].m_cLocation.X -= 1;
 				g_Console.writeToBuffer(ChargeTrapStorage[i].m_cLocation, "Y", trapColor);
+				ChargeTrapStorage[i].m_cLocation.X -= 1;
 			}
 		}
 		else if (i >= 11) {
 			for (int d = 0; d < numberprint[i]; d++)
 			{
-				ChargeTrapStorage[i].m_cLocation.X -= 1;
 				g_Console.writeToBuffer(ChargeTrapStorage[i].m_cLocation, "Y", trapColor);
+				ChargeTrapStorage[i].m_cLocation.X -= 1;
 
 			}
 		}
@@ -574,11 +595,16 @@ void renderDoublePiovtTrap(Console &g_Console, struct SGameTrap g_sDoublePiovtTr
 		g_Console.writeToBuffer(g_sDoublePiovtTrap.m_cLocation, "Q", trapColor);
 }
 
-void renderBouncingTrap(Console &g_Console, struct SGameTrap g_sBouncingTrap) {
+void renderBouncingTrap(Console &g_Console, struct SGameTrap g_sBouncingTrap, struct storage lineArray[100]) {
 
 	WORD trapColor = 0x0C;
 	{
 		trapColor = 0x0A;
+	}
+
+	for (int i = 0; i < 100; i++) {
+
+		g_Console.writeToBuffer(lineArray[i].m_cLocation, "9", trapColor);
 	}
 	g_Console.writeToBuffer(g_sBouncingTrap.m_cLocation, "9", trapColor);
 }
@@ -618,7 +644,7 @@ void renderCharacter(Console &g_Console, struct SGameChar playerInfo)
 	WORD charColor = 0x0C;
 	if (playerInfo.m_bActive)
 	{
-		charColor = 0x0A;
+		charColor = 0x0F;
 	}
 	g_Console.writeToBuffer(playerInfo.m_cLocation, (char)1, charColor);
 }
@@ -784,7 +810,7 @@ void downFanMovement(double &downFanTrapTime, struct SGameChar &playerInfo, char
 // END FAN FUNCTION //
 
 
-int StalkerRange = 7;
+int StalkerRange = 7; // (Actual Radius = StalkerRange - 1) = 6
 
 void StalkerFunctionMain(struct SGameChar &playerInfo, char mapStorage[100][100], SGameTrap g_sStalkerTrap[7])
 {
@@ -800,11 +826,11 @@ void StalkerFunctionMain(struct SGameChar &playerInfo, char mapStorage[100][100]
 				{
 					for (int n = 0; n < StalkerRange; n++)
 					{
-						if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y - n) // check if player is up of trap in X chars range
+						if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y - n - 1) // check if player is up of trap in X chars range
 						{
 							g_sStalkerTrap[i].m_bActive = true;
 						}
-						else if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y + n) // check if player is down of trap in X chars range
+						else if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y + n - 1) // check if player is down of trap in X chars range
 						{
 							g_sStalkerTrap[i].m_bActive = true;
 						}
@@ -814,11 +840,11 @@ void StalkerFunctionMain(struct SGameChar &playerInfo, char mapStorage[100][100]
 				{
 					for (int n = 0; n < StalkerRange; n++)
 					{
-						if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y - n) // check if player is up of trap in X chars range
+						if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y - n - 1) // check if player is up of trap in X chars range
 						{
 							g_sStalkerTrap[i].m_bActive = true;
 						}
-						else if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y + n) // check if player is down of trap in X chars range
+						else if ((int)playerInfo.m_cLocation.Y - 1 == g_sStalkerTrap[i].m_cLocation.Y + n - 1) // check if player is down of trap in X chars range
 						{
 							g_sStalkerTrap[i].m_bActive = true;
 						}

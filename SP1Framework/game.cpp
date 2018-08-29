@@ -43,10 +43,9 @@ SGameTrap g_sDoublePivotTrap;
 SGameTrap g_sBouncingTrap;
 SGameTrap g_sChargeTrap[12];
 SGameTrap g_sRandomMovementTrap[28];
-
 SGameTrap g_sStalkerTrap[7];
-
 SGameTrap g_leftFanTrap[5], g_rightFanTrap[5], g_upFanTrap[5], g_downFanTrap[5];
+storage lineArray[100];
 
 int ChangesArrayOne[50];
 int ChangesArrayTwo[50];
@@ -55,7 +54,7 @@ EGAMESTATES g_eGameState = S_GAMEMENU;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 // Console object
-Console g_Console(120, 35, "SP1 Framework");
+Console g_Console(180, 35, "SP1 Framework");
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
@@ -316,14 +315,14 @@ void gameplay()            // gameplay logic
 	}
 	else if (LevelSelected == 2) {
 		doublePivotTrap(g_dTrapTime, g_sDoublePivotTrap, g_dTrapTime2);
-		bouncingTrap(g_dBouncingTrap, g_sBouncingTrap);
+		bouncingTrap(g_dBouncingTrap, g_sBouncingTrap, lineArray);
 		StalkerFunctionMain(g_sChar, mapStorage, g_sStalkerTrap);
 		StalkerFunctionMovement(g_sTrapTime, g_sChar, mapStorage, g_sStalkerTrap);
 		chargeTrap(g_dTrapTime3, g_sChargeTrap);
 		randomMovementTrap(g_dRandomeMovementTrapTime, g_sRandomMovementTrap);
 	}
 
-	collisionChecker(LevelSelected, g_sChar, mapStorage, g_sMovingTrap, g_fTrap, g_sDoublePivotTrap, g_sBouncingTrap, g_sStalkerTrap, g_sChargeTrap, g_sRandomMovementTrap);
+	collisionChecker(LevelSelected, g_sChar, mapStorage, g_sMovingTrap, g_fTrap, g_sDoublePivotTrap, g_sBouncingTrap, g_sStalkerTrap, g_sChargeTrap, g_sRandomMovementTrap, lineArray);
 	// sound can be played here too.
 	
 }
@@ -419,7 +418,7 @@ void moveCharacter()
 		if (bSomethingHappened)
 		{
 			// set the bounce time to some time in the future to prevent accidental triggers
-
+			
 			g_dBounceTime = g_dElapsedTime + 0.1;
 
 			g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
@@ -479,16 +478,16 @@ void renderGameMenu()  // renders the game menu	//TODO: change this to game menu
 		myfile.close();
 	}
 	c.Y = 17;
-	c.X = c.X / 2 - 9;
-	g_Console.writeToBuffer(c, "Normal Mode (more like ez)", 0x03);
+	c.X = c.X / 2 - 49;
+	g_Console.writeToBuffer(c, "Normal Stage (more like ez)", 0x03);
 	c.Y += 1;
-	c.X = g_Console.getConsoleSize().X / 2 - 9;
-	g_Console.writeToBuffer(c, "HELL MODE (HEHEHEHAHAHOHO)", 0x03);
+	c.X = g_Console.getConsoleSize().X / 2 - 49;
+	g_Console.writeToBuffer(c, "HELL Stage (HEHEHEHAHAHOHO)", 0x03);
 	c.Y += 1;
-	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	c.X = g_Console.getConsoleSize().X / 2 - 49;
 	g_Console.writeToBuffer(c, "Exit Game (noooo pls :<)", 0x03);
 	c.Y = 16 + Choice; //Arrow location
-	c.X = g_Console.getConsoleSize().X / 2 - 12;
+	c.X = g_Console.getConsoleSize().X / 2 - 52;
 	g_Console.writeToBuffer(c, "->", 0x03);
 }
 
@@ -579,6 +578,7 @@ void renderGame()
 	renderMap();        // renders the map to the buffer first
 	renderCharacter(g_Console, g_sChar);  // renders the character into the buffer
 	renderLives(g_sChar, NumberOfLives, g_eGameState);
+	PlaySound(TEXT("Game.wav"), NULL, SND_FILENAME | SND_NOSTOP | SND_ASYNC);
 
     if (LevelSelected == 1) {
 		renderMovingTrap(g_Console, g_sMovingTrap);
@@ -588,7 +588,7 @@ void renderGame()
 	else if (LevelSelected == 2) {
 		renderDoublePiovtTrap(g_Console, g_sDoublePivotTrap);
 		renderUI2(g_Console, NumberOfLives, g_sChar);
-		renderBouncingTrap(g_Console, g_sBouncingTrap);
+		renderBouncingTrap(g_Console, g_sBouncingTrap, lineArray);
 		renderStalkerTrap(g_Console, g_sStalkerTrap);
 		renderChargeTrap(g_Console, g_sChargeTrap);
 		renderRandomMvementTrap(g_Console, g_sRandomMovementTrap);
@@ -602,7 +602,7 @@ void renderMap()
 	int pos = 0;
 	string line;
 	int i = 0;
-	PlaySound(TEXT("Game.wav"), NULL, SND_FILENAME | SND_NOSTOP | SND_ASYNC);
+	
 
 	if (LevelSelected == 1) // FOR LEVEL ONE
 	{
