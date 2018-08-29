@@ -574,7 +574,6 @@ void renderVictoryScreen()
 
 void renderGame()
 {
-	renderCollisionCheck(g_Console);
 	renderMap();        // renders the map to the buffer first
 	renderCharacter(g_Console, g_sChar);  // renders the character into the buffer
 	renderLives(g_sChar, NumberOfLives, g_eGameState);

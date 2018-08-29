@@ -147,20 +147,3 @@ void newRespawnLocation(struct SGameChar &playerInfo) {
 	PlaySound(TEXT("Checkpoint.wav"), NULL, SND_FILENAME | SND_ASYNC);
 
 }
-
-void renderCollisionCheck(Console &g_Console) {
-
-	COORD c;
-	c.X = g_Console.getConsoleSize().X + 80;
-	c.Y = 0;
-
-	if (bHitSomething == false) {
-		g_Console.writeToBuffer(c, "No collision", 0xC);
-	}
-	if (bHitSomething == true) {
-
-		g_Console.writeToBuffer(c, "COLLISION DETECTED", 0xC);
-		bHitSomething = false;
-
-	}
-}
