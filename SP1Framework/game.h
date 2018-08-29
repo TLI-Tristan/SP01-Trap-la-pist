@@ -21,6 +21,7 @@ enum EKEYS
 	K_SPACE,
 	K_RESET,
 	K_HOME,
+	K_INSTRUCTIONS,
 	K_RESUME,
 	K_ENTER,
 	K_COUNT
@@ -33,6 +34,8 @@ enum EGAMESTATES
     S_GAME,
 	S_DEFEAT,
 	S_VICTORY,
+	S_INSTRUCTIONS,
+	S_RESUME,
     S_COUNT
 };
 
@@ -88,5 +91,6 @@ void renderFramerate();     // renders debug information, frame rate, elapsed ti
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
 void renderDefeatScreen();  // Changes to defeat screen when die
 void renderVictoryScreen(); // Changes to victory screen when win
+void renderInstructionScreen(); // Changes to Instruction Screen when I is pressed
 
 #endif // _GAME_H

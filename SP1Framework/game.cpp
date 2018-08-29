@@ -140,6 +140,7 @@ void getInput( void )
 	g_abKeyPressed[K_ENTER]  = isKeyPressed(VK_RETURN);
 	g_abKeyPressed[K_RESET] = isKeyPressed(0x52);
 	g_abKeyPressed[K_HOME] = isKeyPressed(0x48);
+	g_abKeyPressed[K_INSTRUCTIONS] = isKeyPressed(0x49);
 	g_abKeyPressed[K_RESUME] = isKeyPressed(0x4F);
 }
 //--------------------------------------------------------------
@@ -200,6 +201,8 @@ void render()
 			break;
 		case S_VICTORY: renderVictoryScreen();
 			break;
+		case S_INSTRUCTIONS: renderInstructionScreen();
+			break;
     }
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
     renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
@@ -213,7 +216,7 @@ void gameMenu()
 	if (g_dBounceTime > g_dElapsedTime)
 		return;
 
-	if (g_abKeyPressed[K_DOWN] && Choice != 3)
+	if (g_abKeyPressed[K_DOWN] && Choice != 4)
 	{
 		Choice += 1;
 		bSelection = true;
@@ -239,7 +242,10 @@ void gameMenu()
 			changeMapStorageLevel2();
 			g_eGameState = S_GAME;
 			break;
-		case 3: g_bQuitGame = true;
+		case 3:
+			g_eGameState = S_INSTRUCTIONS;
+			break;
+		case 4: g_bQuitGame = true;
 			break;
 		}
 	}
@@ -296,7 +302,6 @@ void changeMapStorageLevel2() {
 		LevelSelected = 2;
 	}
 	resetGame2(g_sChar, ChangesArrayTwo, bGotTrapPos2);
-
 }
 
 void gameplay()            // gameplay logic
@@ -402,6 +407,11 @@ void moveCharacter()
 		gameMenu();
 		PlaySound(TEXT("Silent.wav"), NULL, SND_FILENAME | SND_ASYNC);
 	}
+	if (g_abKeyPressed[K_INSTRUCTIONS])
+	{
+		g_eGameState = S_INSTRUCTIONS;
+		PlaySound(TEXT("Silent.wav"), NULL, SND_FILENAME | SND_ASYNC);
+	}
 
 	if (LevelSelected == 1) {
 		//FanFunctionMain(g_sChar, mapStorage, g_Console); // calls main fan function
@@ -485,10 +495,58 @@ void renderGameMenu()  // renders the game menu	//TODO: change this to game menu
 	g_Console.writeToBuffer(c, "HELL Stage (HEHEHEHAHAHOHO)", 0x03);
 	c.Y += 1;
 	c.X = g_Console.getConsoleSize().X / 2 - 49;
+	g_Console.writeToBuffer(c, "Instructions (YOU BETTER READ THIS)", 0x03);
+	c.Y += 1;
+	c.X = g_Console.getConsoleSize().X / 2 - 49;
 	g_Console.writeToBuffer(c, "Exit Game (noooo pls :<)", 0x03);
 	c.Y = 16 + Choice; //Arrow location
 	c.X = g_Console.getConsoleSize().X / 2 - 52;
 	g_Console.writeToBuffer(c, "->", 0x03);
+}
+
+void renderInstructionScreen()
+{
+	COORD c = g_Console.getConsoleSize();
+	COORD d;
+	string line;
+	ifstream myfile("Instructions.txt");
+	char NameStorage[100][100];
+	int i = 0, j = 0;
+	int pos = 0;
+	int p = 0;
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			d.Y = i;
+			p = 0;
+			for (j = 0; j < 120; j++)
+			{
+				NameStorage[i][j] = line[j]; // Y,X
+				d.X = p;
+				if (NameStorage[i][j] == '#') {
+					g_Console.writeToBuffer(d, NameStorage[i][j], 0x33);
+				}
+				else
+				{
+					g_Console.writeToBuffer(d, NameStorage[i][j], 0x03);
+				}
+				p++;
+			}
+			i++;
+		}
+		if (g_abKeyPressed[K_HOME])
+		{
+			gameMenu();
+			PlaySound(TEXT("Silent.wav"), NULL, SND_FILENAME | SND_ASYNC);
+		}
+		if (g_abKeyPressed[K_RESUME])
+		{
+			g_eGameState = S_GAME;
+			PlaySound(TEXT("Silent.wav"), NULL, SND_FILENAME | SND_ASYNC);
+		}
+		myfile.close();
+	}
 }
 
 void renderDefeatScreen()
